@@ -1,0 +1,32 @@
+# Julia
+Manifest.toml
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+/docs/*.aux
+/docs/*.log
+/docs/*.out
+/docs/*.toc
+/docs/*.synctex.gz
+/docs/manual.tex.bak
+
+# PDFs de borradores (mantener solo el borrador final si quieres; elimina esta línea si prefieres subirlos)
+/docs/*.pdf
+
+# Figuras generadas automáticamente (generadas por generate_figures.jl)
+# Comenta estas líneas si quieres incluirlas
+# /docs/figures/
+
+# Archivos temporales / capturas de prueba en la raíz
+/*.png
+/*.gif
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editores
+*.swp
+*~
+.vscode/
