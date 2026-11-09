@@ -41,6 +41,25 @@ println("   Guardado en $savepath_z4")
 #   Numerador:  0 + 2z + 0z^2 + 0z^3 + 1z^4  → [0.0, 2.0, 0.0, 0.0, 1.0]
 #   Denominador: 1 + 0z + 0z^2 + 2z^3 + ...  → [1.0, 0.0, 0.0, 2.0, 0.0]
 # ─────────────────────────────────────────────────────────────────────────────
+println("1b. z^2-1: basin_portrait (2-ciclo en negro) …")
+num_z2 = complex([-1.0, 0.0, 1.0])   # z^2 - 1
+den_z2 = complex([1.0])               # denominador = 1
+
+savepath_z2_basins = joinpath(figdir, "basins_z2m1.png")
+basin_portrait(num_z2, den_z2;
+    bands      = 8.0,
+    show_plot  = false,
+    savepath   = savepath_z2_basins)
+println("   Guardado en $savepath_z2_basins")
+
+println("1c. z^2-1: basin_portrait_pcycle p=2 (2-ciclo con color) …")
+savepath_z2_pcycle = joinpath(figdir, "pcycle_z2.png")
+basin_portrait_pcycle(num_z2, den_z2, 2;
+    bands      = 8.0,
+    show_plot  = false,
+    savepath   = savepath_z2_pcycle)
+println("   Guardado en $savepath_z2_pcycle")
+
 println("2. Halley z^3-1: dos cartas …")
 num_h = complex([0.0, 2.0, 0.0, 0.0, 1.0])   # 2z + z^4
 den_h = complex([1.0, 0.0, 0.0, 2.0, 0.0])   # 1 + 2z^3
