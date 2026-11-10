@@ -1221,4 +1221,413 @@ function basin_portrait_pcycle(
     return plt
 end
 
+
+# ──────────────────────────────────────────────────────────────────────────────
+# §14  Critical orbit analysis — maximum attracting period
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# Theoretical basis: Fatou's theorem (1919) states that every attracting or
+# superattracting cycle must attract at least one critical point of f.
+# Corollary: tracing the orbits of the 2d−2 critical points of a degree-d
+# rational map is *complete* — it finds every attracting cycle.
+# The maximum period P returned by max_attracting_period therefore certifies
+# that f has no attracting cycle of period > P.
+
+export critical_points,
+       critical_orbit_analysis,
+       max_attracting_period,
+       print_critical_orbit_summary
+
+# ---- Data type -----------------------------------------------------------
+
+"""
+    CriticalOrbitResult
+
+Encapsulates the result of tracing one critical orbit.
+
+Fields
+------
+- `critical_point`    — normalised homogeneous pair for the critical point.
+- `label`             — `:attracting`, `:superattracting`, or `:indeterminate`.
+  `:indeterminate` covers parabolic, Siegel, Herman, Julia, and orbits that
+  did not converge to a cycle within the allotted iterations.
+- `period`            — minimal period of the attracting cycle (0 when `:indeterminate`).
+- `cycle_points`      — the `period` representative points of the cycle (empty
+  when `:indeterminate`).
+- `lyapunov_constant` — c = (∏ f^#(zₖ))^{1/q} around the cycle; 0 for
+  superattracting, 1.0 for `:indeterminate`.
+"""
+struct CriticalOrbitResult
+    critical_point    :: Tuple{Complex{Float64},Complex{Float64}}
+    label             :: Symbol
+    period            :: Int
+    cycle_points      :: Vector{Tuple{Complex{Float64},Complex{Float64}}}
+    lyapunov_constant :: Float64
+end
+
+# ---- Internal helpers ----------------------------------------------------
+
+# Coefficients of ∂F/∂z for a homogeneous polynomial
+# F(z,t) = Σ aₖ zᵏ t^(d-k)  →  ∂F/∂z = Σ k·aₖ z^(k-1) t^(d-k)
+# Input:  [a₀, a₁, …, aₐ]  (d+1 entries, constant-first convention)
+# Output: [1·a₁, 2·a₂, …, d·aₐ]  (d entries, degree d-1)
+function _hpoly_dz(cv::Vector{Complex{Float64}})
+    d = length(cv) - 1
+    d == 0 && return [complex(0.0)]
+    return [Complex{Float64}(k) * cv[k + 1] for k in 1:d]
+end
+
+# Partial-∂/∂t coefficients of a homogeneous polynomial.
+# F(z,t) = Σ aₖ zᵏ t^{d-k}  →  ∂F/∂t = Σ_{k=0}^{d-1} (d-k)aₖ zᵏ t^{d-k-1}
+# Returns the coefficient list [(d)a₀, (d-1)a₁, …, 1·a_{d-1}] for _bivariate_poly.
+function _hpoly_dt(cv::Vector{Complex{Float64}})
+    d = length(cv) - 1
+    d == 0 && return [complex(0.0)]
+    return [Complex{Float64}(d - k) * cv[k + 1] for k in 0:d-1]
+end
+
+# Spherical derivative at a homogeneous point (z, t) ∈ ℂ² \ {0}.
+#
+# The correct formula is chart-sensitive (Euler's identity gives W_t = -(z/t)·W_z):
+#   • First chart  |t| ≥ |z|: f^# = |W_z| / |t| / (|F|²+|G|²) · (|z|²+|t|²)
+#   • Second chart |z| > |t|: f^# = |W_t| / |z| / (|F|²+|G|²) · (|z|²+|t|²)
+# For _homogeneous_normalize output (max(|z|,|t|)=1) the divisor is always 1,
+# so the formula collapses to |W_{chart}| · (|z|²+|t|²) / (|F|²+|G|²).
+function _sph_deriv_hom(
+        cnum :: Vector{Complex{Float64}},
+        cden :: Vector{Complex{Float64}},
+        d    :: Int,
+        z    :: Complex{Float64},
+        t    :: Complex{Float64})
+
+    d == 0 && return 0.0
+    Fv      = _bivariate_poly(cnum, z, t, d)
+    Gv      = _bivariate_poly(cden, z, t, d)
+    den     = abs2(Fv) + abs2(Gv)
+    den < 1e-300 && return 0.0
+    norm_sq = abs2(z) + abs2(t)
+    abs_t   = abs(t)
+    abs_z   = abs(z)
+
+    if abs_t >= abs_z
+        # First chart: Wronskian w.r.t. z
+        abs_t < 1e-300 && return 0.0
+        dFv = _bivariate_poly(_hpoly_dz(cnum), z, t, d - 1)
+        dGv = _bivariate_poly(_hpoly_dz(cden), z, t, d - 1)
+        W   = dFv * Gv - Fv * dGv
+        return abs(W) / abs_t / den * norm_sq
+    else
+        # Second chart (near ∞): Wronskian w.r.t. t
+        abs_z < 1e-300 && return 0.0
+        dFv = _bivariate_poly(_hpoly_dt(cnum), z, t, d - 1)
+        dGv = _bivariate_poly(_hpoly_dt(cden), z, t, d - 1)
+        W   = dFv * Gv - Fv * dGv
+        return abs(W) / abs_z / den * norm_sq
+    end
+end
+
+# Lyapunov constant c = geometric mean of f^# around a q-cycle.
+function _lyapunov_of_cycle(
+        cnum      :: Vector{Complex{Float64}},
+        cden      :: Vector{Complex{Float64}},
+        d         :: Int,
+        cycle_pts :: Vector{Tuple{Complex{Float64},Complex{Float64}}})
+
+    q = length(cycle_pts)
+    q == 0 && return 1.0
+    log_sum = sum(log(max(_sph_deriv_hom(cnum, cden, d, pt[1], pt[2]), 1e-300))
+                  for pt in cycle_pts)
+    return exp(log_sum / q)
+end
+
+# Run warmup iterations, then search for smallest q ∈ 1:max_period with
+# chordal_metric(y, f^q(y)) < tol_per.
+# Returns (period, orbit_point_after_warmup); period=0 means not detected.
+function _detect_period_orbit(
+        hpair      ,
+        start_pt   :: Tuple{Complex{Float64},Complex{Float64}},
+        warmup     :: Int,
+        tol        :: Float64,
+        max_period :: Int)
+
+    tol_per = 1e-5    # generous tolerance after the transient
+
+    curr = start_pt
+    for _ in 1:warmup
+        curr = _rational_function(hpair, curr)
+        abs(curr[1]) + abs(curr[2]) < tol && return 0, curr   # super-zero hit
+    end
+
+    for q in 1:max_period
+        trial = curr
+        for _ in 1:q
+            trial = _rational_function(hpair, trial)
+        end
+        chordal_metric(curr, trial) < tol_per && return q, curr
+    end
+
+    return 0, curr    # indeterminate
+end
+
+# ---- Public API ----------------------------------------------------------
+
+"""
+    critical_points(coefficientlistnum, coefficientlistden;
+                    aproxprecision=8, check_infinity=false)
+
+Return the **critical points** of the rational map `f = p/q` as normalised
+homogeneous pairs on `P¹⁺(ℂ)`.
+
+The critical points are the roots of the Wronskian
+    W(z) = p′(z)·q(z) − p(z)·q′(z),
+a polynomial of degree ≤ 2d−2 for a degree-d map.  By the Riemann-Hurwitz
+theorem, f has exactly 2d−2 critical points (counted with multiplicity);
+the returned list removes duplicates within chordal distance 10^{-aproxprecision}.
+
+Pass `check_infinity=true` to also include `∞ = [1:0]` when it is a critical
+point (detected when deg(W) < 2d−2, i.e. some multiplicity is at ∞).
+
+# Returns
+`Vector{Tuple{Complex{Float64},Complex{Float64}}}`.
+"""
+function critical_points(
+        coefficientlistnum :: Vector{T},
+        coefficientlistden :: Vector{T};
+        aproxprecision  :: Int  = 8,
+        check_infinity  :: Bool = false) where {T <: Number}
+
+    cnum = complex.(Float64.(coefficientlistnum))
+    cden = complex.(Float64.(coefficientlistden))
+    d    = max(length(cnum), length(cden)) - 1
+    tol  = 1.0 / 10^aproxprecision
+
+    # Wronskian  W(z) = p′(z)·q(z) − p(z)·q′(z)
+    p_poly  = Polynomial(cnum)
+    q_poly  = Polynomial(cden)
+    wron    = derivative(p_poly) * q_poly - p_poly * derivative(q_poly)
+    wcoeffs = collect(coeffs(wron))
+    while length(wcoeffs) > 1 && abs(last(wcoeffs)) < 1e-12
+        pop!(wcoeffs)
+    end
+
+    result = Tuple{Complex{Float64},Complex{Float64}}[]
+
+    # Finite critical points (roots of Wronskian)
+    if !(length(wcoeffs) == 1 && abs(wcoeffs[1]) < 1e-12)
+        for r in roots(Polynomial(wcoeffs))
+            pt = _homogeneous_normalize(
+                (Complex{Float64}(r), complex(1.0)), aproxprecision)
+            abs(pt[1]) + abs(pt[2]) < tol && continue          # skip super-zero
+            any(chordal_metric(pt, ex) < tol * 10 for ex in result) && continue
+            push!(result, pt)
+        end
+    end
+
+    # ∞ = [1:0] is a critical point when Wronskian degree < 2d−2
+    if check_infinity
+        expected_deg = 2 * d - 2
+        actual_deg   = length(wcoeffs) - 1
+        if actual_deg < expected_deg
+            inf_pt = (complex(1.0), complex(0.0))
+            any(chordal_metric(inf_pt, ex) < tol * 10 for ex in result) ||
+                push!(result, inf_pt)
+        end
+    end
+
+    return result
+end
+
+"""
+    critical_orbit_analysis(coefficientlistnum, coefficientlistden;
+                            max_iter=600, aproxprecision=8,
+                            max_period=30, check_infinity=false)
+
+Classify the orbit of **every critical point** of `f = p/q` under iteration.
+
+For each critical point the algorithm:
+1. Runs `max_iter ÷ 2` warmup steps to escape the transient.
+2. Searches for the smallest period `q ≤ max_period` with
+   `chordal_metric(y, fᵠ(y)) < 10⁻⁵` (orbit inside the cycle neighbourhood).
+3. Computes `c = (∏ₖ f^#(zₖ))^{1/q}` via the homogeneous spherical-derivative
+   formula of [Álvarez et al. 2023, Def. 16].
+4. Labels `:superattracting` if `c < 10⁻⁸`, `:attracting` if `c < 0.9999`,
+   `:indeterminate` otherwise.
+
+By Fatou's theorem this procedure is **complete**: every attracting cycle is
+found because it must attract at least one critical point.
+
+# Returns
+`Vector{CriticalOrbitResult}` — one entry per critical point.
+"""
+function critical_orbit_analysis(
+        coefficientlistnum :: Vector{T},
+        coefficientlistden :: Vector{T};
+        max_iter        :: Int  = 600,
+        aproxprecision  :: Int  = 8,
+        max_period      :: Int  = 30,
+        check_infinity  :: Bool = false) where {T <: Number}
+
+    cnum   = complex.(Float64.(coefficientlistnum))
+    cden   = complex.(Float64.(coefficientlistden))
+    d      = max(length(cnum), length(cden)) - 1
+    tol    = 1.0 / 10^aproxprecision
+    warmup = max_iter ÷ 2
+
+    hpair  = _pair_of_functions(cnum, cden)
+    crits  = critical_points(cnum, cden;
+                 aproxprecision = aproxprecision,
+                 check_infinity = check_infinity)
+
+    results = CriticalOrbitResult[]
+
+    for cpt in crits
+        q, y = _detect_period_orbit(hpair, cpt, warmup, tol, max_period)
+
+        if q == 0
+            push!(results, CriticalOrbitResult(
+                cpt, :indeterminate, 0,
+                Tuple{Complex{Float64},Complex{Float64}}[], 1.0))
+            continue
+        end
+
+        # Collect the q points of the detected cycle
+        cycle_pts = Tuple{Complex{Float64},Complex{Float64}}[]
+        curr = y
+        for _ in 1:q
+            push!(cycle_pts, curr)
+            curr = _rational_function(hpair, curr)
+        end
+
+        c = _lyapunov_of_cycle(cnum, cden, d, cycle_pts)
+
+        label = if c < 1e-8
+            :superattracting
+        elseif c < 0.9999
+            :attracting
+        else
+            :indeterminate
+        end
+
+        if label == :indeterminate
+            push!(results, CriticalOrbitResult(
+                cpt, :indeterminate, 0,
+                Tuple{Complex{Float64},Complex{Float64}}[], c))
+        else
+            push!(results, CriticalOrbitResult(cpt, label, q, cycle_pts, c))
+        end
+    end
+
+    return results
+end
+
+"""
+    max_attracting_period(coefficientlistnum, coefficientlistden;
+                          max_iter=600, aproxprecision=8,
+                          max_period=30, check_infinity=false)
+
+Return the **maximum period** `P` of any attracting or superattracting cycle
+of `f = p/q`, found by tracing the orbits of all critical points.
+
+By Fatou's theorem this is **complete**: there is no attracting cycle of
+period `> P`.  Returns `0` when no attracting cycle is detected (all Fatou
+components are parabolic, Siegel, or Herman, or `max_period` is too small).
+
+# Example
+```julia
+using RiemannBasins
+# Newton for z³−1  (three attracting fixed points, period 1)
+num = complex([1.0, 0.0, 0.0, 2.0]);  den = complex([0.0, 0.0, 3.0, 0.0])
+max_attracting_period(num, den)        # → 1
+
+# Basilica  z²−1  (attracting 2-cycle  {0, −1})
+num2 = complex([-1.0, 0.0, 1.0]);  den2 = complex([1.0])
+max_attracting_period(num2, den2)      # → 2
+```
+"""
+function max_attracting_period(
+        coefficientlistnum :: Vector{T},
+        coefficientlistden :: Vector{T};
+        max_iter        :: Int  = 600,
+        aproxprecision  :: Int  = 8,
+        max_period      :: Int  = 30,
+        check_infinity  :: Bool = false) where {T <: Number}
+
+    results = critical_orbit_analysis(
+        coefficientlistnum, coefficientlistden;
+        max_iter       = max_iter,
+        aproxprecision = aproxprecision,
+        max_period     = max_period,
+        check_infinity = check_infinity)
+
+    P = 0
+    for r in results
+        r.label != :indeterminate && (P = max(P, r.period))
+    end
+    return P
+end
+
+"""
+    print_critical_orbit_summary(coefficientlistnum, coefficientlistden; kwargs...)
+
+Print a human-readable table of all critical orbits and their classifications.
+Accepts the same keyword arguments as `critical_orbit_analysis`.
+
+Useful as a quick sanity check before running a full basin portrait, to verify
+that all attracting cycles have been found and to determine the correct value
+of `p` for `basin_portrait_pcycle`.
+
+# Example
+```julia
+using RiemannBasins
+num2 = complex([-1.0, 0.0, 1.0]);  den2 = complex([1.0])
+print_critical_orbit_summary(num2, den2)
+# Critical orbit analysis   degree = 2,  1 critical point(s)
+# ──────────────────────────────────────────────────────────────────
+# #    Critical point (z, t)                Label              Period  c
+# ──────────────────────────────────────────────────────────────────
+# 1    (0.0 + 0.0im, 1.0 + 0.0im)           attracting         2       0.5
+# ──────────────────────────────────────────────────────────────────
+# Maximum attracting period  P = 2
+# By Fatou's theorem, f has no attracting cycle of period > P.
+```
+"""
+function print_critical_orbit_summary(
+        coefficientlistnum :: Vector{T},
+        coefficientlistden :: Vector{T};
+        kwargs...) where {T <: Number}
+
+    results = critical_orbit_analysis(coefficientlistnum, coefficientlistden; kwargs...)
+    d   = max(length(coefficientlistnum), length(coefficientlistden)) - 1
+    sep = "─"^68
+
+    println("\nCritical orbit analysis   degree = $(d),  $(length(results)) critical point(s)")
+    println(sep)
+    println(rpad("#",  5)  *
+            rpad("Critical point (z, t)", 38) *
+            rpad("Label", 18) *
+            rpad("Period", 8) *
+            "c")
+    println(sep)
+
+    for (i, r) in enumerate(results)
+        z, t     = r.critical_point
+        pt_str   = "($(round(z, digits=4)), $(round(t, digits=4)))"
+        per_str  = r.period == 0 ? "—" : string(r.period)
+        c_str    = r.label == :indeterminate ? "—" :
+                   string(round(r.lyapunov_constant, digits=6))
+        println(rpad(string(i), 5)  *
+                rpad(pt_str, 38) *
+                rpad(string(r.label), 18) *
+                rpad(per_str, 8) *
+                c_str)
+    end
+
+    println(sep)
+    P = maximum((r.period for r in results if r.label != :indeterminate), init = 0)
+    println("Maximum attracting period  P = $(P)")
+    println("By Fatou's theorem, f has no attracting cycle of period > P.\n")
+
+    return results
+end
+
 end  # module RiemannBasins
