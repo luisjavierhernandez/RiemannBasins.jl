@@ -686,6 +686,17 @@ the bas\'ilica Julia set, a dendrite-like connected curve.
 \end{verbatim}
 \end{example}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.65\textwidth]{../figures/pcycle_basilica_2cycle.png}
+  \caption{Basin portrait of the 2-cycle of $f_{-1}(z)=z^2-1$ (bas\'ilica).
+           Each colour represents the basin of one element of the
+           superattracting 2-cycle $\{0,-1\}$; the grey region is the
+           basin of $\infty$.}
+  \label{fig:basilica_pcycle}
+\end{figure}
+
+
 \subsection{Newton's method for $z^3-1$}
 
 Newton's method $N(z)=\frac{2z^3+1}{3z^2}$ has degree $d=3$.
@@ -712,11 +723,33 @@ The three superattracting fixed points give $P=1$.
 \end{verbatim}
 \end{example}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.90\textwidth]{../figures/pcycle_newton_z3.png}
+  \caption{Basin portrait of Newton's method for $z^3-1$ in both affine
+           charts of $\Pone$.  Chart~1 (left) shows the neighbourhood of
+           the origin; Chart~2 (right) the neighbourhood of $\infty$.
+           The three superattracting fixed points (roots of $z^3-1$) each
+           attract a connected basin; $\infty$ is repelling.}
+  \label{fig:newton_z3_pcycle}
+\end{figure}
+
+
 \subsection{The map $f(z)=z^2$ (superattracting fixed point)}
 
 For $f(z)=z^2$: $W(z)=2z$, unique critical point $z=0$, orbit $0\to 0$.
 Since $f'(0)=0$, $c=0$ and $P=1$.  The basin of $0$ is the open unit disc
 $\{|z|<1\}$ and the Julia set is the unit circle $\{|z|=1\}$.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.55\textwidth]{../figures/pcycle_z2_fixed.png}
+  \caption{Basin portrait of $f(z)=z^2$.  The open unit disc $\{|z|<1\}$
+           (blue) is the basin of the superattracting fixed point $z=0$;
+           the exterior $\{|z|>1\}$ is the basin of $\infty$.
+           The unit circle $\{|z|=1\}$ is the Julia set.}
+  \label{fig:z2_fixed}
+\end{figure}
 
 \subsection{Summary table}
 
