@@ -86,10 +86,33 @@ basin_portrait_pcycle(
     yinterval     = (-0.75, 0.75),
     iter          = 400,
     colorstrategy = "pcycle_lch",
-    hue_band      = 25.0,
+    hue_band      = 120.0,
     show_plot     = false,
     savepath      = joinpath(outdir, "pcycle_airplane_3cycle_lch.png"))
 println("  → pcycle_airplane_3cycle_lch.png")
 
 
 println("\nListo. Figuras en docs/figures/")
+
+println("=== Figura 6: conejo de Douady z²+c  (3-ciclo superatractor, LCHab) ===")
+# c es la raíz compleja de c³+2c²+c+1=0  ≈ −0.1226+0.7449i
+# (misma ecuación que el avión, pero raíz compleja)
+c_rabbit = let x = complex(-0.12, 0.75)
+    for _ in 1:80
+        x -= (x^3 + 2x^2 + x + 1) / (3x^2 + 4x + 1)
+    end; x
+end
+println("  c_rabbit = ", c_rabbit)
+num_rab = complex([c_rabbit, 0.0, 1.0])
+den_rab = complex([1.0])
+
+basin_portrait_pcycle(
+    num_rab, den_rab, 3;
+    xinterval     = (-1.5, 1.5),
+    yinterval     = (-1.5, 1.5),
+    iter          = 400,
+    colorstrategy = "pcycle_lch",
+    hue_band      = 120.0,
+    show_plot     = false,
+    savepath      = joinpath(outdir, "pcycle_rabbit_3cycle_lch.png"))
+println("  → pcycle_rabbit_3cycle_lch.png")
