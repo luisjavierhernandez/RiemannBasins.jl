@@ -6,6 +6,7 @@
 #   pcycle_basilica_2cycle.png   — basílica z²−1: cuencas del 2-ciclo
 #   pcycle_newton_z3.png         — Newton z³−1: dos cartas (puntos fijos)
 #   pcycle_z2_fixed.png          — f(z)=z²: cuenca del punto fijo superatractor en 0
+#   pcycle_airplane_3cycle.png   — avión z²+c: cuencas del 3-ciclo superatractor
 
 using RiemannBasins, Colors
 
@@ -54,5 +55,27 @@ basin_portrait(
     show_plot = false,
     savepath  = joinpath(outdir, "pcycle_z2_fixed.png"))
 println("  → pcycle_z2_fixed.png")
+
+println("=== Figura 4: avión z²+c  (cuencas del 3-ciclo) ===")
+# c es la raíz real de c³+2c²+c+1=0  ≈ −1.7549
+# Se calcula con Newton en pocas iteraciones:
+c_air = let x = -1.75
+    for _ in 1:60; x -= (x^3 + 2x^2 + x + 1) / (3x^2 + 4x + 1) end; x
+end
+println("  c_airplane = ", c_air)
+# f(z) = z² + c   →   num = [c, 0, 1],  den = [1]
+num_air = complex([c_air, 0.0, 1.0])
+den_air = complex([1.0])
+
+basin_portrait_pcycle(
+    num_air, den_air, 3;
+    xinterval     = (-2.5, 1.5),
+    yinterval     = (-1.5, 1.5),
+    iter          = 400,
+    colorstrategy = "positionplusiteration",
+    show_plot     = false,
+    savepath      = joinpath(outdir, "pcycle_airplane_3cycle.png"))
+println("  → pcycle_airplane_3cycle.png")
+
 
 println("\nListo. Figuras en docs/figures/")

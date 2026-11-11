@@ -650,7 +650,7 @@ $|\phi(f^n(z))| = |\phi(z)|^{m^n}$), so fewer iterations suffice.
 \label{sec:examples}
 %% ===========================================================================
 
-We illustrate the algorithms on four families of rational maps.  All
+We illustrate the algorithms on five families of rational maps.  All
 computations use \texttt{RiemannBasins.jl} \cite{RiemannBasins}.
 
 \subsection{The quadratic family $f_c(z)=z^2+c$ (Bas\'ilica, $c=-1$)}
@@ -752,6 +752,54 @@ $\{|z|<1\}$ and the Julia set is the unit circle $\{|z|=1\}$ (see Figure~\ref{fi
   \label{fig:z2_fixed}
 \end{figure}
 
+\subsection{The airplane map $f_c(z)=z^2+c$ (3-cycle, $c\approx-1.7549$)}
+\label{subsec:airplane}
+
+The map $f_c(z)=z^2+c$ with $c$ the unique real root of
+\[
+  c^3+2c^2+c+1=0, \qquad c\approx -1.7549,
+\]
+has degree $d=2$ and a single finite critical point $z_0=0$ (Wronskian $W(z)=2z$).
+Evaluating:
+\[
+  f_c(0)=c, \quad f_c(c)=c^2+c, \quad f_c(c^2+c)=(c^2+c)^2+c=0,
+\]
+where the last equality holds precisely because $c$ satisfies $c^3+2c^2+c+1=0$.
+Hence $0$ lies on a \emph{superattracting 3-cycle}
+$\Gamma_3=\{0,\,c,\,c^2+c\}$, and Algorithm~\ref{alg:critical} returns $P=3$
+(see Figure~\ref{fig:airplane_pcycle}).
+
+The corresponding Julia set---known as the \emph{airplane}---is a connected,
+locally connected compact set with a characteristic ``airplane wing'' shape.
+The Fatou set decomposes into three basins $B_0$, $B_c$, $B_{c^2+c}$, one for
+each element of the 3-cycle, together with the basin of $\infty$.
+
+\begin{example}[Airplane computation]
+\begin{verbatim}
+  using RiemannBasins
+  # c is the real root of c^3 + 2c^2 + c + 1 = 0
+  c = let x = -1.75
+        for _ in 1:50; x -= (x^3+2x^2+x+1)/(3x^2+4x+1) end; x
+      end
+  num = complex([c, 0.0, 1.0]);  den = complex([1.0])
+  print_critical_orbit_summary(num, den)
+  # → P = 3 (superattracting 3-cycle, c = 0.0)
+  basin_portrait_pcycle(num, den, 3; iter=400, show_plot=true)
+\end{verbatim}
+\end{example}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.65\textwidth]{../figures/pcycle_airplane_3cycle.png}
+  \caption{Basin portrait of the 3-cycle of the airplane map
+           $f_c(z)=z^2+c$ ($c\approx-1.7549$, the real root of
+           $c^3+2c^2+c+1=0$).  The three colours correspond to the
+           basins of $B_0$, $B_c$ and $B_{c^2+c}$; grey is the
+           basin of $\infty$.  The bounded components of the Fatou
+           set form the characteristic ``airplane'' shape.}
+  \label{fig:airplane_pcycle}
+\end{figure}
+
 \subsection{Summary table}
 
 \begin{center}
@@ -763,6 +811,7 @@ M\"obius (degree 1)  & 1 & 0  & 0 & --- \\
 $f(z)=z^2$         & 2 & 1  & 1 & superattr.\ ($p=1$) \\
 $f(z)=z^2-1$       & 2 & 2  & 2 & superattr.\ ($p=2$) + superattr.\ ($p=1$ at $\infty$) \\
 Newton $z^3-1$     & 3 & 4  & 1 & 3 superattr.\ ($p=1$) + 1 indet. \\
+Airplane $z^2+c$   & 2 & 2  & 3 & superattr.\ ($p=3$) + superattr.\ ($p=1$ at $\infty$) \\
 Halley $z^3-1$     & 5 & 8  & 1 & 3 superattr.\ ($p=1$) \\
 \bottomrule
 \end{tabular}
