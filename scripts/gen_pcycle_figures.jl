@@ -69,8 +69,8 @@ den_air = complex([1.0])
 
 basin_portrait_pcycle(
     num_air, den_air, 3;
-    xinterval     = (-2.5, 1.5),
-    yinterval     = (-1.5, 1.5),
+    xinterval     = (-2.0, 2.0),
+    yinterval     = (-0.75, 0.75),
     iter          = 400,
     colorstrategy = "positionplusiteration",
     show_plot     = false,
