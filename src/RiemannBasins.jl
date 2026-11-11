@@ -151,8 +151,8 @@ function _pair_of_functions(
 
     d = max(length(coefficientlistnum), length(coefficientlistden)) - 1
 
-    cnum = complex.(Float64.(coefficientlistnum))
-    cden = complex.(Float64.(coefficientlistden))
+    cnum = ComplexF64.(coefficientlistnum)
+    cden = ComplexF64.(coefficientlistden)
 
     fff(u::Complex{Float64}, t::Complex{Float64}) =
         _bivariate_poly(cnum, u, t, d)
