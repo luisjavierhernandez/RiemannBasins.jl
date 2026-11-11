@@ -1282,6 +1282,7 @@ function _render_basin_image_lch(
         size   = (600, 600))
 end
 
+"""
 (coefficientlistnum, coefficientlistden, p;
                           xinterval=(-1.5,1.5), yinterval=(-1.5,1.5),
                           aproxprecision=8, iterprecision=8, iter=200, expprecision=8,
