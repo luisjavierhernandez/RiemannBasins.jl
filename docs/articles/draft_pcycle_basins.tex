@@ -674,7 +674,8 @@ By Algorithm~\ref{alg:critical}, $P=2$.
 
 The two basins $B_0$ and $B_{-1}$ partition the Fatou set (minus the
 basin of $\infty$) into two equal components; their common boundary is
-the bas\'ilica Julia set, a dendrite-like connected curve.
+the bas'ilica Julia set, a dendrite-like connected curve
+(see Figure~\ref{fig:basilica_pcycle}).
 
 \begin{example}[Bas\'ilica computation]\label{ex:basilica}
 \begin{verbatim}
@@ -710,7 +711,7 @@ $N(0)=\infty$; in the second chart $g(w)=3w/(2+w^3)$, $g'(0)=3/2>1$,
 so $\infty$ is \emph{repelling} and the orbit of $z=0$ is
 \emph{indeterminate}.
 
-The three superattracting fixed points give $P=1$.
+The three superattracting fixed points give $P=1$ (see Figure~\ref{fig:newton_z3_pcycle}).
 
 \begin{example}[Newton portrait]
 \begin{verbatim}
@@ -739,7 +740,7 @@ The three superattracting fixed points give $P=1$.
 
 For $f(z)=z^2$: $W(z)=2z$, unique critical point $z=0$, orbit $0\to 0$.
 Since $f'(0)=0$, $c=0$ and $P=1$.  The basin of $0$ is the open unit disc
-$\{|z|<1\}$ and the Julia set is the unit circle $\{|z|=1\}$.
+$\{|z|<1\}$ and the Julia set is the unit circle $\{|z|=1\}$ (see Figure~\ref{fig:z2_fixed}).
 
 \begin{figure}[htbp]
   \centering
@@ -853,8 +854,7 @@ computation.
 
 \bigskip
 \noindent\textbf{Acknowledgements.}
-The authors thank Professor J.M.~Rodr\'iguez Sanjurjo for his continued
-interest and encouragement.  This work is a continuation of the program
+This work is a continuation of the program
 initiated in \cite{Extremiana2019,Alvarez2023}.  Computations were
 performed using the Julia language \cite{Julia2017} with the
 \texttt{RiemannBasins.jl} package \cite{RiemannBasins}.
