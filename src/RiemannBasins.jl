@@ -631,6 +631,7 @@ function basin_portrait(
         bands::Float64              = 6.0,
         gseed::RGB{Float64}         = RGB{Float64}(0.2, 0.6, 0.9),
         colorstrategy::String       = "positionplusiteration",
+        hue_band::Float64           = 25.0,
         show_plot::Bool             = true,
         colorblind::Bool            = false,
         savepath::String            = "") where {T<:Number}
@@ -1098,8 +1099,190 @@ function _group_fp_by_orbit(
     return group_of, n_groups
 end
 
+# ──────────────────────────────────────────────────────────────────────────────
+# §13b  LCHab colour encoding for p-cycle sub-basins
+# ──────────────────────────────────────────────────────────────────────────────
+
 """
-    basin_portrait_pcycle(coefficientlistnum, coefficientlistden, p;
+    _group_fp_by_orbit_lch(fp_list, hpair_f, aproxprecision)
+
+Like `_group_fp_by_orbit`, but additionally returns `subidx_of[i]` —
+the 0-based position of `fp_list[i]` within its orbit group (sub-basin index).
+
+Returns `(group_of, subidx_of, n_groups)`.
+"""
+function _group_fp_by_orbit_lch(
+        fp_list::Vector,
+        hpair_f,
+        aproxprecision::Int)
+
+    n   = length(fp_list)
+    tol = 1.0 / 10^aproxprecision
+
+    # Build successor map: nxt[i] = j  means  f(fp_list[i]) ≈ fp_list[j]
+    nxt = zeros(Int, n)
+    for i in 1:n
+        fi = _rational_function(hpair_f, fp_list[i], aproxprecision)
+        for j in 1:n
+            if chordal_metric(fi, fp_list[j], aproxprecision) < tol
+                nxt[i] = j
+                break
+            end
+        end
+    end
+
+    # Trace orbit chains; assign group labels and sub-basin indices
+    group_of  = zeros(Int, n)
+    subidx_of = zeros(Int, n)
+    n_groups  = 0
+
+    for i in 1:n
+        group_of[i] != 0 && continue   # already processed
+        n_groups += 1
+        g   = n_groups
+        j   = i
+        idx = 0
+        while group_of[j] == 0
+            group_of[j]  = g
+            subidx_of[j] = idx
+            idx += 1
+            nxt[j] == 0 && break
+            j = nxt[j]
+        end
+    end
+
+    return group_of, subidx_of, n_groups
+end
+
+"""
+    _okabe_lch_hues() -> Vector{Float64}
+
+Return the LCHab hue angles (degrees) of the Okabe-Ito palette
+(colours 2–8, skipping black).  Computed at first call and cached.
+"""
+function _okabe_lch_hues()::Vector{Float64}
+    oi = okabe_ito_colors()          # returns 8 RGB colours
+    return [convert(LCHab{Float64}, c).h for c in oi[2:end]]
+end
+
+"""
+    _pcycle_lch_color(cycle_idx, sub_idx, p, nit, maxiter; hue_band=25.0)
+
+Compute the LCHab colour for a pixel belonging to sub-basin `sub_idx`
+(0-based) of the `cycle_idx`-th attracting cycle (1-based), where the
+cycle has period `p`.  The pixel required `nit` iterations out of `maxiter`.
+
+Encoding:
+- **Hue**:    H = H_base(cycle_idx) + sub_idx · hue_band / p  (mod 360°)
+- **Lightness**: L = 85 − 57·(nit/maxiter)^0.5  ∈ [28, 85]
+- **Chroma**: C = 55 (fixed)
+"""
+function _pcycle_lch_color(
+        cycle_idx::Int, sub_idx::Int, p::Int,
+        nit::Int,       maxiter::Int;
+        hue_band::Float64 = 25.0)::RGB{Float64}
+
+    hues   = _okabe_lch_hues()
+    H_base = hues[mod1(cycle_idx, length(hues))]
+    H      = mod(H_base + (p > 1 ? sub_idx * hue_band / p : 0.0), 360.0)
+
+    t = (nit / max(1, maxiter))^0.5
+    L = 85.0 - 57.0 * t          # L ∈ [28, 85]
+    C = 55.0
+
+    rgb = convert(RGB{Float64}, LCHab{Float64}(L, C, H))
+    return RGB{Float64}(clamp(red(rgb),   0.0, 1.0),
+                        clamp(green(rgb), 0.0, 1.0),
+                        clamp(blue(rgb),  0.0, 1.0))
+end
+
+"""
+    _build_basin_image_lch(fp_list, pos_raw, itr, group_of, subidx_of, p; hue_band)
+
+Build the pixel-colour matrix for the `"pcycle_lch"` strategy.
+Each pixel is coloured by LCHab encoding of (cycle, sub-basin, convergence speed).
+The basin of ∞ is rendered in greyscale (lightness encodes iteration count).
+"""
+function _build_basin_image_lch(
+        fp_list   ::Vector,
+        pos_raw   ::Matrix{Int64},
+        itr       ::Matrix{Int64},
+        group_of  ::Vector{Int},
+        subidx_of ::Vector{Int},
+        p         ::Int;
+        hue_band  ::Float64 = 25.0)::Matrix{RGB{Float64}}
+
+    nrows, ncols = size(pos_raw)
+    maxiter  = max(1, maximum(itr))
+    n_fp     = length(fp_list)
+    inf_grp  = group_of[n_fp]        # group that contains ∞
+
+    img = Matrix{RGB{Float64}}(undef, nrows, ncols)
+    for j in 1:ncols, i in 1:nrows
+        pos = pos_raw[i, j]
+        nit = itr[i, j]
+
+        if pos <= 0
+            # Non-converged → black
+            img[i,j] = RGB{Float64}(0.0, 0.0, 0.0)
+
+        elseif group_of[pos] == inf_grp
+            # Basin of ∞ → greyscale, lightness by iteration
+            t = (nit / maxiter)^0.5
+            v = clamp(0.85 - 0.50 * t, 0.30, 0.90)
+            img[i,j] = RGB{Float64}(v, v, v)
+
+        else
+            img[i,j] = _pcycle_lch_color(
+                group_of[pos], subidx_of[pos], p, nit, maxiter;
+                hue_band = hue_band)
+        end
+    end
+    return img
+end
+
+"""
+    _render_basin_image_lch(fp_list, pos_raw, itr, group_of, subidx_of, p,
+                             xinterval, yinterval, title; hue_band=25.0)
+
+Build and return a `Plots.Plot` using the `"pcycle_lch"` colour strategy.
+"""
+function _render_basin_image_lch(
+        fp_list   ::Vector,
+        pos_raw   ::Matrix{Int64},
+        itr       ::Matrix{Int64},
+        group_of  ::Vector{Int},
+        subidx_of ::Vector{Int},
+        p         ::Int,
+        xinterval ::Tuple{Real,Real},
+        yinterval ::Tuple{Real,Real},
+        title     ::String;
+        hue_band  ::Float64 = 25.0)
+
+    img = _build_basin_image_lch(
+        fp_list, pos_raw, itr, group_of, subidx_of, p; hue_band = hue_band)
+
+    nrows, ncols = size(img)
+    a, b = Float64(xinterval[1]), Float64(xinterval[2])
+    c, d = Float64(yinterval[1]), Float64(yinterval[2])
+
+    return plot(
+        img,
+        aspect_ratio = :equal,
+        xlims  = (1, ncols),
+        ylims  = (1, nrows),
+        xticks = (range(1, ncols, length=5),
+                  string.(round.(range(a, b, length=5), digits=2))),
+        yticks = (range(1, nrows, length=5),
+                  string.(round.(range(c, d, length=5), digits=2))),
+        xlabel = "Re(z)",
+        ylabel = "Im(z)",
+        title  = title,
+        legend = false,
+        size   = (600, 600))
+end
+
+(coefficientlistnum, coefficientlistden, p;
                           xinterval=(-1.5,1.5), yinterval=(-1.5,1.5),
                           aproxprecision=8, iterprecision=8, iter=200, expprecision=8,
                           bands=6.0, gseed=RGB(0.2,0.6,0.9),
@@ -1161,6 +1344,7 @@ function basin_portrait_pcycle(
         bands::Float64              = 6.0,
         gseed::RGB{Float64}         = RGB{Float64}(0.2, 0.6, 0.9),
         colorstrategy::String       = "positionplusiteration",
+        hue_band::Float64           = 25.0,
         show_plot::Bool             = true,
         colorblind::Bool            = false,
         savepath::String            = "") where {T<:Number}
@@ -1182,7 +1366,14 @@ function basin_portrait_pcycle(
     push!(fp_list, (complex(1.0), complex(0.0)))   # ∞ always included
 
     # 4. Group fixed points of f^p by their orbit under f
-    group_of, n_groups = _group_fp_by_orbit(fp_list, hpair_f, aproxprecision)
+    #    For pcycle_lch we also need sub-basin indices within each group.
+    if colorstrategy == "pcycle_lch"
+        group_of, subidx_of, n_groups =
+            _group_fp_by_orbit_lch(fp_list, hpair_f, aproxprecision)
+    else
+        group_of, n_groups = _group_fp_by_orbit(fp_list, hpair_f, aproxprecision)
+        subidx_of = nothing
+    end
 
     # 5. Basin iteration with f^p
     hpair_fp = _pair_of_functions(num_p, den_p)
@@ -1191,29 +1382,42 @@ function basin_portrait_pcycle(
         grid, fp_list, hpair_fp,
         aproxprecision, iterprecision, iter)
 
-    # 6. Remap pixel labels: fixed-point index → orbit group index
-    posG = map(pos_raw) do pos
-        (pos <= 0) ? pos : group_of[pos]
+    title = "$(p)-cycle basins, LCHab ($(n_groups) attractor$(n_groups == 1 ? "" : "s"))"
+
+    if colorstrategy == "pcycle_lch"
+        # ── Option B: LCHab encoding (Hue=cycle, ΔHue=sub-basin, L=speed) ──
+        title = "$(p)-cycle basins, LCHab ($(n_groups) attractor$(n_groups == 1 ? "" : "s"))"
+        plt = _render_basin_image_lch(
+            fp_list, pos_raw, itr,
+            group_of, subidx_of, p,
+            xinterval, yinterval, title;
+            hue_band = hue_band)
+    else
+        # ── Option A: original strategy (one colour per orbit group) ──────
+        # 6. Remap pixel labels: fixed-point index → orbit group index
+        posG = map(pos_raw) do pos
+            (pos <= 0) ? pos : group_of[pos]
+        end
+
+        # 7. Colormap with one colour per orbit group
+        cmap = _build_colormap(n_groups, gseed; colorblind=colorblind)
+
+        # Build one representative per group for the render call
+        reps = Vector{Tuple{Complex{Float64},Complex{Float64}}}(undef, n_groups)
+        for i in eachindex(fp_list)
+            reps[group_of[i]] = fp_list[i]
+        end
+
+        title = "$(p)-cycle basins ($(n_groups) attractor$(n_groups == 1 ? "" : "s"))"
+        plt = _render_basin_image(
+            reps, posG, itr,
+            xinterval, yinterval,
+            cmap, colorstrategy, title;
+            colorblind     = colorblind,
+            bands          = bands,
+            residualMatrix = res,
+            aproxprecision = aproxprecision)
     end
-
-    # 7. Colormap with one colour per orbit group
-    cmap = _build_colormap(n_groups, gseed; colorblind=colorblind)
-
-    # Build one representative per group for the render call
-    reps = Vector{Tuple{Complex{Float64},Complex{Float64}}}(undef, n_groups)
-    for i in eachindex(fp_list)
-        reps[group_of[i]] = fp_list[i]
-    end
-
-    title = "$(p)-cycle basins ($(n_groups) attractor$(n_groups == 1 ? "" : "s"))"
-    plt = _render_basin_image(
-        reps, posG, itr,
-        xinterval, yinterval,
-        cmap, colorstrategy, title;
-        colorblind     = colorblind,
-        bands          = bands,
-        residualMatrix = res,
-        aproxprecision = aproxprecision)
 
     show_plot && display(plt)
     isempty(savepath) || savefig(plt, savepath)
