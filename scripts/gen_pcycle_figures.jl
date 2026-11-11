@@ -78,4 +78,18 @@ basin_portrait_pcycle(
 println("  → pcycle_airplane_3cycle.png")
 
 
+println("=== Figura 5: avión z²+c  (cuencas del 3-ciclo, coloración LCHab) ===")
+# Same map as Fig 4, but rendered with the perceptual pcycle_lch strategy
+basin_portrait_pcycle(
+    num_air, den_air, 3;
+    xinterval     = (-2.0, 2.0),
+    yinterval     = (-0.75, 0.75),
+    iter          = 400,
+    colorstrategy = "pcycle_lch",
+    hue_band      = 25.0,
+    show_plot     = false,
+    savepath      = joinpath(outdir, "pcycle_airplane_3cycle_lch.png"))
+println("  → pcycle_airplane_3cycle_lch.png")
+
+
 println("\nListo. Figuras en docs/figures/")
