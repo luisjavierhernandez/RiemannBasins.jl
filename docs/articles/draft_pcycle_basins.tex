@@ -645,6 +645,132 @@ per chart.  In the superattracting case the convergence is faster
 $|\phi(f^n(z))| = |\phi(z)|^{m^n}$), so fewer iterations suffice.
 \end{remark}
 
+
+%% ===========================================================================
+\section{Colour encoding for $p$-cycle basin portraits}
+\label{sec:colour}
+%% ===========================================================================
+
+A basin portrait for a rational map $f$ of degree $d$ must convey at least
+three independent pieces of information at each pixel simultaneously:
+\begin{enumerate}
+  \item \emph{Which attracting cycle} does the orbit of the pixel converge to?
+  \item \emph{Which element of that cycle} is the orbit closest to after the
+        transient?
+  \item \emph{How fast} does the orbit converge (i.e.\ how many iterations are
+        needed to reach a prescribed tolerance)?
+\end{enumerate}
+The first two items identify the \emph{sub-basin}: if $f$ has a $p$-periodic
+attracting cycle $\Gamma_p=\{a_0,a_1,\ldots,a_{p-1}\}$ with $f(a_j)=a_{j+1\bmod p}$,
+then its full basin $\mathcal{B}(\Gamma_p)$ splits into $p$ dynamically equivalent
+components
+\[
+  \mathcal{B}_j(\Gamma_p)
+    = \bigl\{z\in\hat{\mathbb{C}} :
+        \operatorname{dist}(f^{np+r}(z),\,a_j)\to 0 \text{ for some } r\bigr\},
+  \quad j=0,\ldots,p-1,
+\]
+cyclically permuted by $f$: $f(\mathcal{B}_j)\subset\mathcal{B}_{j+1\bmod p}$.
+A colour scheme that ignores this decomposition loses the internal structure of
+the basin and fails to make the cyclic symmetry of $f$ visible.
+
+\subsection{The \texorpdfstring{$\mathrm{LCH}_{ab}$}{LCHab} perceptual colour space}
+
+Standard RGB or HSV colour spaces are not perceptually uniform: equal numerical
+steps along a coordinate do not produce equally perceptible colour differences.
+We work instead in $\mathrm{LCH}_{ab}$, the polar form of CIELAB
+\cite{Fairchild2013}, with coordinates
+\[
+  (L,\,C,\,H): \quad
+  L\in[0,100] \text{ (lightness)},\quad
+  C\geq 0 \text{ (chroma)},\quad
+  H\in[0^\circ,360^\circ) \text{ (hue angle)}.
+\]
+Perceptual uniformity means that the Euclidean distance $\Delta E_{ab}$ in
+CIELAB is a reliable proxy for perceived colour difference, so equal steps in
+$L$, $C$ or $H$ produce equally visible changes.
+Julia's \texttt{Colors.jl} library provides \texttt{LCHab} natively and handles
+the conversion to RGB for display \cite{ColorsJl}.
+
+\subsection{Three-level encoding scheme}
+
+We assign colour to a pixel according to the following hierarchy.
+
+\paragraph{Level 1 (which cycle) --- hue $H$.}
+Each attracting cycle $\Gamma_p^{(k)}$ is assigned a \emph{base hue}
+$H^{(k)}$ drawn from the Okabe--Ito palette \cite{OkabIto2008} converted to
+$\mathrm{LCH}_{ab}$.  The Okabe--Ito hues are well separated in perceptual
+space and are robust under common types of colour-vision deficiency.  For up
+to seven cycles the base hues are approximately
+$H^{(0)}=29^\circ$ (orange), $H^{(1)}=194^\circ$ (sky blue),
+$H^{(2)}=56^\circ$ (yellow), $H^{(3)}=162^\circ$ (bluish green),
+$H^{(4)}=300^\circ$ (reddish purple), $H^{(5)}=14^\circ$ (vermillion),
+$H^{(6)}=220^\circ$ (blue).
+
+\paragraph{Level 2 (which sub-basin) --- hue shift $\Delta H$.}
+The $j$-th sub-basin of cycle $k$ receives hue
+\[
+  H^{(k)}_j = H^{(k)} + j\,\frac{\Delta}{p},
+  \qquad j=0,\ldots,p-1,
+\]
+where $\Delta=25^\circ$ is a fixed angular bandwidth.  This keeps all
+$p$ sub-basins within the same perceptual hue family (the observer reads
+``these belong to the same cycle'') while making them mutually distinguishable:
+in $\mathrm{LCH}_{ab}$ with $C\approx55$, hue differences below $15^\circ$ are
+barely perceptible, so a step of $25^\circ/p$ is resolvable for $p\leq5$ and
+can be extended to $\Delta=35^\circ$ for larger periods.
+The cyclic order of the hue shifts mirrors the dynamics: $f$ maps
+$\mathcal{B}_j$ to $\mathcal{B}_{j+1\bmod p}$, shifting the hue by
+$\Delta/p$ in a fixed direction.
+
+\paragraph{Level 3 (convergence speed) --- lightness $L$.}
+Let $n(z)$ be the number of iterations of $f$ required for the orbit of $z$ to
+enter a prescribed tolerance ball around $\Gamma_p$.  We set
+\begin{equation}\label{eq:lightness}
+  L(z) = L_{\max} - (L_{\max}-L_{\min})\,
+           \Bigl(\frac{n(z)}{n_{\max}}\Bigr)^{\!\gamma},
+  \qquad \gamma = \tfrac{1}{2},
+\end{equation}
+with $L_{\max}=85$ and $L_{\min}=28$.  The square-root exponent
+$\gamma=\frac{1}{2}$ applies a perceptual gamma correction: it compresses the
+lightness scale near the attractor (where $n$ is small and many pixels cluster)
+and expands it near the Julia set (where $n$ is large and fine structure
+appears).  The chroma $C=55$ is held constant across all pixels.
+
+\paragraph{Coherence with $p=1$ (fixed points).}
+When $p=1$ there is a single sub-basin ($j=0$), no hue shift occurs, and the
+scheme reduces exactly to the \texttt{positionplusiteration} strategy already
+implemented: base colour from the Okabe--Ito cycle identifier, luminance from
+iteration count.  The $p$-cycle encoding is thus a strict extension of the
+existing convention.
+
+\subsection{Implementation in \texttt{RiemannBasins.jl}}
+
+The scheme is implemented as the colour strategy
+\texttt{"pcycle\_lch"} in \texttt{basin\_portrait\_pcycle}.
+Once the orbit of a pixel has been classified as converging to cycle $k$,
+the sub-basin index $j$ is determined by identifying which element of
+$\Gamma_p$ is closest to the final iterate:
+\[
+  j(z) = \arg\min_{0\le j<p}\,
+          \sigma\!\left(f^{N}(z),\,a_j\right),
+\]
+where $\sigma$ is the chordal metric and $N$ is the total iteration count.
+The colour is then
+\begin{equation}\label{eq:pcycle-colour}
+  \mathrm{colour}(z)
+    = \mathrm{RGB}\!\left(
+        \mathrm{LCH}_{ab}\bigl(L(z),\;55,\;H^{(k)}_{j(z)}\bigr)
+      \right).
+\end{equation}
+
+\begin{remark}
+  The choice $\Delta=25^\circ$ is a default; the user may override it via the
+  keyword argument \texttt{hue\_band} in \texttt{basin\_portrait\_pcycle}.
+  For families with many simultaneous cycles one may also reduce
+  $\Delta$ and increase $C$ slightly to maintain separability.
+\end{remark}
+
 %% ===========================================================================
 \section{Examples and visualizations}
 \label{sec:examples}
