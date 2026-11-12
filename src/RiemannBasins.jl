@@ -23,6 +23,7 @@ module RiemannBasins
 using Polynomials          # v3+  — Polynomial(...) API
 using Colors               # RGB, HSV, Lab color types
 using Plots                # plotting backend
+using Printf               # @sprintf for tick labels
 
 # ── Public API ─────────────────────────────────────────────────────────────────
 export sphere_bijection,
@@ -34,7 +35,8 @@ export sphere_bijection,
        animate_basins,
        basin_relief_3d,
        basin_relief_3d_makie,
-       basin_portrait_pcycle
+       basin_portrait_pcycle,
+       mandelbrot_portrait
 
 # ──────────────────────────────────────────────────────────────────────────────
 # §1  Homogeneous coordinates and sphere model
@@ -618,6 +620,166 @@ num = complex([1.0, 0.0, 0.0, 2.0])   # 1 + 0z + 0z² + 2z³
 den = complex([0.0, 0.0, 3.0, 0.0])   # 0 + 0z + 3z² + 0z³
 fps, pos, itr, plt = basin_portrait(num, den)
 ```
+# ──────────────────────────────────────────────────────────────────────────────
+# §  Mandelbrot set  –  parameter portrait for the family z² + c
+# ──────────────────────────────────────────────────────────────────────────────
+
+"""
+    mandelbrot_portrait(; re_range, im_range, n_re, n_im, maxiter, dpi,
+                          marked_cs, title, show_plot, savepath)
+
+Compute and display the Mandelbrot set for the quadratic family  z ↦ z² + c.
+
+For each pixel c the orbit of the critical point 0 is iterated up to `maxiter`
+steps.  Points for which the orbit does not escape (|z| ≤ 2) are coloured
+near-black (inside M).  Exterior points are coloured using a perceptually
+uniform LCH ramp based on the smooth escape-time (normalized iteration count),
+consistent with the LCHab style used in `basin_portrait_pcycle`.
+
+# Arguments
+- `re_range`   – real-axis extent, default `(-2.5, 1.0)`
+- `im_range`   – imaginary-axis extent, default `(-1.25, 1.25)`
+- `n_re`       – horizontal pixel count, default `800`
+- `n_im`       – vertical pixel count, default `600`
+- `maxiter`    – maximum iterations, default `256`
+- `dpi`        – plot resolution, default `150`
+- `marked_cs`  – vector of `(c::ComplexF64, label::String)` pairs to overlay
+                  as labelled yellow dots (the four canonical examples by default)
+- `title`      – plot title
+- `show_plot`  – display the plot interactively (default `true`)
+- `savepath`   – if non-empty, save the figure to this path
+
+# Examples
+```julia
+# Full default view with the four canonical c values marked
+mandelbrot_portrait()
+
+# Zoom into the main cardioid region, no marked points
+mandelbrot_portrait(re_range=(-0.8, 0.4), im_range=(-0.65, 0.65),
+                    marked_cs=[], n_re=1200, n_im=1200)
+
+# High-resolution for a poster
+mandelbrot_portrait(n_re=3000, n_im=2250, dpi=300,
+                    savepath="poster_mandelbrot.png")
+```
+"""
+function mandelbrot_portrait(;
+        re_range   ::Tuple{Real,Real} = (-2.5,  1.0),
+        im_range   ::Tuple{Real,Real} = (-1.25, 1.25),
+        n_re       ::Int    = 800,
+        n_im       ::Int    = 600,
+        maxiter    ::Int    = 256,
+        dpi        ::Int    = 150,
+        marked_cs          = [
+            (-1.0 + 0.0im,            "Basílica"),
+            (-1.7549 + 0.0im,         "Airplane"),
+            (-0.1226 + 0.7449im,      "Rabbit"),
+            (-0.50434 + 0.56277im,    "Period-5"),
+        ],
+        title      ::String = "Mandelbrot set  –  z² + c",
+        show_plot  ::Bool   = true,
+        savepath   ::String = "")
+
+    re_vals = LinRange(Float64(re_range[1]), Float64(re_range[2]), n_re)
+    im_vals = LinRange(Float64(im_range[1]), Float64(im_range[2]), n_im)
+
+    # ── 1. Iteration ─────────────────────────────────────────────────────────
+    # nit[i,j] = smooth escape count for pixel (i row from top, j col)
+    #          = NaN if inside M
+    nit = fill(NaN, n_im, n_re)
+
+    for j in 1:n_re
+        c = complex(re_vals[j], 0.0)   # will add im part per row
+        for i in 1:n_im
+            c_pix = complex(re_vals[j], im_vals[n_im + 1 - i])
+            z     = zero(ComplexF64)
+            for n in 1:maxiter
+                z = z * z + c_pix
+                if abs2(z) > 4.0
+                    # Smooth (normalized) iteration count
+                    nit[i, j] = n - log2(max(1.0, log2(abs(z))))
+                    break
+                end
+            end
+        end
+    end
+
+    # ── 2. Colour mapping ────────────────────────────────────────────────────
+    # Interior  → near-black
+    # Exterior  → LCHab  H=220° (blue), C=55, L ∈ [20,85] by escape speed
+    inside_col = RGB{Float64}(0.04, 0.04, 0.10)
+
+    ext_vals = filter(!isnan, vec(nit))
+    mu_min   = isempty(ext_vals) ? 0.0 : minimum(ext_vals)
+    mu_max   = isempty(ext_vals) ? 1.0 : maximum(ext_vals)
+    mu_span  = max(mu_max - mu_min, 1e-9)
+
+    img = Matrix{RGB{Float64}}(undef, n_im, n_re)
+    for i in 1:n_im, j in 1:n_re
+        if isnan(nit[i, j])
+            img[i, j] = inside_col
+        else
+            t = clamp((nit[i, j] - mu_min) / mu_span, 0.0, 1.0)
+            L = 85.0 - 65.0 * t^0.4   # 85 (fast escape) → 20 (slow)
+            img[i, j] = convert(RGB{Float64}, LCHab(L, 55.0, 220.0))
+        end
+    end
+
+    # ── 3. Base plot ─────────────────────────────────────────────────────────
+    plt = plot(
+        img,
+        aspect_ratio = :equal,
+        xlims = (1, n_re),
+        ylims = (1, n_im),
+        title  = title,
+        xlabel = "Re(c)",
+        ylabel = "Im(c)",
+        dpi    = dpi,
+        size   = (n_re, n_im);
+        # Custom tick labels: convert pixel indices to coordinate values
+        xticks = (
+            range(1, n_re; length = 5),
+            [@sprintf("%.2f", v) for v in LinRange(re_range[1], re_range[2], 5)]
+        ),
+        yticks = (
+            range(1, n_im; length = 5),
+            [@sprintf("%.2f", v) for v in LinRange(im_range[1], im_range[2], 5)]
+        ),
+    )
+
+    # ── 4. Marked parameter values ───────────────────────────────────────────
+    if !isempty(marked_cs)
+        dot_color = RGB{Float64}(1.0, 0.85, 0.0)   # golden yellow
+
+        px(re) = 1 + (Float64(re) - Float64(re_range[1])) /
+                     (Float64(re_range[2]) - Float64(re_range[1])) * (n_re - 1)
+        py(im) = n_im - (Float64(im) - Float64(im_range[1])) /
+                        (Float64(im_range[2]) - Float64(im_range[1])) * (n_im - 1)
+
+        xs = [px(real(c)) for (c, _) in marked_cs]
+        ys = [py(imag(c)) for (c, _) in marked_cs]
+
+        scatter!(plt, xs, ys;
+            markersize  = 7,
+            markercolor = dot_color,
+            markerstrokecolor = :black,
+            markerstrokewidth = 1.5,
+            label       = "",
+        )
+
+        for ((c, lbl), x, y) in zip(marked_cs, xs, ys)
+            # Place label above the dot
+            annotate!(plt, x, y - 18,
+                text(lbl, :white, :center, 9))
+        end
+    end
+
+    show_plot && display(plt)
+    isempty(savepath) || savefig(plt, savepath)
+    return plt
+end
+
+
 """
 function basin_portrait(
         coefficientlistnum::Vector{T},
