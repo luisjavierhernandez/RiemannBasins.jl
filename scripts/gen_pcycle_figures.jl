@@ -160,3 +160,24 @@ basin_portrait_pcycle(
     show_plot           = false,
     savepath            = joinpath(outdir, "pcycle_rabbit_3cycle_lch.png"))
 println("  → pcycle_rabbit_3cycle_lch.png")
+
+println("\n=== Figura 8: Conjunto de Mandelbrot con 4 centros marcados ===")
+mandelbrot_portrait(
+    re_range   = (-2.5,  1.0),
+    im_range   = (-1.25, 1.25),
+    n_re       = 1200,
+    n_im       = 900,
+    maxiter    = 512,
+    dpi        = 150,
+    marked_cs  = [
+        (-1.0 + 0.0im,            "Basílica"),
+        (-1.7549 + 0.0im,         "Airplane"),
+        (-0.1226 + 0.7449im,      "Rabbit"),
+        (-0.50434 + 0.56277im,    "Period-5"),
+    ],
+    title     = "Mandelbrot set  –  z² + c",
+    show_plot = false,
+    savepath  = joinpath(outdir, "mandelbrot_portrait.png"))
+println("  → mandelbrot_portrait.png")
+
+println("\nTodas las figuras generadas en docs/figures/")

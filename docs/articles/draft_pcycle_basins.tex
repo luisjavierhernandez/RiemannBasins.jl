@@ -776,10 +776,92 @@ The colour is then
 \label{sec:examples}
 %% ===========================================================================
 
-We illustrate the algorithms on five families of rational maps.  All
+We illustrate the algorithms on six families of rational maps, with
+particular attention to the quadratic family $f_c(z)=z^2+c$.  All
 computations use \texttt{RiemannBasins.jl} \cite{RiemannBasins}.
 
+\subsection{The quadratic family $f_c(z)=z^2+c$ and the Mandelbrot set}
+\label{subsec:mandelbrot}
+
+The simplest non-trivial one-parameter family of degree-$2$ maps is
+$f_c(z) = z^2 + c$, $c\in\C$.  Its unique finite critical point is
+$z_0=0$ (Wronskian $W(z)=2z$), so by Fatou's theorem
+(Theorem~\ref{thm:fatou}) the entire structure of attracting dynamics is
+controlled by the single orbit $\{0,\,c,\,c^2+c,\,\ldots\}$.
+
+The \emph{Mandelbrot set} is defined as
+\begin{equation}\label{eq:mandelbrot}
+  \mathcal{M}
+    = \bigl\{c\in\C : \{f_c^n(0)\}_{n\ge 0}\text{ is bounded}\bigr\}.
+\end{equation}
+A parameter $c$ lies in $\mathcal{M}$ if and only if the critical orbit
+does not escape to $\infty$; equivalently, $|f_c^n(0)|\le 2$ for all
+$n\ge 0$.  The exterior of $\mathcal{M}$ is coloured according to the
+\emph{normalised escape time}
+\begin{equation}\label{eq:escape_time}
+  \nu(c) = n - \log_2\!\max\!\bigl(1,\,\log_2|f_c^n(0)|\bigr),
+\end{equation}
+where $n$ is the first iterate at which $|f_c^n(0)|>2$; this smooth
+colouring removes banding artefacts \cite{Peitgen1992}.
+
+The interior of $\mathcal{M}$ decomposes into \emph{hyperbolic
+components} $H_p$: maximal connected open sets on which $f_c$ has an
+attracting cycle of period exactly $p$.  By Fatou's theorem,
+$c\in H_p$ if and only if the orbit of the critical point $0$ converges
+to an attracting $p$-cycle.  The largest component $H_1$ is the main
+cardioid (attracting fixed point); the large circular bulb $H_2$
+attached to its left is the ``head'' (attracting $2$-cycle); $H_1$ also
+carries a countable family of bulbs at each rational internal angle
+$r/s$, whose period is determined by the Farey structure of $\mathcal{M}$
+\cite{DouadyHubbard1985}.
+
+The \emph{centre} of $H_p$ is the unique parameter $c_*\in H_p$
+satisfying $f_{c_*}^p(0)=0$: the attracting cycle of $f_{c_*}$ is
+\emph{superattracting}, and Algorithm~\ref{alg:critical} returns
+\texttt{:superattracting} with period $p$.  All four quadratic examples
+in this section correspond to such centres
+(Figure~\ref{fig:mandelbrot_portrait}, Table~\ref{tab:mandelbrot_centres}).
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{llcc}
+    \toprule
+    Name & Parameter $c_*$ & Period $p$ & Location in $\mathcal{M}$ \\
+    \midrule
+    Bas\'ilica   & $-1$                             & 2 & head bulb $H_2$ \\
+    Airplane     & $\approx -1.7549$                & 3 & real-axis bulb of $H_1$ \\
+    Douady rabbit & $\approx -0.1226+0.7449i$       & 3 & upper bulb of $H_1$ \\
+    Period-$5$ centre & $\approx -0.5043+0.5628i$   & 5 & angle-$1/5$ bulb of $H_1$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{The four centres of hyperbolic components of $\mathcal{M}$ studied
+           in this section.  Each is a superattracting parameter
+           ($f_{c_*}^p(0)=0$); their locations are marked in
+           Figure~\ref{fig:mandelbrot_portrait}.}
+  \label{tab:mandelbrot_centres}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.80\textwidth]{../figures/mandelbrot_portrait.png}
+  \caption{The Mandelbrot set $\mathcal{M}$ rendered by
+           \texttt{mandelbrot\_portrait} in
+           \texttt{RiemannBasins.jl}.  The interior is shown in
+           near-black; the exterior is shaded by normalised escape time
+           \eqref{eq:escape_time} (blue gradient).
+           The four centres of Table~\ref{tab:mandelbrot_centres} are
+           marked with yellow dots: Bas\'ilica ($c=-1$), Airplane
+           ($c\approx -1.7549$), Douady rabbit
+           ($c\approx -0.1226+0.7449i$), and Period-$5$ centre
+           ($c\approx -0.5043+0.5628i$).  Every marked point is a
+           superattracting parameter; the corresponding Julia-set
+           basin portraits are shown in
+           Sections~\ref{subsec:basilica}--\ref{subsec:period5}.}
+  \label{fig:mandelbrot_portrait}
+\end{figure}
+
 \subsection{The quadratic family $f_c(z)=z^2+c$ (Bas\'ilica, $c=-1$)}
+\label{subsec:basilica}
 
 The map $f_{-1}(z)=z^2-1$ has degree $d=2$, so $2d-2=2$ critical points.
 In homogeneous notation: $F(z,t) = z^2-t^2$, $G(z,t)=t^2$.
@@ -1143,10 +1225,26 @@ of the orbit to detect irrational rotation numbers).
 
 For a one-parameter family $f_c$ (e.g., $z^2+c$),
 the function $c\mapsto P(c)$ records the attracting period.  Its level
-sets are the hyperbolic components of the Mandelbrot set
-\cite{DouadyHubbard1985}.  An algorithmic study of these boundaries via
-\texttt{max\_attracting\_period} applied to a parameter grid is a natural
-extension of the present work.
+sets are the \emph{hyperbolic components} of the Mandelbrot set
+$\mathcal{M}$ (Section~\ref{subsec:mandelbrot}, \cite{DouadyHubbard1985}):
+$P(c)=p$ on the interior of $H_p$, while $P(c)=0$ on the exterior
+of $\mathcal{M}$ (escaping parameters) and on the boundary
+$\partial\mathcal{M}$ (parabolic, Siegel, Misiurewicz and other
+non-hyperbolic parameters).
+
+The Mandelbrot portrait produced by \texttt{mandelbrot\_portrait}
+(Figure~\ref{fig:mandelbrot_portrait}) can therefore be read as a
+\emph{parameter portrait}: each pixel colour encodes the escape speed
+of the critical orbit, and the near-black interior is exactly
+$\mathcal{M}$.  The four superattracting centres studied in this article
+are marked explicitly on the figure; they are canonical representatives
+of periods $2$, $3$, $3$, and $5$.
+
+An algorithmic study of the hyperbolic boundaries of $\mathcal{M}$ via
+\texttt{max\_attracting\_period} applied to a dense parameter grid is
+a natural extension of the present work, and would yield a computational
+counterpart to the theoretical description of $\mathcal{M}$ in
+\cite{DouadyHubbard1985}.
 
 \subsection{Algorithmic complexity and parallelism}
 
