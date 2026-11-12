@@ -948,6 +948,146 @@ each element of the 3-cycle, together with the basin of $\infty$.
   \label{fig:airplane_pcycle}
 \end{figure}
 
+
+\subsection{The Douady rabbit $f_c(z)=z^2+c$ (3-cycle, $c\approx-0.1226+0.7449i$)}
+\label{subsec:rabbit}
+
+The same polynomial equation
+\[
+  c^3+2c^2+c+1=0
+\]
+that determines the airplane parameter (Section~\ref{subsec:airplane}) has
+two additional complex conjugate roots.  Taking the root with positive
+imaginary part gives
+\[
+  c_{\mathrm{r}}\approx -0.12256116688 + 0.74486176662i,
+\]
+the parameter of the \emph{Douady rabbit} \cite{DouadyHubbard1985}.  Since
+$c_{\mathrm{r}}$ satisfies the same equation, the critical orbit verification
+is identical:
+\[
+  f_{c_{\mathrm{r}}}(0)=c_{\mathrm{r}},\quad
+  f_{c_{\mathrm{r}}}(c_{\mathrm{r}})=c_{\mathrm{r}}^2+c_{\mathrm{r}},\quad
+  f_{c_{\mathrm{r}}}(c_{\mathrm{r}}^2+c_{\mathrm{r}})=0,
+\]
+so $0$ lies on a superattracting 3-cycle
+$\Gamma_3=\{0,\,c_{\mathrm{r}},\,c_{\mathrm{r}}^2+c_{\mathrm{r}}\}$ and
+Algorithm~\ref{alg:critical} returns $P=3$ as for the airplane.
+
+Geometrically the two maps are strikingly different.  The airplane Julia set
+has thin antenna-like tendrils; the Douady rabbit Julia set is a connected,
+locally connected compact set with three prominent \emph{round petals}---the
+visual origin of its name \cite{DouadyHubbard1985}.  These large, rounded
+sub-basins make the rabbit a cleaner illustration of the
+\texttt{pcycle\_lch} colour encoding: with
+\texttt{hue\_band}$=120^\circ$ each of the three sub-basins $B_0$,
+$B_{c_{\mathrm{r}}}$, $B_{c_{\mathrm{r}}^2+c_{\mathrm{r}}}$ receives a
+hue offset of $40^\circ$ within the same perceptual hue family, producing
+three clearly distinguishable shades
+(see Figure~\ref{fig:rabbit_pcycle_lch}).
+
+\begin{example}[Douady rabbit with LCH coloring]
+\begin{verbatim}
+  using RiemannBasins
+  # c is the complex root of c^3 + 2c^2 + c + 1 = 0, Im(c) > 0
+  c_rabbit = let x = complex(-0.12, 0.75)
+               for _ in 1:80
+                 x -= (x^3 + 2x^2 + x + 1) / (3x^2 + 4x + 1)
+               end; x
+             end
+  num = ComplexF64.([c_rabbit, 0.0, 1.0])
+  den = ComplexF64.([1.0])
+  basin_portrait_pcycle(num, den, 3;
+                        iter = 400,
+                        colorstrategy = "pcycle_lch",
+                        hue_band = 120.0,
+                        xinterval = (-1.5, 1.5),
+                        yinterval = (-1.5, 1.5))
+\end{verbatim}
+\end{example}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.70\textwidth]{../figures/pcycle_rabbit_3cycle_lch.png}
+  \caption{Basin portrait of the Douady rabbit $f_c(z)=z^2+c$
+           ($c\approx -0.1226+0.7449i$, the complex root with positive
+           imaginary part of $c^3+2c^2+c+1=0$)
+           rendered with the \texttt{pcycle\_lch} colour strategy
+           (\texttt{hue\_band}$=120^\circ$).
+           The three sub-basins $B_0$, $B_{c_{\mathrm{r}}}$,
+           $B_{c_{\mathrm{r}}^2+c_{\mathrm{r}}}$ are separated by
+           hue offsets of $40^\circ$; grey is the basin of~$\infty$.
+           Compared with the airplane (Figure~\ref{fig:airplane_pcycle}),
+           the sub-basins are large and round, making the cyclic permutation
+           $f\colon B_0\to B_{c_{\mathrm{r}}}\to
+           B_{c_{\mathrm{r}}^2+c_{\mathrm{r}}}\to B_0$
+           directly readable from the colours.}
+  \label{fig:rabbit_pcycle_lch}
+\end{figure}
+
+%% ---------------------------------------------------------------------------
+\subsection{Period-5 centre $f_c(z)=z^2+c$
+            ($c\approx-0.5043+0.5628i$, 5-cycle)}
+\label{subsec:period5}
+%% ---------------------------------------------------------------------------
+
+The Mandelbrot set contains a hyperbolic component of period~5 attached to
+the main cardioid at internal angle $1/5$.  Its centre satisfies
+$f_c^{\circ 5}(0)=0$ and is located at
+\[
+  c_5\approx -0.50434017545 + 0.56276576145i.
+\]
+For this parameter the critical orbit closes after exactly five steps, so
+Algorithm~\ref{alg:critical} returns $P=5$.
+
+The five sub-basins $B_0,B_1,\ldots,B_4$ (indexed by the position of a
+pixel's limit point in $\Gamma_5$) are related by the cyclic permutation
+$f\colon B_k\to B_{k+1\bmod 5}$.  With \texttt{hue\_band}$=150^\circ$
+the encoding assigns hue offsets $0^\circ,30^\circ,60^\circ,90^\circ,
+120^\circ$ to $B_0,\ldots,B_4$, yielding five perceptually well-separated
+shades within a single Okabe-Ito hue family
+(see Figure~\ref{fig:period5_lch}).  The image reveals the five-fold
+rotational near-symmetry of the Julia set and makes the cyclic dynamics
+directly legible at a glance.
+
+\begin{example}[Period-5 centre]
+\begin{verbatim}
+  using RiemannBasins
+  c5 = let x = complex(-0.5024, 0.5629)
+         for _ in 1:100
+           z = 0+0im; dz = 0+0im
+           for _ in 1:5
+             z, dz = z^2 + x, 2z*dz + 1
+           end
+           x -= z/dz
+         end; x
+       end   # = -0.50434...+0.56277...i
+  num = ComplexF64.([c5, 0.0, 1.0])
+  den = ComplexF64.([1.0])
+  basin_portrait_pcycle(num, den, 5;
+                        iter = 500,
+                        colorstrategy = "pcycle_lch",
+                        hue_band = 150.0,
+                        xinterval = (-1.3, 0.5),
+                        yinterval = (-0.1, 1.2))
+\end{verbatim}
+\end{example}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.70\textwidth]{../figures/pcycle_period5_lch.png}
+  \caption{Basin portrait of the period-5 centre
+           $f_c(z)=z^2+c$ ($c\approx-0.5043+0.5628i$, superattracting
+           5-cycle) with the \texttt{pcycle\_lch} colour strategy
+           (\texttt{hue\_band}$=150^\circ$, hue step $30^\circ$ per
+           sub-basin).  The five sub-basins $B_0,\ldots,B_4$ are encoded
+           by increasing hue within the same perceptual family; the
+           five-fold near-symmetry of the Julia set and the cyclic
+           permutation $f\colon B_0\to B_1\to\cdots\to B_4\to B_0$
+           are readable directly from the colour progression.}
+  \label{fig:period5_lch}
+\end{figure}
+
 \subsection{Summary table}
 
 \begin{center}
@@ -960,6 +1100,8 @@ $f(z)=z^2$         & 2 & 1  & 1 & superattr.\ ($p=1$) \\
 $f(z)=z^2-1$       & 2 & 2  & 2 & superattr.\ ($p=2$) + superattr.\ ($p=1$ at $\infty$) \\
 Newton $z^3-1$     & 3 & 4  & 1 & 3 superattr.\ ($p=1$) + 1 indet. \\
 Airplane $z^2+c$   & 2 & 2  & 3 & superattr.\ ($p=3$) + superattr.\ ($p=1$ at $\infty$) \\
+Rabbit $z^2+c$     & 2 & 2  & 3 & superattr.\ ($p=3$) + superattr.\ ($p=1$ at $\infty$) \\
+Period-5 $z^2+c$   & 2 & 2  & 5 & superattr.\ ($p=5$) + superattr.\ ($p=1$ at $\infty$) \\
 Halley $z^3-1$     & 5 & 8  & 1 & 3 superattr.\ ($p=1$) \\
 \bottomrule
 \end{tabular}

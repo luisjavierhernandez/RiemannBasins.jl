@@ -104,6 +104,34 @@ basin_portrait_pcycle(
 println("  → pcycle_airplane_3cycle_lch.png")
 
 
+
+println("\n=== Figura 7: centro de período 5  (5-ciclo superatractor, LCHab) ===")
+# c5: centro del componente hiperbólico de período 5 en el conjunto de Mandelbrot
+# (ángulo 1/5 en la cardioide principal)
+c5 = let x = complex(-0.5024, 0.5629)
+    for _ in 1:100
+        z = 0+0im; dz = 0+0im
+        for _ in 1:5
+            z, dz = z^2 + x, 2z*dz + 1
+        end
+        x -= z/dz
+    end; x
+end
+println("  c5 = ", c5)   # ≈ -0.50434...+0.56277...i
+num_p5 = ComplexF64.([c5, 0.0, 1.0])
+den_p5 = ComplexF64.([1.0])
+
+basin_portrait_pcycle(
+    num_p5, den_p5, 5;
+    xinterval     = (-1.3, 0.5),
+    yinterval     = (-0.1, 1.2),
+    iter          = 500,
+    colorstrategy = "pcycle_lch",
+    hue_band      = 150.0,
+    show_plot     = false,
+    savepath      = joinpath(outdir, "pcycle_period5_lch.png"))
+println("  → pcycle_period5_lch.png")
+
 println("\nListo. Figuras en docs/figures/")
 
 println("=== Figura 6: conejo de Douady z²+c  (3-ciclo superatractor, LCHab) ===")
