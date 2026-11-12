@@ -138,7 +138,7 @@ function _bivariate_poly(
         u::Complex{Float64},
         t::Complex{Float64},
         d::Int64) where {T<:Number}
-    return _bivariate_poly(complex.(Float64.(coefficientlist)), u, t, d)
+    return _bivariate_poly(ComplexF64.(coefficientlist), u, t, d)
 end
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -195,8 +195,8 @@ function fixed_points(
         coefficientlistden::Vector{T},
         aproxprecision::Int64 = 8) where {T<:Number}
 
-    cnum = complex.(Float64.(coefficientlistnum))
-    cden = complex.(Float64.(coefficientlistden))
+    cnum = ComplexF64.(coefficientlistnum)
+    cden = ComplexF64.(coefficientlistden)
 
     hpair = _pair_of_functions(cnum, cden)
     imsuper = _rational_function(hpair, (complex(0.0), complex(0.0)), aproxprecision)
@@ -1352,8 +1352,8 @@ function basin_portrait_pcycle(
 
     p >= 1 || throw(ArgumentError("p must be ≥ 1"))
 
-    cnum = complex.(Float64.(coefficientlistnum))
-    cden = complex.(Float64.(coefficientlistden))
+    cnum = ComplexF64.(coefficientlistnum)
+    cden = ComplexF64.(coefficientlistden)
 
     # 1. hpair for f  (needed for orbit grouping)
     hpair_f = _pair_of_functions(cnum, cden)
@@ -1601,8 +1601,8 @@ function critical_points(
         aproxprecision  :: Int  = 8,
         check_infinity  :: Bool = false) where {T <: Number}
 
-    cnum = complex.(Float64.(coefficientlistnum))
-    cden = complex.(Float64.(coefficientlistden))
+    cnum = ComplexF64.(coefficientlistnum)
+    cden = ComplexF64.(coefficientlistden)
     d    = max(length(cnum), length(cden)) - 1
     tol  = 1.0 / 10^aproxprecision
 
@@ -1672,8 +1672,8 @@ function critical_orbit_analysis(
         max_period      :: Int  = 30,
         check_infinity  :: Bool = false) where {T <: Number}
 
-    cnum   = complex.(Float64.(coefficientlistnum))
-    cden   = complex.(Float64.(coefficientlistden))
+    cnum   = ComplexF64.(coefficientlistnum)
+    cden   = ComplexF64.(coefficientlistden)
     d      = max(length(cnum), length(cden)) - 1
     tol    = 1.0 / 10^aproxprecision
     warmup = max_iter ÷ 2
