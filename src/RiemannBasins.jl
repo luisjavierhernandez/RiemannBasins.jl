@@ -1313,14 +1313,26 @@ function _render_basin_image_lch(
         yinterval          ::Tuple{Real,Real},
         title              ::String;
         hue_band           ::Float64 = 25.0,
-        show_cyclic_palette::Bool    = false,
-        cycle_idx          ::Int     = 1)
+        show_cyclic_palette::Bool    = false)
 
     img = _build_basin_image_lch(
         fp_list, pos_raw, itr, group_of, subidx_of, p; hue_band = hue_band)
 
-    # Optionally embed circular palette legend
-    show_cyclic_palette && _cyclic_palette_inset!(img, p, cycle_idx; hue_band = hue_band)
+    # Optionally embed circular palette legend.
+    # We detect the attracting finite cycle by finding the non-∞ group with the
+    # most pixels (the ∞ group is at group_of[end] since ∞ is always last in fp_list).
+    if show_cyclic_palette
+        inf_grp = group_of[end]
+        grp_counts = Dict{Int,Int}()
+        for pos in pos_raw
+            pos > 0 || continue
+            g = group_of[pos]
+            g == inf_grp && continue
+            grp_counts[g] = get(grp_counts, g, 0) + 1
+        end
+        attr_grp = isempty(grp_counts) ? 1 : argmax(grp_counts)
+        _cyclic_palette_inset!(img, p, attr_grp; hue_band = hue_band)
+    end
 
     nrows, ncols = size(img)
     a, b = Float64(xinterval[1]), Float64(xinterval[2])

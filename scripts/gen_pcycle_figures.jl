@@ -125,8 +125,8 @@ den_p5 = ComplexF64.([1.0])
 
 basin_portrait_pcycle(
     num_p5, den_p5, 5;
-    xinterval     = (-1.72, 0.88),
-    yinterval     = (-0.99, 1.61),
+    xinterval     = (-2.0,  1.1),
+    yinterval     = (-1.2,  1.9),
     iter          = 500,
     colorstrategy       = "pcycle_lch",
     hue_band            = 150.0,
