@@ -23,7 +23,6 @@ module RiemannBasins
 using Polynomials          # v3+  — Polynomial(...) API
 using Colors               # RGB, HSV, Lab color types
 using Plots                # plotting backend
-using Printf               # @sprintf for tick labels
 
 # ── Public API ─────────────────────────────────────────────────────────────────
 export sphere_bijection,
@@ -740,11 +739,11 @@ function mandelbrot_portrait(;
         # Custom tick labels: convert pixel indices to coordinate values
         xticks = (
             range(1, n_re; length = 5),
-            [@sprintf("%.2f", v) for v in LinRange(re_range[1], re_range[2], 5)]
+            [string(round(v, digits=2)) for v in LinRange(Float64(re_range[1]), Float64(re_range[2]), 5)]
         ),
         yticks = (
             range(1, n_im; length = 5),
-            [@sprintf("%.2f", v) for v in LinRange(im_range[1], im_range[2], 5)]
+            [string(round(v, digits=2)) for v in LinRange(Float64(im_range[1]), Float64(im_range[2]), 5)]
         ),
     )
 
