@@ -28,6 +28,18 @@ basin_portrait_pcycle(
     savepath      = joinpath(outdir, "pcycle_basilica_2cycle.png"))
 println("  → pcycle_basilica_2cycle.png")
 
+println("=== Figura 1b: basílica z²−1  (subcuencas LCHab) ===")
+basin_portrait_pcycle(
+    num_bas, den_bas, 2;
+    xinterval     = (-1.8, 1.8),
+    yinterval     = (-1.8, 1.8),
+    iter          = 300,
+    colorstrategy = "pcycle_lch",
+    hue_band      = 120.0,
+    show_plot     = false,
+    savepath      = joinpath(outdir, "pcycle_basilica_2cycle_lch.png"))
+println("  → pcycle_basilica_2cycle_lch.png")
+
 println("=== Figura 2: Newton para z³−1  (dos cartas) ===")
 # N(z) = (2z³+1)/(3z²)   →   num = [1,0,0,2],  den = [0,0,3,0]
 num_new = complex([1.0, 0.0, 0.0, 2.0])

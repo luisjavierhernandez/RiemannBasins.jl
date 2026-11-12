@@ -823,6 +823,28 @@ the bas'ilica Julia set, a dendrite-like connected curve
   \label{fig:basilica_pcycle}
 \end{figure}
 
+Figure~\ref{fig:basilica_pcycle} follows the classical convention: each
+colour is assigned to one \emph{orbit group}, so both sub-basins of the
+same cycle share a common hue family.  The \texttt{pcycle\_lch} strategy
+of Section~\ref{sec:colour} goes one step further and encodes which
+sub-basin each pixel belongs to via a hue shift $\Delta H$.
+For $p=2$ with \texttt{hue\_band}$=120^\circ$ the two sub-basins
+$B_0\ni 0$ and $B_{-1}\ni -1$ are separated by $60^\circ$ within the
+same perceptual hue family, making the cyclic permutation
+$f\colon B_0\to B_{-1}\to B_0$ directly readable from the image
+(Figure~\ref{fig:basilica_pcycle_lch}).
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.65\textwidth]{../figures/pcycle_basilica_2cycle_lch.png}
+  \caption{The same map $f_{-1}(z)=z^2-1$ rendered with the
+           \texttt{pcycle\_lch} strategy (\texttt{hue\_band}$=120^\circ$).
+           The two sub-basins $B_0$ (lighter hue) and $B_{-1}$ (darker hue)
+           are now distinguished by a $60^\circ$ hue shift; their
+           common boundary is the bas\'ilica Julia set.}
+  \label{fig:basilica_pcycle_lch}
+\end{figure}
+
 
 \subsection{Newton's method for $z^3-1$}
 
