@@ -148,6 +148,26 @@ critical orbit, detects the period of the attracting cycle reached, computes
 the Lyapunov constant~$c$, and returns a sharp upper bound~$P$ via
 \texttt{max\_attracting\_period}.
 
+Several Julia packages for complex dynamics visualisation already exist,
+most notably \texttt{Fatou.jl} \cite{FatouJl}, which accepts arbitrary
+complex maps (including transcendental ones) and produces richly coloured
+escape-time and orbit-trap portraits with GPU acceleration.
+\texttt{RiemannBasins.jl} differs in three respects.
+First, it works on the full Riemann sphere $\Pone$ in homogeneous
+coordinates, so the point $\infty=[1:0]$ is a regular point with its own
+basin and its own affine chart, rather than a mere escape threshold.
+Second, it implements Fatou's critical-orbit theorem
+(Theorem~\ref{thm:fatou}) algorithmically: given the homogeneous pair
+$\hpair$, the package locates \emph{all} attracting cycles automatically
+via Wronskian root-finding, computes their Lyapunov constants, and returns
+a provably sharp upper bound~$P$ on the maximum attracting period.
+Third, its \texttt{pcycle\_lch} colour strategy encodes the cyclic
+structure of the basin decomposition---which cycle, which sub-basin within
+that cycle, and how fast---using a perceptually uniform
+$\mathrm{LCH}_{ab}$ scheme, making the cyclic permutation
+$f\colon B_j\to B_{j+1\bmod p}$ directly readable from the image
+(Section~\ref{sec:colour}).
+
 The paper is organised as follows.
 Section~\ref{sec:prelim} reviews the homogeneous model for $\Pone$, the
 chordal metric, and the spherical derivative in both affine charts.
