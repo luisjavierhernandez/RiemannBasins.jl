@@ -34,10 +34,11 @@ basin_portrait_pcycle(
     xinterval     = (-1.8, 1.8),
     yinterval     = (-1.8, 1.8),
     iter          = 300,
-    colorstrategy = "pcycle_lch",
-    hue_band      = 120.0,
-    show_plot     = false,
-    savepath      = joinpath(outdir, "pcycle_basilica_2cycle_lch.png"))
+    colorstrategy       = "pcycle_lch",
+    hue_band            = 120.0,
+    show_cyclic_palette = true,
+    show_plot           = false,
+    savepath            = joinpath(outdir, "pcycle_basilica_2cycle_lch.png"))
 println("  → pcycle_basilica_2cycle_lch.png")
 
 println("=== Figura 2: Newton para z³−1  (dos cartas) ===")
@@ -97,10 +98,11 @@ basin_portrait_pcycle(
     xinterval     = (-2.0, 2.0),
     yinterval     = (-0.75, 0.75),
     iter          = 400,
-    colorstrategy = "pcycle_lch",
-    hue_band      = 120.0,
-    show_plot     = false,
-    savepath      = joinpath(outdir, "pcycle_airplane_3cycle_lch.png"))
+    colorstrategy       = "pcycle_lch",
+    hue_band            = 120.0,
+    show_cyclic_palette = true,
+    show_plot           = false,
+    savepath            = joinpath(outdir, "pcycle_airplane_3cycle_lch.png"))
 println("  → pcycle_airplane_3cycle_lch.png")
 
 
@@ -123,13 +125,14 @@ den_p5 = ComplexF64.([1.0])
 
 basin_portrait_pcycle(
     num_p5, den_p5, 5;
-    xinterval     = (-1.3, 0.5),
-    yinterval     = (-0.1, 1.2),
+    xinterval     = (-1.72, 0.88),
+    yinterval     = (-0.99, 1.61),
     iter          = 500,
-    colorstrategy = "pcycle_lch",
-    hue_band      = 150.0,
-    show_plot     = false,
-    savepath      = joinpath(outdir, "pcycle_period5_lch.png"))
+    colorstrategy       = "pcycle_lch",
+    hue_band            = 150.0,
+    show_cyclic_palette = true,
+    show_plot           = false,
+    savepath            = joinpath(outdir, "pcycle_period5_lch.png"))
 println("  → pcycle_period5_lch.png")
 
 println("\nListo. Figuras en docs/figures/")
@@ -151,8 +154,9 @@ basin_portrait_pcycle(
     xinterval     = (-1.5, 1.5),
     yinterval     = (-1.5, 1.5),
     iter          = 400,
-    colorstrategy = "pcycle_lch",
-    hue_band      = 120.0,
-    show_plot     = false,
-    savepath      = joinpath(outdir, "pcycle_rabbit_3cycle_lch.png"))
+    colorstrategy       = "pcycle_lch",
+    hue_band            = 120.0,
+    show_cyclic_palette = true,
+    show_plot           = false,
+    savepath            = joinpath(outdir, "pcycle_rabbit_3cycle_lch.png"))
 println("  → pcycle_rabbit_3cycle_lch.png")

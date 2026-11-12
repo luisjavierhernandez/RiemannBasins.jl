@@ -1197,6 +1197,61 @@ function _pcycle_lch_color(
 end
 
 """
+    _cyclic_palette_inset!(img, p, cycle_idx; hue_band, palette_size, margin)
+
+Embed a circular colour-wheel legend into the top-right corner of `img` **in place**.
+
+The wheel has `p` equal sectors, arranged counter-clockwise starting from the
+right (+x axis): sector `k` (0-indexed) covers [k·2π/p, (k+1)·2π/p).
+Going counter-clockwise the colours appear in the cyclic order
+B₀ → B₁ → … → B_{p-1} → B₀, mirroring the orbit permutation f: Bₖ → Bₖ₊₁.
+
+A dark border ring and a one-pixel white outer halo separate the wheel
+from the basin image.
+"""
+function _cyclic_palette_inset!(
+        img          ::Matrix{RGB{Float64}},
+        p            ::Int,
+        cycle_idx    ::Int  = 1;
+        hue_band     ::Float64 = 25.0,
+        palette_size ::Int  = 90,     # diameter in pixels
+        margin       ::Int  = 6)      # gap from image border
+
+    nrows, ncols = size(img)
+    r  = palette_size ÷ 2            # radius (integer)
+    r2 = Float64(r)                  # float radius
+
+    # Top-right corner anchor
+    ci = margin + r + 1              # row of centre  (small = near top)
+    cj = ncols - margin - r          # col of centre  (near right edge)
+
+    white  = RGB{Float64}(1.0, 1.0, 1.0)
+    border = RGB{Float64}(0.15, 0.15, 0.15)  # dark grey rim
+
+    for di in -(r+2):(r+2), dj in -(r+2):(r+2)
+        ii = ci + di
+        jj = cj + dj
+        (1 <= ii <= nrows && 1 <= jj <= ncols) || continue
+
+        d = sqrt(Float64(di)^2 + Float64(dj)^2)
+
+        if d <= r2 - 1.5
+            # Interior: determine sector from CCW angle
+            # Image rows increase downward, so negate di for math y-axis
+            angle_ccw = mod(atan(Float64(-di), Float64(dj)), 2π)
+            sub_k = clamp(floor(Int, angle_ccw / (2π / p)), 0, p - 1)
+            img[ii, jj] = _pcycle_lch_color(cycle_idx, sub_k, p, 0, 1;
+                                            hue_band = hue_band)
+        elseif d <= r2 + 0.5
+            img[ii, jj] = border          # dark border ring
+        elseif d <= r2 + 1.5
+            img[ii, jj] = white           # white separation halo
+        end
+    end
+    return img
+end
+
+"""
     _build_basin_image_lch(fp_list, pos_raw, itr, group_of, subidx_of, p; hue_band)
 
 Build the pixel-colour matrix for the `"pcycle_lch"` strategy.
@@ -1248,19 +1303,24 @@ end
 Build and return a `Plots.Plot` using the `"pcycle_lch"` colour strategy.
 """
 function _render_basin_image_lch(
-        fp_list   ::Vector,
-        pos_raw   ::Matrix{Int64},
-        itr       ::Matrix{Int64},
-        group_of  ::Vector{Int},
-        subidx_of ::Vector{Int},
-        p         ::Int,
-        xinterval ::Tuple{Real,Real},
-        yinterval ::Tuple{Real,Real},
-        title     ::String;
-        hue_band  ::Float64 = 25.0)
+        fp_list            ::Vector,
+        pos_raw            ::Matrix{Int64},
+        itr                ::Matrix{Int64},
+        group_of           ::Vector{Int},
+        subidx_of          ::Vector{Int},
+        p                  ::Int,
+        xinterval          ::Tuple{Real,Real},
+        yinterval          ::Tuple{Real,Real},
+        title              ::String;
+        hue_band           ::Float64 = 25.0,
+        show_cyclic_palette::Bool    = false,
+        cycle_idx          ::Int     = 1)
 
     img = _build_basin_image_lch(
         fp_list, pos_raw, itr, group_of, subidx_of, p; hue_band = hue_band)
+
+    # Optionally embed circular palette legend
+    show_cyclic_palette && _cyclic_palette_inset!(img, p, cycle_idx; hue_band = hue_band)
 
     nrows, ncols = size(img)
     a, b = Float64(xinterval[1]), Float64(xinterval[2])
@@ -1346,6 +1406,7 @@ function basin_portrait_pcycle(
         gseed::RGB{Float64}         = RGB{Float64}(0.2, 0.6, 0.9),
         colorstrategy::String       = "positionplusiteration",
         hue_band::Float64           = 25.0,
+        show_cyclic_palette::Bool   = false,
         show_plot::Bool             = true,
         colorblind::Bool            = false,
         savepath::String            = "") where {T<:Number}
@@ -1392,7 +1453,8 @@ function basin_portrait_pcycle(
             fp_list, pos_raw, itr,
             group_of, subidx_of, p,
             xinterval, yinterval, title;
-            hue_band = hue_band)
+            hue_band            = hue_band,
+            show_cyclic_palette = show_cyclic_palette)
     else
         # ── Option A: original strategy (one colour per orbit group) ──────
         # 6. Remap pixel labels: fixed-point index → orbit group index

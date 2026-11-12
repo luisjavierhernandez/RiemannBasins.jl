@@ -1001,6 +1001,7 @@ three clearly distinguishable shades
                         iter = 400,
                         colorstrategy = "pcycle_lch",
                         hue_band = 120.0,
+                        show_cyclic_palette = true,
                         xinterval = (-1.5, 1.5),
                         yinterval = (-1.5, 1.5))
 \end{verbatim}
@@ -1048,7 +1049,10 @@ the encoding assigns hue offsets $0^\circ,30^\circ,60^\circ,90^\circ,
 shades within a single Okabe-Ito hue family
 (see Figure~\ref{fig:period5_lch}).  The image reveals the five-fold
 rotational near-symmetry of the Julia set and makes the cyclic dynamics
-directly legible at a glance.
+directly legible at a glance.  The circular colour-wheel inset in the
+top-right corner displays the five sub-basin hues in cyclic order
+($B_0\to B_1\to\cdots\to B_4\to B_0$), serving as an on-figure legend
+for the colour encoding.
 
 \begin{example}[Period-5 centre]
 \begin{verbatim}
@@ -1068,8 +1072,9 @@ directly legible at a glance.
                         iter = 500,
                         colorstrategy = "pcycle_lch",
                         hue_band = 150.0,
-                        xinterval = (-1.3, 0.5),
-                        yinterval = (-0.1, 1.2))
+                        show_cyclic_palette = true,
+                        xinterval = (-1.72, 0.88),
+                        yinterval = (-0.99, 1.61))
 \end{verbatim}
 \end{example}
 
@@ -1084,7 +1089,9 @@ directly legible at a glance.
            by increasing hue within the same perceptual family; the
            five-fold near-symmetry of the Julia set and the cyclic
            permutation $f\colon B_0\to B_1\to\cdots\to B_4\to B_0$
-           are readable directly from the colour progression.}
+           are readable directly from the colour progression.
+           The circular colour-wheel inset (top right) shows the five
+           sub-basin hues in their cyclic order.}
   \label{fig:period5_lch}
 \end{figure}
 
