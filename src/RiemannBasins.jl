@@ -620,6 +620,7 @@ num = complex([1.0, 0.0, 0.0, 2.0])   # 1 + 0z + 0z² + 2z³
 den = complex([0.0, 0.0, 3.0, 0.0])   # 0 + 0z + 3z² + 0z³
 fps, pos, itr, plt = basin_portrait(num, den)
 ```
+"""
 # ──────────────────────────────────────────────────────────────────────────────
 # §  Mandelbrot set  –  parameter portrait for the family z² + c
 # ──────────────────────────────────────────────────────────────────────────────
@@ -780,7 +781,6 @@ function mandelbrot_portrait(;
 end
 
 
-"""
 function basin_portrait(
         coefficientlistnum::Vector{T},
         coefficientlistden::Vector{T};
