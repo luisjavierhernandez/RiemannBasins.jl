@@ -126,17 +126,23 @@ super-geometrically) to the attracting cycle.  Given a $p$-cycle
 $\Gamma = \{z_0, z_1=f(z_0), \ldots, z_{p-1}=f^{p-1}(z_0)\}$ with
 $f(z_{p-1})=z_0$, the \emph{basin of attraction}
 $\Bf(\Gamma) = \{z\in\Pone : f^{np}(z)\to\Gamma\}$ decomposes into
-$p$ connected components, the $p$ \emph{immediate basins} $B^0_{z_k}$,
-one for each cycle point $z_k$.
+$p$ pairwise disjoint $f$-invariant open sets $B_{z_k}$, one for each cycle
+point~$z_k$; each~$B_{z_k}$ may itself have infinitely many connected
+components (the cycle point, all its preimages under $f^p$, preimages of
+preimages, etc.).  The \emph{immediate basin} $B^0_{z_k}$ is the connected
+component of~$B_{z_k}$ that contains $z_k$ itself.  The map $f$ sends
+$B^0_{z_k}$ onto $B^0_{z_{k+1\bmod p}}$, so the $p$ immediate basin
+components form a single cycle of simply connected domains.
 
 The key practical question is: \emph{how do we find all attracting cycles and
 their basins, and how many iterations suffice?}  Fatou's theorem
-\cite{Fatou1919,Fatou1920} provides the answer: each component of the
-immediate basin of an attracting cycle contains at least one \emph{critical
-point} of $f$ (a zero of the Wronskian $\Wron(F,G) = F'G - FG'$ in
-homogeneous coordinates).  Since $f$ has at most $2d-2$ critical points, it
-can have at most $2d-2$ distinct attracting or superattracting cycles, and
-tracing the orbit of each critical point reveals every such cycle.
+\cite{Fatou1919,Fatou1920} provides the answer: the immediate basin
+$B^0_{z_0}\cup\cdots\cup B^0_{z_{p-1}}$ of every attracting cycle contains
+at least one \emph{critical point} of~$f$ (a zero of the Wronskian
+$\Wron(F,G) = F'G - FG'$ in homogeneous coordinates).  Since $f$ has at
+most $2d-2$ critical points, it can have at most $2d-2$ distinct attracting
+or superattracting cycles, and tracing the orbit of each critical point
+reveals every such cycle.
 
 Our implementation in the Julia package \texttt{RiemannBasins.jl}
 \cite{RiemannBasins} exposes this theory through two related function groups.
@@ -471,8 +477,13 @@ $f$ maps $B_{z_k}$ to $B_{z_{k+1}}$ (indices mod $p$).
 \begin{theorem}[Fatou, 1919--1920 \cite{Fatou1919,Fatou1920}]
 \label{thm:fatou}
 Let $f$ be a rational map of degree $d\geq 2$ and let $\Gamma_p$ be an
-attracting or superattracting $p$-cycle.  Each immediate basin component
-$B^0_{z_k}$ contains at least one critical point of $f$.
+attracting or superattracting $p$-cycle with immediate basins
+$B^0_{z_0},\ldots,B^0_{z_{p-1}}$.  At least one immediate basin component
+$B^0_{z_k}$ contains a critical point of~$f$; equivalently, at least one
+critical point of~$f$ is attracted to~$\Gamma_p$.  (For superattracting
+cycles, every $z_k$ is itself a critical point of~$f$, so each $B^0_{z_k}$
+contains one; for merely attracting cycles, at least one component
+suffices.)
 \end{theorem}
 
 \begin{corollary}\label{cor:bound}
