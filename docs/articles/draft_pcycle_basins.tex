@@ -153,6 +153,9 @@ Fatou's theorem directly: it computes the Wronskian roots, traces each
 critical orbit, detects the period of the attracting cycle reached, computes
 the Lyapunov constant~$c$, and returns a sharp upper bound~$P$ via
 \texttt{max\_attracting\_period}.
+The Lyapunov-based cycle-detection strategy originates in the theoretical
+framework of \cite{AlvarezAparicio2023} and was first prototyped in
+\texttt{LCD.jl}~\cite{LCD2022}.
 
 Several Julia packages for complex dynamics visualisation already exist,
 most notably \texttt{Fatou.jl} \cite{FatouJl}, which accepts arbitrary
@@ -359,6 +362,7 @@ The cycle is \emph{attracting} if $|\lambda|<1$,
 \emph{indifferent} if $|\lambda|=1$.
 
 For numerical and algorithmic purposes, the \emph{Lyapunov constant}
+\cite{AlvarezAparicio2023}
 \begin{equation}\label{eq:lyapunov}
   c(\Gamma_p) = \biggl(\prod_{k=0}^{p-1}\fsh(z_k)\biggr)^{1/p}
 \end{equation}
