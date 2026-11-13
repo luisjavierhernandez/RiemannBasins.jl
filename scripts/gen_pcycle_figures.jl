@@ -180,4 +180,32 @@ mandelbrot_portrait(
     savepath  = joinpath(outdir, "mandelbrot_portrait.png"))
 println("  → mandelbrot_portrait.png")
 
+println("\n=== Figura 9: Halley para z³−1 ===")
+basin_portrait_pcycle(
+    complex([0.0, 2.0, 0.0, 0.0, 1.0]),   # z^4 + 2z
+    complex([1.0, 0.0, 0.0, 2.0]),          # 2z^3 + 1
+    1;
+    xinterval     = (-1.5, 1.5),
+    yinterval     = (-1.5, 1.5),
+    iter          = 400,
+    colorstrategy       = "pcycle_lch",
+    hue_band            = 120.0,
+    show_plot           = false,
+    savepath            = joinpath(outdir, "pcycle_halley_z3.png"))
+println("  → pcycle_halley_z3.png")
+
+println("\n=== Figura 10: Función racional (z²−1)/(z²+1) con 2-ciclo ===")
+basin_portrait_pcycle(
+    complex([-1.0, 0.0, 1.0]),    # z^2 - 1
+    complex([ 1.0, 0.0, 1.0]),    # z^2 + 1
+    2;
+    xinterval     = (-2.0, 2.0),
+    yinterval     = (-2.0, 2.0),
+    iter          = 500,
+    colorstrategy       = "pcycle_lch",
+    hue_band            = 180.0,
+    show_plot           = false,
+    savepath            = joinpath(outdir, "pcycle_rational_2cycle.png"))
+println("  → pcycle_rational_2cycle.png")
+
 println("\nTodas las figuras generadas en docs/figures/")

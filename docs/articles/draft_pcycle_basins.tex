@@ -486,6 +486,23 @@ contains one; for merely attracting cycles, at least one component
 suffices.)
 \end{theorem}
 
+\begin{proof}[Proof sketch]
+Fix one immediate basin component $B^0_{z_0}$ and consider the iterate
+$g = f^p\colon B^0_{z_0}\to B^0_{z_0}$, which has an attracting fixed
+point at $z_0$.  By the Riemann mapping theorem, $B^0_{z_0}$ is
+conformally equivalent to the unit disc~$\mathbb{D}$ (it is a simply
+connected proper subset of $\Pone$ when $d\geq 2$).  Suppose for
+contradiction that $g$ has no critical point in $B^0_{z_0}$.  Then $g$
+is an unramified cover of its image, hence---since $B^0_{z_0}\cong\mathbb{D}$
+is simply connected---a conformal automorphism of~$\mathbb{D}$.  Every
+conformal automorphism of~$\mathbb{D}$ with an interior fixed point is a
+rotation, but a rotation has $|g'(z_0)|=1$, contradicting $|g'(z_0)|=
+|(f^p)'(z_0)|=|\lambda|^p<1$.  Therefore $g$ has at least one critical
+point $w\in B^0_{z_0}$.  A critical point of $g=f^p$ at $w$ means
+$(f^p)'(w)=0$, so $f'(f^k(w))=0$ for some $k\in\{0,\ldots,p-1\}$:
+the point $f^k(w)\in B^0_{z_k}$ is a critical point of~$f$.
+\end{proof}
+
 \begin{corollary}\label{cor:bound}
 Since $f$ has at most $2d-2$ critical points (counted with multiplicity),
 it has at most $2d-2$ distinct attracting or superattracting cycles.
@@ -513,6 +530,45 @@ when $B^0_{z_0}$ contains exactly one critical value \cite{Milnor2006}.
 
 For a superattracting $p$-cycle, one applies the B\"ottcher theory to
 $f^p$ at each cycle point.
+
+\subsection{K\oe nigs linearization near attracting cycles}
+\label{subsec:koenigs}
+
+Böttcher coordinates apply when the multiplier $\lambda=0$ (superattracting
+case).  For a merely attracting fixed point $z_0$ with $0<|\lambda|<1$, the
+analogous result is due to Kœnigs (1884).
+
+\begin{theorem}[K\oe nigs, 1884]\label{thm:koenigs}
+Let $f$ be a holomorphic map with an attracting fixed point $z_0$ and
+multiplier $\lambda=f'(z_0)$, $0<|\lambda|<1$.  Then there exists a
+unique conformal map $\phi\colon B^0_{z_0}\to\mathbb{D}$ with $\phi(z_0)=0$,
+$\phi'(z_0)=1$, satisfying the Schröder equation
+\begin{equation}\label{eq:koenigs}
+  \phi(f(z)) = \lambda\,\phi(z), \qquad z\in B^0_{z_0}.
+\end{equation}
+The map $\phi$ is obtained as the uniform limit
+$\phi(z) = \lim_{n\to\infty} (f^n(z)-z_0)/\lambda^n$.
+\end{theorem}
+
+For a $p$-cycle $\{z_0,\ldots,z_{p-1}\}$ one applies Theorem~\ref{thm:koenigs}
+to $f^p$ at each cycle point, with multiplier $\lambda^p=(f^p)'(z_0)$.
+The Schröder equation shows that orbits in $B^0_{z_0}$ converge to $z_0$ at
+exactly the geometric rate $|\lambda|^n$: in the $\phi$-coordinate the
+dynamics is a linear contraction by $\lambda$.
+
+Together, Theorems~\ref{thm:koenigs} and~\ref{subsec:bottcher} (Böttcher)
+complete the linearization picture for attracting cycles:
+\[
+  \begin{array}{rll}
+    \lambda=0 & \text{(superattracting):} & \phi\circ f = \phi^m
+                \quad\text{(Böttcher, doubly-exponential convergence),}\\
+    0<|\lambda|<1 & \text{(attracting):} & \phi\circ f = \lambda\,\phi
+                \quad\text{(Kœnigs, geometric convergence).}
+  \end{array}
+\]
+The iteration count $n(z)$ used in the lightness formula~\eqref{eq:lightness}
+is the number of steps to bring $|\phi(z)|$ below a fixed threshold, so it
+directly measures the $\phi$-coordinate distance to the attractor.
 
 %% ===========================================================================
 \section{Algorithmic framework}
@@ -891,6 +947,60 @@ in this section correspond to such centres
   \label{fig:mandelbrot_portrait}
 \end{figure}
 
+\begin{theorem}[Douady--Hubbard, 1982 \cite{DouadyHubbard1985}]
+\label{thm:connectivity}
+For the quadratic family $f_c(z)=z^2+c$, the following are equivalent:
+\begin{enumerate}[label=\emph{(\roman*)}]
+  \item The Julia set $J_c$ is connected.
+  \item The filled Julia set $K_c=\{z\in\C : \{f_c^n(z)\}_{n\ge 0}
+        \text{ is bounded}\}$ is connected.
+  \item The critical orbit $\{0,c,c^2+c,\ldots\}$ is bounded, i.e.\
+        $c\in\mathcal{M}$.
+\end{enumerate}
+If $c\notin\mathcal{M}$, then $J_c$ is a Cantor set and every immediate
+basin is simply connected (in fact, $K_c=J_c$).
+\end{theorem}
+
+\begin{proof}[Proof idea]
+The key tool is the \emph{B\"ottcher coordinate at $\infty$}: since
+$\infty$ is a superattracting fixed point of $f_c$, there exists a
+conformal map $\Phi_c\colon B^0_\infty\to\{|w|>1\}$ conjugating $f_c$ to
+$w\mapsto w^2$.  The map $\Phi_c$ extends to the boundary of $B^0_\infty$
+if and only if no critical value lies in $B^0_\infty$, i.e.\ $0\notin
+B^0_\infty$, i.e.\ $c\in\mathcal{M}$.  When $c\in\mathcal{M}$, $\Phi_c$
+extends to $\partial B^0_\infty=J_c$, showing $J_c$ is connected.  When
+$c\notin\mathcal{M}$, $0\in B^0_\infty$ and iterating the Böttcher coordinate
+shows $J_c$ is a Cantor set.
+\end{proof}
+
+All four examples of this article ($c=-1$, $c\approx-1.7549$,
+$c\approx-0.1226+0.7449i$, $c\approx-0.5043+0.5628i$) lie inside
+$\mathcal{M}$, so their Julia sets are connected and each immediate basin
+$B^0_{z_k}$ is simply connected.  This is precisely what makes the
+basin portraits of Figures~\ref{fig:basilica_pcycle}--\ref{fig:period5_lch}
+consist of simply connected domains with no ``holes''.
+
+\paragraph{External rays and the Green's function.}
+The \emph{B\"ottcher coordinate at $\infty$} of $f_c$ defines the
+\emph{Green's function}
+\[
+  G_c(z) = \lim_{n\to\infty} \frac{1}{2^n}\log|f_c^n(z)|,
+  \qquad z\in B^0_\infty,
+\]
+which satisfies $G_c(f_c(z))=2G_c(z)$ and $G_c(z)\to 0$ as
+$z\to\partial B^0_\infty=J_c$.  Level sets $\{G_c=r\}$ are
+\emph{equipotential curves}; gradient lines of $G_c$ are the
+\emph{external rays} $\mathcal{R}_c(\theta)$ (at angle $\theta\in[0,1)$).
+When $c\in\mathcal{M}$, every rational ray $\mathcal{R}_c(p/q)$ lands
+at a point of $J_c$ (Douady--Hubbard); the combinatorics of landing
+points encodes the hyperbolic component structure of $\mathcal{M}$ and
+connects the symbolic dynamics of angle-doubling to the topology of
+$J_c$.  The normalised escape time~\eqref{eq:escape_time} is precisely
+$G_c(c)/\log 2$ (up to additive normalisation), so the smooth colouring
+of the exterior in Figure~\ref{fig:mandelbrot_portrait} is an approximation
+of the Green's function, and the visible ``bands'' before smoothing are
+the equipotential curves.
+
 \subsection{The quadratic family $f_c(z)=z^2+c$ (Bas\'ilica, $c=-1$)}
 \label{subsec:basilica}
 
@@ -996,6 +1106,85 @@ The three superattracting fixed points give $P=1$ (see Figure~\ref{fig:newton_z3
   \label{fig:newton_z3_pcycle}
 \end{figure}
 
+
+\subsection{Halley's method for $z^3-1$}
+\label{subsec:halley}
+
+Halley's method (1694) for solving $p(z)=0$ is the second-order
+Householder iteration
+\begin{equation}\label{eq:halley}
+  H(z) = z - \frac{2p(z)p'(z)}{2[p'(z)]^2 - p(z)p''(z)}.
+\end{equation}
+It achieves \emph{cubic} convergence near a simple root (error cubed at
+each step), compared with quadratic for Newton.
+
+\paragraph{Rational form for $p(z)=z^3-1$.}
+With $p(z)=z^3-1$, $p'(z)=3z^2$, $p''(z)=6z$ formula~\eqref{eq:halley} simplifies to
+\begin{equation}\label{eq:halley_z3}
+  H(z) = \frac{z(z^3+2)}{2z^3+1}
+        = \frac{z^4+2z}{2z^3+1},
+\end{equation}
+a rational map of degree $d=4$.  The Wronskian (in the affine chart) is
+\[
+  W(z) = P'Q - PQ'
+       = (4z^3+2)(2z^3+1)-(z^4+2z)(6z^2)
+       = 2(z^3-1)^2 = 2(z-1)^2(z-\omega)^2(z-\bar\omega)^2,
+\]
+where $\omega=e^{2\pi i/3}$.  Thus $H$ has $2d-2=6$ critical points
+(counted with multiplicity), all coinciding with the three roots of unity
+$1,\omega,\bar\omega$, each of multiplicity~$2$.
+
+\paragraph{Fixed-point analysis.}
+The fixed points of $H$ are found by solving $H(z)=z$:
+\[
+  z(z^3+2) = z(2z^3+1) \;\Longrightarrow\; z^3=1
+  \quad\text{(plus }z=0\text{ and }z=\infty\text{)}.
+\]
+So $H$ has five fixed points in $\Pone$ ($=d+1$):
+\begin{itemize}
+  \item $z=1,\omega,\bar\omega$: superattracting (each is both a critical
+        point and a fixed point, so the multiplier $H'(z_k)=0$).
+  \item $z=0$: repelling, $H'(0)=2(0-1)^2/(2\cdot 0+1)^2=2$.
+  \item $z=\infty$: repelling (in the second chart
+        $\hat H(w)=w(2+w^3)/(1+2w^3)$, $\hat H'(0)=2$).
+\end{itemize}
+Since every critical point lies in an immediate basin of a superattracting
+fixed point, Fatou's theorem gives $P=1$ and the dynamics is completely
+determined by the three basins.
+
+The convergence near the roots is cubic rather than quadratic, which
+manifests in the basin portrait as smoother boundaries and a steeper
+lightness gradient away from each attractor.  Compare
+Figure~\ref{fig:halley_z3_pcycle} with the Newton portrait
+(Figure~\ref{fig:newton_z3_pcycle}): the basins are qualitatively similar
+but the Julia set of Halley is strictly contained in that of Newton's
+method (Halley converges for strictly more starting points), and the
+interior shading is more compressed near the attractors.
+
+\begin{example}[Halley portrait]
+\begin{verbatim}
+  # H(z) = (z^4+2z)/(2z^3+1)
+  num = complex([0.0, 2.0, 0.0, 0.0, 1.0])   # z^4 + 2z
+  den = complex([1.0, 0.0, 0.0, 2.0])         # 2z^3 + 1
+  print_critical_orbit_summary(num, den)
+  # → 3 superattracting fixed points (p=1), 2 repelling fixed points
+  # → P = 1
+  basin_portrait_pcycle(num, den, 1; iter=300, colorstrategy="pcycle_lch",
+                        show_plot=true)
+\end{verbatim}
+\end{example}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.90\textwidth]{../figures/pcycle_halley_z3.png}
+  \caption{Basin portrait of Halley's method~\eqref{eq:halley_z3} for
+           $z^3-1$, $d=4$.  Three superattracting fixed points
+           $1,\omega,\bar\omega$ (roots of $z^3-1$) each of multiplicity~2;
+           two repelling fixed points at $z=0$ and $z=\infty$.
+           Compare with Figure~\ref{fig:newton_z3_pcycle}: Halley's
+           basins cover a larger portion of the sphere.}
+  \label{fig:halley_z3_pcycle}
+\end{figure}
 
 \subsection{The map $f(z)=z^2$ (superattracting fixed point)}
 
@@ -1208,6 +1397,69 @@ for the colour encoding.
   \label{fig:period5_lch}
 \end{figure}
 
+\subsection{A proper rational map: $f(z)=(z^2-1)/(z^2+1)$}
+\label{subsec:rational}
+
+All preceding examples are either polynomials or related to root-finding
+iteration.  We now exhibit a \emph{genuinely rational} function whose
+dynamics is not conjugate to any polynomial---here both $0$ and $\infty$
+play symmetric roles---and that has a superattracting $2$-cycle.
+
+\paragraph{The map and its critical points.}
+Set $f(z)=(z^2-1)/(z^2+1)$, a rational map of degree $d=2$.
+The Wronskian (affine chart) is
+\[
+  W(z) = P'Q - PQ' = 2z(z^2+1) - (z^2-1)2z = 4z,
+\]
+so the only affine critical point is $z=0$ (with multiplicity~1); the
+second critical point is $z=\infty$ (Wronskian degree $=2d-2=2$). 
+
+\paragraph{Superattracting 2-cycle.}
+Direct calculation gives
+\[
+  f(0) = \frac{0-1}{0+1} = -1, \qquad f(-1) = \frac{1-1}{1+1} = 0,
+\]
+so $\{0,-1\}$ is a $2$-cycle.  Since $f'(0)=4\cdot 0/(0+1)^2=0$, the
+cycle point $z_0=0$ is a critical point; hence $\{0,-1\}$ is a
+\emph{superattracting} $2$-cycle (Lyapunov constant $c(\{0,-1\})=0$).
+
+The orbit of the second critical point: $f(\infty)=1$, $f(1)=0$, and
+from that point on the orbit follows the $2$-cycle.  Thus \emph{both}
+critical points are attracted to $\{0,-1\}$, confirming by
+Corollary~\ref{cor:bound} that this is the \emph{only} attracting cycle
+and $P=2$.
+
+\paragraph{Fixed points.}
+Solving $f(z)=z$ gives $z^3-z^2+z+1=0$, whose three solutions are all
+repelling (since both critical orbits converge to the $2$-cycle, there
+is no critical point available to stabilize a fixed point).
+
+\begin{example}[Proper rational portrait]
+\begin{verbatim}
+  # f(z) = (z^2 - 1) / (z^2 + 1)
+  num = complex([-1.0, 0.0, 1.0])   # z^2 - 1
+  den = complex([ 1.0, 0.0, 1.0])   # z^2 + 1
+  print_critical_orbit_summary(num, den)
+  # → 1 superattracting 2-cycle, 3 repelling fixed points
+  # → P = 2
+  basin_portrait_pcycle(num, den, 2; iter=400, colorstrategy="pcycle_lch",
+                        hue_band=180.0, show_plot=true)
+\end{verbatim}
+\end{example}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.90\textwidth]{../figures/pcycle_rational_2cycle.png}
+  \caption{Basin portrait of $f(z)=(z^2-1)/(z^2+1)$, the simplest
+           proper rational map with a superattracting $2$-cycle $\{0,-1\}$.
+           Degree $d=2$, two critical points ($z=0$ and $z=\infty$), both
+           attracted to the cycle.  Chart~1 (left): the two immediate basins
+           $B^0_0$ (blue) and $B^0_{-1}$ (orange) separated by the Julia set.
+           Chart~2 (right): the neighbourhood of $\infty$, which lies in
+           $B^0_0$ since $\infty\to 1\to 0$.}
+  \label{fig:rational_2cycle}
+\end{figure}
+
 \subsection{Summary table}
 
 \begin{center}
@@ -1222,7 +1474,8 @@ Newton $z^3-1$     & 3 & 4  & 1 & 3 superattr.\ ($p=1$) + 1 indet. \\
 Airplane $z^2+c$   & 2 & 2  & 3 & superattr.\ ($p=3$) + superattr.\ ($p=1$ at $\infty$) \\
 Rabbit $z^2+c$     & 2 & 2  & 3 & superattr.\ ($p=3$) + superattr.\ ($p=1$ at $\infty$) \\
 Period-5 $z^2+c$   & 2 & 2  & 5 & superattr.\ ($p=5$) + superattr.\ ($p=1$ at $\infty$) \\
-Halley $z^3-1$     & 5 & 8  & 1 & 3 superattr.\ ($p=1$) \\
+Halley $z^3-1$     & 4 & 6  & 1 & 3 superattr.\ ($p=1$), 2 repelling fixed pts \\
+$(z^2-1)/(z^2+1)$  & 2 & 2  & 2 & 1 superattr.\ $2$-cycle (proper rational) \\
 \bottomrule
 \end{tabular}
 \end{center}
