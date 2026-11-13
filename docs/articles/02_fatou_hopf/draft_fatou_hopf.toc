@@ -1,0 +1,23 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Preliminaries: the Hopf fibration framework}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Homogeneous pairs and the Hopf endomorphism}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Normalisation and overflow prevention}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}The augmented projective line and the super-zero}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}The spherical derivative in homogeneous coordinates}{4}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Lyapunov approximations}{4}{subsection.2.5}%
+\contentsline {section}{\numberline {3}Sullivan's classification of Fatou components}{5}{section.3}%
+\contentsline {section}{\numberline {4}Lyapunov-based criteria for attracting and parabolic basins}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Attracting and superattracting basins (recap)}{5}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Parabolic basins: polynomial convergence}{6}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Practical criterion: detecting the convergence regime}{6}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Rotation-number algorithm for Siegel discs and Herman rings}{7}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Rotation numbers on $S^3$}{7}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Detecting rotation domains vs.\nobreakspace {}the Julia set}{7}{subsection.5.2}%
+\contentsline {section}{\numberline {6}The unified classification algorithm}{8}{section.6}%
+\contentsline {section}{\numberline {7}Examples and applications}{9}{section.7}%
+\contentsline {subsection}{\numberline {7.1}A rational map with a parabolic fixed point: $f(z) = z^2 + \genfrac {}{}{}1{1}{4}$}{9}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}A quadratic map with a Siegel disc}{9}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Newton's method: detecting parameter-space $n$-cycles}{10}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Halley's method and other rational iteration schemes}{10}{subsection.7.4}%
+\contentsline {section}{\numberline {8}Implementation notes}{10}{section.8}%
+\contentsline {section}{\numberline {9}Conclusions and future work}{11}{section.9}%

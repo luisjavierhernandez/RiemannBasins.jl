@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d (TeX Live 2021)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: draft_fatou_hopf.aux
+The style file: plain.bst
+Database file #1: draft_fatou_hopf.bib
+Warning--entry type for "RiemannBasins" isn't style-file defined
+--line 26 of file draft_fatou_hopf.bib
+Warning--entry type for "LCD2022" isn't style-file defined
+--line 37 of file draft_fatou_hopf.bib
+Warning--entry type for "PBURF2019" isn't style-file defined
+--line 46 of file draft_fatou_hopf.bib
+Warning--I didn't find a database entry for "HinkkaneMartin"
+You've used 14 entries,
+            2118 wiz_defined-function locations,
+            600 strings with 6436 characters,
+and the built_in function-call counts, 3996 in all, are:
+= -- 404
+> -- 158
+< -- 2
++ -- 66
+- -- 50
+* -- 261
+:= -- 690
+add.period$ -- 46
+call.type$ -- 14
+change.case$ -- 66
+chr.to.int$ -- 0
+cite$ -- 14
+duplicate$ -- 143
+empty$ -- 333
+format.name$ -- 50
+if$ -- 821
+int.to.chr$ -- 0
+int.to.str$ -- 14
+missing$ -- 13
+newline$ -- 75
+num.names$ -- 28
+pop$ -- 66
+preamble$ -- 1
+purify$ -- 53
+quote$ -- 0
+skip$ -- 94
+stack$ -- 0
+substring$ -- 247
+swap$ -- 16
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 52
+warning$ -- 0
+while$ -- 43
+width$ -- 16
+write$ -- 158
+(There were 4 warnings)

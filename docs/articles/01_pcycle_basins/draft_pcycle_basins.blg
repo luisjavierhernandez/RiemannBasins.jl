@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2021)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: draft_pcycle_basins.aux
+The style file: plain.bst
+Database file #1: draft_pcycle_basins.bib
+You've used 19 entries,
+            2118 wiz_defined-function locations,
+            636 strings with 7859 characters,
+and the built_in function-call counts, 5998 in all, are:
+= -- 594
+> -- 283
+< -- 4
++ -- 112
+- -- 91
+* -- 390
+:= -- 1024
+add.period$ -- 66
+call.type$ -- 19
+change.case$ -- 99
+chr.to.int$ -- 0
+cite$ -- 19
+duplicate$ -- 220
+empty$ -- 472
+format.name$ -- 91
+if$ -- 1250
+int.to.chr$ -- 0
+int.to.str$ -- 19
+missing$ -- 18
+newline$ -- 105
+num.names$ -- 42
+pop$ -- 106
+preamble$ -- 1
+purify$ -- 81
+quote$ -- 0
+skip$ -- 155
+stack$ -- 0
+substring$ -- 317
+swap$ -- 42
+text.length$ -- 4
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 70
+warning$ -- 0
+while$ -- 59
+width$ -- 21
+write$ -- 224

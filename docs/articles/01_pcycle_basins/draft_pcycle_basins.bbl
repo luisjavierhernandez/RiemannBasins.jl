@@ -1,0 +1,128 @@
+\begin{thebibliography}{10}
+
+\bibitem{LCD2022}
+V.~'Alvarez-Aparicio.
+\newblock {LCD.jl}: {L}yapunov {C}ycle {D}etector.
+\newblock Julia package, 2022.
+
+\bibitem{AlvarezAparicio2023}
+V.~\'Alvarez-Aparicio, J.~M. Garc\'ia-Calcines, L.~J. Hern\'andez-Paricio, and
+  M.~T. Rivas-Rodr\'iguez.
+\newblock Algorithms for computing basins of attraction associated with a
+  rational self-map of the {H}opf fibration based on {L}yapunov exponents.
+\newblock {\em Topology and its Applications}, 339:108578, 2023.
+
+\bibitem{RiemannBasins}
+V.~\'Alvarez-Aparicio, J.~M. Garc\'ia-Calcines, L.~J. Hern\'andez-Paricio, and
+  M.~T. Rivas-Rodr\'iguez.
+\newblock {RiemannBasins.jl}: A {J}ulia package for iteration of rational maps
+  on the {R}iemann sphere.
+\newblock Preprint, {R}esearch{G}ate, 2024.
+
+\bibitem{AlvarezAparicio2023MMEHB}
+V.~\'Alvarez-Aparicio, J.~M. Guti\'errez-Jim\'enez, L.~J. Hern\'andez-Paricio,
+  and M.~T. Rivas-Rodr\'iguez.
+\newblock Computing {L}yapunov exponents for the study of the dynamical
+  behaviour of {C}hebyshev's method on polynomials.
+\newblock In J.~R. Torregrosa, J.-C. Cort\'es, and A.~Vidal-Ferr\`andiz,
+  editors, {\em Modelling for Engineering \& Human Behaviour 2023}, pages
+  257--265. Universitat Polit\`ecnica de Val\`encia, 2023.
+\newblock XXV Edition of the Mathematical Modelling Conference Series,
+  Val\`encia, July 11--14, 2023.
+
+\bibitem{Julia2017}
+Jeff Bezanson, Alan Edelman, Stefan Karpinski, and Viral~B. Shah.
+\newblock Julia: A fresh approach to numerical computing.
+\newblock {\em SIAM Review}, 59(1):65--98, 2017.
+
+\bibitem{DouadyHubbard1985}
+Adrien Douady and John~H. Hubbard.
+\newblock On the dynamics of polynomial-like mappings.
+\newblock {\em Annales Scientifiques de l'{\'E}cole Normale Sup\'erieure},
+  18(2):287--343, 1985.
+
+\bibitem{Extremiana2019}
+I.\ Extremiana-Aldana, J.\, J.\ Hern\'andez-Paricio, L.\, and
+  T.~Rivas-Rodr\'iguez, M.\.
+\newblock Projective models of closed surfaces and iteration of maps.
+\newblock {\em Preprint}, 2019.
+\newblock Universidad de La Rioja.
+
+\bibitem{Extremiana2018SelfOverlays}
+J.~I. Extremiana-Aldana, L.~J. Hern\'andez-Paricio, and M.~T.
+  Rivas-Rodr\'iguez.
+\newblock Self-overlays and symmetries of {Julia} sets of expanding maps.
+\newblock {\em Rev. R. Acad. Cienc. Exactas F\'{\i}s. Nat. Ser. A Mat.}, 2018.
+
+\bibitem{Extremiana2018Shape}
+J.~I. Extremiana-Aldana, L.~J. Hern\'andez-Paricio, and M.~T.
+  Rivas-Rodr\'iguez.
+\newblock The shape of the {Julia} set of an expanding rational map.
+\newblock {\em Topology and its Applications}, 239:251--273, 2018.
+\newblock Virtual Special Issue in memory of Professor Sibe Marde\v{s}i\'c.
+
+\bibitem{Fairchild2013}
+Mark~D. Fairchild.
+\newblock {\em Color Appearance Models}.
+\newblock Wiley, 3rd edition, 2013.
+
+\bibitem{Fatou1919}
+Pierre Fatou.
+\newblock Sur les \'equations fonctionnelles.
+\newblock {\em Bulletin de la Soci\'et\'e Math\'ematique de France},
+  47:161--271, 1919.
+\newblock Premier m\'emoire.
+
+\bibitem{Fatou1920}
+Pierre Fatou.
+\newblock Sur les \'equations fonctionnelles.
+\newblock {\em Bulletin de la Soci\'et\'e Math\'ematique de France}, 48:33--94,
+  1920.
+\newblock Deuxi\`eme m\'emoire.
+
+\bibitem{Gutierrez2016Measures}
+J.~M. Guti\'errez-Jim\'enez, L.~J. Hern\'andez-Paricio, \'A.~A. Magre\~n\'an,
+  and M.~T. Rivas-Rodr\'iguez.
+\newblock Measures of the basins of attracting $n$-cycles for the relaxed
+  {Newton}'s method.
+\newblock In S.~Amat and S.~Busquier, editors, {\em Advances in Iterative
+  Methods for Nonlinear Equations}, volume~10 of {\em SEMA SIMAI Springer
+  Series}, pages 211--246. Springer International Publishing, Cham, 2016.
+
+\bibitem{ColorsJl}
+{JuliaGraphics contributors}.
+\newblock {Colors.jl}: Color manipulation and conversions for {J}ulia.
+\newblock \url{https://github.com/JuliaGraphics/Colors.jl}, 2023.
+
+\bibitem{Milnor2006}
+John Milnor.
+\newblock {\em Dynamics in One Complex Variable}, volume 160 of {\em Annals of
+  Mathematics Studies}.
+\newblock Princeton University Press, Princeton, NJ, third edition, 2006.
+
+\bibitem{OkabIto2008}
+Masataka Okabe and Kei Ito.
+\newblock Color universal design ({CUD}): How to make figures and presentations
+  that are friendly to colorblind people.
+\newblock {\em J.~Biochemistry and Molecular Biology}, 2008.
+\newblock \url{https://jfly.uni-koeln.de/color/}.
+
+\bibitem{Peitgen1992}
+Heinz-Otto Peitgen and Peter~H. Richter.
+\newblock {\em The Beauty of Fractals: Images of Complex Dynamical Systems}.
+\newblock Springer-Verlag, Berlin, 1986.
+
+\bibitem{FatouJl}
+Michael Reed.
+\newblock {Fatou.jl}: {F}atou sets in the {J}ulia programming language.
+\newblock \url{https://github.com/chakravala/Fatou.jl}, 2017.
+\newblock Julia package for complex dynamics visualisation; GPU-accelerated
+  escape-time and orbit-trap portraits.
+
+\bibitem{Sullivan1985}
+Dennis Sullivan.
+\newblock Quasiconformal homeomorphisms and dynamics~{I}: Solution of the
+  {Fatou--Julia} problem on wandering domains.
+\newblock {\em Annals of Mathematics}, 122(3):401--418, 1985.
+
+\end{thebibliography}

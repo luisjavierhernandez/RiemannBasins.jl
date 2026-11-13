@@ -126,23 +126,17 @@ super-geometrically) to the attracting cycle.  Given a $p$-cycle
 $\Gamma = \{z_0, z_1=f(z_0), \ldots, z_{p-1}=f^{p-1}(z_0)\}$ with
 $f(z_{p-1})=z_0$, the \emph{basin of attraction}
 $\Bf(\Gamma) = \{z\in\Pone : f^{np}(z)\to\Gamma\}$ decomposes into
-$p$ pairwise disjoint $f$-invariant open sets $B_{z_k}$, one for each cycle
-point~$z_k$; each~$B_{z_k}$ may itself have infinitely many connected
-components (the cycle point, all its preimages under $f^p$, preimages of
-preimages, etc.).  The \emph{immediate basin} $B^0_{z_k}$ is the connected
-component of~$B_{z_k}$ that contains $z_k$ itself.  The map $f$ sends
-$B^0_{z_k}$ onto $B^0_{z_{k+1\bmod p}}$, so the $p$ immediate basin
-components form a single cycle of simply connected domains.
+$p$ connected components, the $p$ \emph{immediate basins} $B^0_{z_k}$,
+one for each cycle point $z_k$.
 
 The key practical question is: \emph{how do we find all attracting cycles and
 their basins, and how many iterations suffice?}  Fatou's theorem
-\cite{Fatou1919,Fatou1920} provides the answer: the immediate basin
-$B^0_{z_0}\cup\cdots\cup B^0_{z_{p-1}}$ of every attracting cycle contains
-at least one \emph{critical point} of~$f$ (a zero of the Wronskian
-$\Wron(F,G) = F'G - FG'$ in homogeneous coordinates).  Since $f$ has at
-most $2d-2$ critical points, it can have at most $2d-2$ distinct attracting
-or superattracting cycles, and tracing the orbit of each critical point
-reveals every such cycle.
+\cite{Fatou1919,Fatou1920} provides the answer: each component of the
+immediate basin of an attracting cycle contains at least one \emph{critical
+point} of $f$ (a zero of the Wronskian $\Wron(F,G) = F'G - FG'$ in
+homogeneous coordinates).  Since $f$ has at most $2d-2$ critical points, it
+can have at most $2d-2$ distinct attracting or superattracting cycles, and
+tracing the orbit of each critical point reveals every such cycle.
 
 Our implementation in the Julia package \texttt{RiemannBasins.jl}
 \cite{RiemannBasins} exposes this theory through two related function groups.
@@ -153,40 +147,6 @@ Fatou's theorem directly: it computes the Wronskian roots, traces each
 critical orbit, detects the period of the attracting cycle reached, computes
 the Lyapunov constant~$c$, and returns a sharp upper bound~$P$ via
 \texttt{max\_attracting\_period}.
-The Lyapunov-based cycle-detection strategy originates in the theoretical
-framework of \cite{AlvarezAparicio2023} and was first prototyped in
-\texttt{LCD.jl}~\cite{LCD2022}; a further application to the dynamical study
-of Chebyshev's method on polynomials appears in~\cite{AlvarezAparicio2023MMEHB}.
-
-The topological structure of the Julia set $\Jf$ provides an independent
-perspective on the fractal geometry underlying the basin boundaries studied
-here.  For an expanding rational map, the shape of $\Jf$---in the sense of
-Marde\v{s}i\'c--Segal shape theory---is captured by an inverse system of
-cubic complexes built from the global (spherical) multiplier; the resulting
-shape invariants and the $d$-fold self-overlay structure of the restriction
-$f|_{\Jf}\colon\Jf\to\Jf$, together with its symmetries encoded via the
-fundamental pro-groupoid in the symmetric group $\Sigma_d$, are studied
-in~\cite{Extremiana2018Shape,Extremiana2018SelfOverlays}.
-
-Several Julia packages for complex dynamics visualisation already exist,
-most notably \texttt{Fatou.jl} \cite{FatouJl}, which accepts arbitrary
-complex maps (including transcendental ones) and produces richly coloured
-escape-time and orbit-trap portraits with GPU acceleration.
-\texttt{RiemannBasins.jl} differs in three respects.
-First, it works on the full Riemann sphere $\Pone$ in homogeneous
-coordinates, so the point $\infty=[1:0]$ is a regular point with its own
-basin and its own affine chart, rather than a mere escape threshold.
-Second, it implements Fatou's critical-orbit theorem
-(Theorem~\ref{thm:fatou}) algorithmically: given the homogeneous pair
-$\hpair$, the package locates \emph{all} attracting cycles automatically
-via Wronskian root-finding, computes their Lyapunov constants, and returns
-a provably sharp upper bound~$P$ on the maximum attracting period.
-Third, its \texttt{pcycle\_lch} colour strategy encodes the cyclic
-structure of the basin decomposition---which cycle, which sub-basin within
-that cycle, and how fast---using a perceptually uniform
-$\mathrm{LCH}_{ab}$ scheme, making the cyclic permutation
-$f\colon B_j\to B_{j+1\bmod p}$ directly readable from the image
-(Section~\ref{sec:colour}).
 
 The paper is organised as follows.
 Section~\ref{sec:prelim} reviews the homogeneous model for $\Pone$, the
@@ -373,7 +333,6 @@ The cycle is \emph{attracting} if $|\lambda|<1$,
 \emph{indifferent} if $|\lambda|=1$.
 
 For numerical and algorithmic purposes, the \emph{Lyapunov constant}
-\cite{AlvarezAparicio2023}
 \begin{equation}\label{eq:lyapunov}
   c(\Gamma_p) = \biggl(\prod_{k=0}^{p-1}\fsh(z_k)\biggr)^{1/p}
 \end{equation}
@@ -453,9 +412,6 @@ the \emph{Julia set}.
 Both $\Ff$ and $\Jf$ are completely invariant: $f^{-1}(\Ff)=\Ff$ and
 $f^{-1}(\Jf)=\Jf$.  For $d\geq 2$ the Julia set is a non-empty perfect
 set (compact with no isolated points) \cite{Milnor2006}.
-The topological \emph{shape} of $\Jf$, studied via inverse systems of
-cubic complexes built from the spherical multiplier, is analysed
-in~\cite{Extremiana2018Shape,Extremiana2018SelfOverlays}.
 
 \begin{theorem}[Sullivan, 1985 \cite{Sullivan1985}]
 Every connected component $U$ of $\Ff$ is eventually periodic: there
@@ -491,38 +447,13 @@ of $\Bf(\Gamma_p)$ containing $z_k$.
 The full basin is the disjoint union $\Bf(\Gamma_p)=\bigsqcup_{k=0}^{p-1}
 B_{z_k}$ where $B_{z_k}=\{z:\sigma(f^{np+k}(z),z_k)\to 0\}$; note that
 $f$ maps $B_{z_k}$ to $B_{z_{k+1}}$ (indices mod $p$).
-The spherical measure (probability) of these basins on $S^2$, and its
-dependence on the relaxation parameter, was studied quantitatively
-in~\cite{Gutierrez2016Measures}.
 
 \begin{theorem}[Fatou, 1919--1920 \cite{Fatou1919,Fatou1920}]
 \label{thm:fatou}
 Let $f$ be a rational map of degree $d\geq 2$ and let $\Gamma_p$ be an
-attracting or superattracting $p$-cycle with immediate basins
-$B^0_{z_0},\ldots,B^0_{z_{p-1}}$.  At least one immediate basin component
-$B^0_{z_k}$ contains a critical point of~$f$; equivalently, at least one
-critical point of~$f$ is attracted to~$\Gamma_p$.  (For superattracting
-cycles, every $z_k$ is itself a critical point of~$f$, so each $B^0_{z_k}$
-contains one; for merely attracting cycles, at least one component
-suffices.)
+attracting or superattracting $p$-cycle.  Each immediate basin component
+$B^0_{z_k}$ contains at least one critical point of $f$.
 \end{theorem}
-
-\begin{proof}[Proof sketch]
-Fix one immediate basin component $B^0_{z_0}$ and consider the iterate
-$g = f^p\colon B^0_{z_0}\to B^0_{z_0}$, which has an attracting fixed
-point at $z_0$.  By the Riemann mapping theorem, $B^0_{z_0}$ is
-conformally equivalent to the unit disc~$\mathbb{D}$ (it is a simply
-connected proper subset of $\Pone$ when $d\geq 2$).  Suppose for
-contradiction that $g$ has no critical point in $B^0_{z_0}$.  Then $g$
-is an unramified cover of its image, hence---since $B^0_{z_0}\cong\mathbb{D}$
-is simply connected---a conformal automorphism of~$\mathbb{D}$.  Every
-conformal automorphism of~$\mathbb{D}$ with an interior fixed point is a
-rotation, but a rotation has $|g'(z_0)|=1$, contradicting $|g'(z_0)|=
-|(f^p)'(z_0)|=|\lambda|^p<1$.  Therefore $g$ has at least one critical
-point $w\in B^0_{z_0}$.  A critical point of $g=f^p$ at $w$ means
-$(f^p)'(w)=0$, so $f'(f^k(w))=0$ for some $k\in\{0,\ldots,p-1\}$:
-the point $f^k(w)\in B^0_{z_k}$ is a critical point of~$f$.
-\end{proof}
 
 \begin{corollary}\label{cor:bound}
 Since $f$ has at most $2d-2$ critical points (counted with multiplicity),
@@ -551,45 +482,6 @@ when $B^0_{z_0}$ contains exactly one critical value \cite{Milnor2006}.
 
 For a superattracting $p$-cycle, one applies the B\"ottcher theory to
 $f^p$ at each cycle point.
-
-\subsection{K\oe nigs linearization near attracting cycles}
-\label{subsec:koenigs}
-
-Böttcher coordinates apply when the multiplier $\lambda=0$ (superattracting
-case).  For a merely attracting fixed point $z_0$ with $0<|\lambda|<1$, the
-analogous result is due to Kœnigs (1884).
-
-\begin{theorem}[K\oe nigs, 1884]\label{thm:koenigs}
-Let $f$ be a holomorphic map with an attracting fixed point $z_0$ and
-multiplier $\lambda=f'(z_0)$, $0<|\lambda|<1$.  Then there exists a
-unique conformal map $\phi\colon B^0_{z_0}\to\mathbb{D}$ with $\phi(z_0)=0$,
-$\phi'(z_0)=1$, satisfying the Schröder equation
-\begin{equation}\label{eq:koenigs}
-  \phi(f(z)) = \lambda\,\phi(z), \qquad z\in B^0_{z_0}.
-\end{equation}
-The map $\phi$ is obtained as the uniform limit
-$\phi(z) = \lim_{n\to\infty} (f^n(z)-z_0)/\lambda^n$.
-\end{theorem}
-
-For a $p$-cycle $\{z_0,\ldots,z_{p-1}\}$ one applies Theorem~\ref{thm:koenigs}
-to $f^p$ at each cycle point, with multiplier $\lambda^p=(f^p)'(z_0)$.
-The Schröder equation shows that orbits in $B^0_{z_0}$ converge to $z_0$ at
-exactly the geometric rate $|\lambda|^n$: in the $\phi$-coordinate the
-dynamics is a linear contraction by $\lambda$.
-
-Together, Theorems~\ref{thm:koenigs} and~\ref{subsec:bottcher} (Böttcher)
-complete the linearization picture for attracting cycles:
-\[
-  \begin{array}{rll}
-    \lambda=0 & \text{(superattracting):} & \phi\circ f = \phi^m
-                \quad\text{(Böttcher, doubly-exponential convergence),}\\
-    0<|\lambda|<1 & \text{(attracting):} & \phi\circ f = \lambda\,\phi
-                \quad\text{(Kœnigs, geometric convergence).}
-  \end{array}
-\]
-The iteration count $n(z)$ used in the lightness formula~\eqref{eq:lightness}
-is the number of steps to bring $|\phi(z)|$ below a fixed threshold, so it
-directly measures the $\phi$-coordinate distance to the attractor.
 
 %% ===========================================================================
 \section{Algorithmic framework}
@@ -884,146 +776,10 @@ The colour is then
 \label{sec:examples}
 %% ===========================================================================
 
-We illustrate the algorithms on six families of rational maps, with
-particular attention to the quadratic family $f_c(z)=z^2+c$.  All
+We illustrate the algorithms on five families of rational maps.  All
 computations use \texttt{RiemannBasins.jl} \cite{RiemannBasins}.
 
-\subsection{The quadratic family $f_c(z)=z^2+c$ and the Mandelbrot set}
-\label{subsec:mandelbrot}
-
-The simplest non-trivial one-parameter family of degree-$2$ maps is
-$f_c(z) = z^2 + c$, $c\in\C$.  Its unique finite critical point is
-$z_0=0$ (Wronskian $W(z)=2z$), so by Fatou's theorem
-(Theorem~\ref{thm:fatou}) the entire structure of attracting dynamics is
-controlled by the single orbit $\{0,\,c,\,c^2+c,\,\ldots\}$.
-
-The \emph{Mandelbrot set} is defined as
-\begin{equation}\label{eq:mandelbrot}
-  \mathcal{M}
-    = \bigl\{c\in\C : \{f_c^n(0)\}_{n\ge 0}\text{ is bounded}\bigr\}.
-\end{equation}
-A parameter $c$ lies in $\mathcal{M}$ if and only if the critical orbit
-does not escape to $\infty$; equivalently, $|f_c^n(0)|\le 2$ for all
-$n\ge 0$.  The exterior of $\mathcal{M}$ is coloured according to the
-\emph{normalised escape time}
-\begin{equation}\label{eq:escape_time}
-  \nu(c) = n - \log_2\!\max\!\bigl(1,\,\log_2|f_c^n(0)|\bigr),
-\end{equation}
-where $n$ is the first iterate at which $|f_c^n(0)|>2$; this smooth
-colouring removes banding artefacts \cite{Peitgen1992}.
-
-The interior of $\mathcal{M}$ decomposes into \emph{hyperbolic
-components} $H_p$: maximal connected open sets on which $f_c$ has an
-attracting cycle of period exactly $p$.  By Fatou's theorem,
-$c\in H_p$ if and only if the orbit of the critical point $0$ converges
-to an attracting $p$-cycle.  The largest component $H_1$ is the main
-cardioid (attracting fixed point); the large circular bulb $H_2$
-attached to its left is the ``head'' (attracting $2$-cycle); $H_1$ also
-carries a countable family of bulbs at each rational internal angle
-$r/s$, whose period is determined by the Farey structure of $\mathcal{M}$
-\cite{DouadyHubbard1985}.
-
-The \emph{centre} of $H_p$ is the unique parameter $c_*\in H_p$
-satisfying $f_{c_*}^p(0)=0$: the attracting cycle of $f_{c_*}$ is
-\emph{superattracting}, and Algorithm~\ref{alg:critical} returns
-\texttt{:superattracting} with period $p$.  All four quadratic examples
-in this section correspond to such centres
-(Figure~\ref{fig:mandelbrot_portrait}, Table~\ref{tab:mandelbrot_centres}).
-
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{llcc}
-    \toprule
-    Name & Parameter $c_*$ & Period $p$ & Location in $\mathcal{M}$ \\
-    \midrule
-    Bas\'ilica   & $-1$                             & 2 & head bulb $H_2$ \\
-    Airplane     & $\approx -1.7549$                & 3 & real-axis bulb of $H_1$ \\
-    Douady rabbit & $\approx -0.1226+0.7449i$       & 3 & upper bulb of $H_1$ \\
-    Period-$5$ centre & $\approx -0.5043+0.5628i$   & 5 & angle-$1/5$ bulb of $H_1$ \\
-    \bottomrule
-  \end{tabular}
-  \caption{The four centres of hyperbolic components of $\mathcal{M}$ studied
-           in this section.  Each is a superattracting parameter
-           ($f_{c_*}^p(0)=0$); their locations are marked in
-           Figure~\ref{fig:mandelbrot_portrait}.}
-  \label{tab:mandelbrot_centres}
-\end{table}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.80\textwidth]{../figures/mandelbrot_portrait.png}
-  \caption{The Mandelbrot set $\mathcal{M}$ rendered by
-           \texttt{mandelbrot\_portrait} in
-           \texttt{RiemannBasins.jl}.  The interior is shown in
-           near-black; the exterior is shaded by normalised escape time
-           \eqref{eq:escape_time} (blue gradient).
-           The four centres of Table~\ref{tab:mandelbrot_centres} are
-           marked with yellow dots: Bas\'ilica ($c=-1$), Airplane
-           ($c\approx -1.7549$), Douady rabbit
-           ($c\approx -0.1226+0.7449i$), and Period-$5$ centre
-           ($c\approx -0.5043+0.5628i$).  Every marked point is a
-           superattracting parameter; the corresponding Julia-set
-           basin portraits are shown in
-           Sections~\ref{subsec:basilica}--\ref{subsec:period5}.}
-  \label{fig:mandelbrot_portrait}
-\end{figure}
-
-\begin{theorem}[Douady--Hubbard, 1982 \cite{DouadyHubbard1985}]
-\label{thm:connectivity}
-For the quadratic family $f_c(z)=z^2+c$, the following are equivalent:
-\begin{enumerate}[label=\emph{(\roman*)}]
-  \item The Julia set $J_c$ is connected.
-  \item The filled Julia set $K_c=\{z\in\C : \{f_c^n(z)\}_{n\ge 0}
-        \text{ is bounded}\}$ is connected.
-  \item The critical orbit $\{0,c,c^2+c,\ldots\}$ is bounded, i.e.\
-        $c\in\mathcal{M}$.
-\end{enumerate}
-If $c\notin\mathcal{M}$, then $J_c$ is a Cantor set and every immediate
-basin is simply connected (in fact, $K_c=J_c$).
-\end{theorem}
-
-\begin{proof}[Proof idea]
-The key tool is the \emph{B\"ottcher coordinate at $\infty$}: since
-$\infty$ is a superattracting fixed point of $f_c$, there exists a
-conformal map $\Phi_c\colon B^0_\infty\to\{|w|>1\}$ conjugating $f_c$ to
-$w\mapsto w^2$.  The map $\Phi_c$ extends to the boundary of $B^0_\infty$
-if and only if no critical value lies in $B^0_\infty$, i.e.\ $0\notin
-B^0_\infty$, i.e.\ $c\in\mathcal{M}$.  When $c\in\mathcal{M}$, $\Phi_c$
-extends to $\partial B^0_\infty=J_c$, showing $J_c$ is connected.  When
-$c\notin\mathcal{M}$, $0\in B^0_\infty$ and iterating the Böttcher coordinate
-shows $J_c$ is a Cantor set.
-\end{proof}
-
-All four examples of this article ($c=-1$, $c\approx-1.7549$,
-$c\approx-0.1226+0.7449i$, $c\approx-0.5043+0.5628i$) lie inside
-$\mathcal{M}$, so their Julia sets are connected and each immediate basin
-$B^0_{z_k}$ is simply connected.  This is precisely what makes the
-basin portraits of Figures~\ref{fig:basilica_pcycle}--\ref{fig:period5_lch}
-consist of simply connected domains with no ``holes''.
-
-\paragraph{External rays and the Green's function.}
-The \emph{B\"ottcher coordinate at $\infty$} of $f_c$ defines the
-\emph{Green's function}
-\[
-  G_c(z) = \lim_{n\to\infty} \frac{1}{2^n}\log|f_c^n(z)|,
-  \qquad z\in B^0_\infty,
-\]
-which satisfies $G_c(f_c(z))=2G_c(z)$ and $G_c(z)\to 0$ as
-$z\to\partial B^0_\infty=J_c$.  Level sets $\{G_c=r\}$ are
-\emph{equipotential curves}; gradient lines of $G_c$ are the
-\emph{external rays} $\mathcal{R}_c(\theta)$ (at angle $\theta\in[0,1)$).
-When $c\in\mathcal{M}$, every rational ray $\mathcal{R}_c(p/q)$ lands
-at a point of $J_c$ (Douady--Hubbard); the combinatorics of landing
-points encodes the hyperbolic component structure of $\mathcal{M}$ and
-connects the symbolic dynamics of angle-doubling to the topology of
-$J_c$.  The normalised escape time~\eqref{eq:escape_time} is precisely
-$G_c(c)/\log 2$ (up to additive normalisation), so the smooth colouring
-of the exterior in Figure~\ref{fig:mandelbrot_portrait} is an approximation
-of the Green's function, and the visible ``bands'' before smoothing are
-the equipotential curves.
-
 \subsection{The quadratic family $f_c(z)=z^2+c$ (Bas\'ilica, $c=-1$)}
-\label{subsec:basilica}
 
 The map $f_{-1}(z)=z^2-1$ has degree $d=2$, so $2d-2=2$ critical points.
 In homogeneous notation: $F(z,t) = z^2-t^2$, $G(z,t)=t^2$.
@@ -1128,85 +884,6 @@ The three superattracting fixed points give $P=1$ (see Figure~\ref{fig:newton_z3
 \end{figure}
 
 
-\subsection{Halley's method for $z^3-1$}
-\label{subsec:halley}
-
-Halley's method (1694) for solving $p(z)=0$ is the second-order
-Householder iteration
-\begin{equation}\label{eq:halley}
-  H(z) = z - \frac{2p(z)p'(z)}{2[p'(z)]^2 - p(z)p''(z)}.
-\end{equation}
-It achieves \emph{cubic} convergence near a simple root (error cubed at
-each step), compared with quadratic for Newton.
-
-\paragraph{Rational form for $p(z)=z^3-1$.}
-With $p(z)=z^3-1$, $p'(z)=3z^2$, $p''(z)=6z$ formula~\eqref{eq:halley} simplifies to
-\begin{equation}\label{eq:halley_z3}
-  H(z) = \frac{z(z^3+2)}{2z^3+1}
-        = \frac{z^4+2z}{2z^3+1},
-\end{equation}
-a rational map of degree $d=4$.  The Wronskian (in the affine chart) is
-\[
-  W(z) = P'Q - PQ'
-       = (4z^3+2)(2z^3+1)-(z^4+2z)(6z^2)
-       = 2(z^3-1)^2 = 2(z-1)^2(z-\omega)^2(z-\bar\omega)^2,
-\]
-where $\omega=e^{2\pi i/3}$.  Thus $H$ has $2d-2=6$ critical points
-(counted with multiplicity), all coinciding with the three roots of unity
-$1,\omega,\bar\omega$, each of multiplicity~$2$.
-
-\paragraph{Fixed-point analysis.}
-The fixed points of $H$ are found by solving $H(z)=z$:
-\[
-  z(z^3+2) = z(2z^3+1) \;\Longrightarrow\; z^3=1
-  \quad\text{(plus }z=0\text{ and }z=\infty\text{)}.
-\]
-So $H$ has five fixed points in $\Pone$ ($=d+1$):
-\begin{itemize}
-  \item $z=1,\omega,\bar\omega$: superattracting (each is both a critical
-        point and a fixed point, so the multiplier $H'(z_k)=0$).
-  \item $z=0$: repelling, $H'(0)=2(0-1)^2/(2\cdot 0+1)^2=2$.
-  \item $z=\infty$: repelling (in the second chart
-        $\hat H(w)=w(2+w^3)/(1+2w^3)$, $\hat H'(0)=2$).
-\end{itemize}
-Since every critical point lies in an immediate basin of a superattracting
-fixed point, Fatou's theorem gives $P=1$ and the dynamics is completely
-determined by the three basins.
-
-The convergence near the roots is cubic rather than quadratic, which
-manifests in the basin portrait as smoother boundaries and a steeper
-lightness gradient away from each attractor.  Compare
-Figure~\ref{fig:halley_z3_pcycle} with the Newton portrait
-(Figure~\ref{fig:newton_z3_pcycle}): the basins are qualitatively similar
-but the Julia set of Halley is strictly contained in that of Newton's
-method (Halley converges for strictly more starting points), and the
-interior shading is more compressed near the attractors.
-
-\begin{example}[Halley portrait]
-\begin{verbatim}
-  # H(z) = (z^4+2z)/(2z^3+1)
-  num = complex([0.0, 2.0, 0.0, 0.0, 1.0])   # z^4 + 2z
-  den = complex([1.0, 0.0, 0.0, 2.0])         # 2z^3 + 1
-  print_critical_orbit_summary(num, den)
-  # → 3 superattracting fixed points (p=1), 2 repelling fixed points
-  # → P = 1
-  basin_portrait_pcycle(num, den, 1; iter=300, colorstrategy="pcycle_lch",
-                        show_plot=true)
-\end{verbatim}
-\end{example}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.90\textwidth]{../figures/pcycle_halley_z3.png}
-  \caption{Basin portrait of Halley's method~\eqref{eq:halley_z3} for
-           $z^3-1$, $d=4$.  Three superattracting fixed points
-           $1,\omega,\bar\omega$ (roots of $z^3-1$) each of multiplicity~2;
-           two repelling fixed points at $z=0$ and $z=\infty$.
-           Compare with Figure~\ref{fig:newton_z3_pcycle}: Halley's
-           basins cover a larger portion of the sphere.}
-  \label{fig:halley_z3_pcycle}
-\end{figure}
-
 \subsection{The map $f(z)=z^2$ (superattracting fixed point)}
 
 For $f(z)=z^2$: $W(z)=2z$, unique critical point $z=0$, orbit $0\to 0$.
@@ -1271,216 +948,6 @@ each element of the 3-cycle, together with the basin of $\infty$.
   \label{fig:airplane_pcycle}
 \end{figure}
 
-
-\subsection{The Douady rabbit $f_c(z)=z^2+c$ (3-cycle, $c\approx-0.1226+0.7449i$)}
-\label{subsec:rabbit}
-
-The same polynomial equation
-\[
-  c^3+2c^2+c+1=0
-\]
-that determines the airplane parameter (Section~\ref{subsec:airplane}) has
-two additional complex conjugate roots.  Taking the root with positive
-imaginary part gives
-\[
-  c_{\mathrm{r}}\approx -0.12256116688 + 0.74486176662i,
-\]
-the parameter of the \emph{Douady rabbit} \cite{DouadyHubbard1985}.  Since
-$c_{\mathrm{r}}$ satisfies the same equation, the critical orbit verification
-is identical:
-\[
-  f_{c_{\mathrm{r}}}(0)=c_{\mathrm{r}},\quad
-  f_{c_{\mathrm{r}}}(c_{\mathrm{r}})=c_{\mathrm{r}}^2+c_{\mathrm{r}},\quad
-  f_{c_{\mathrm{r}}}(c_{\mathrm{r}}^2+c_{\mathrm{r}})=0,
-\]
-so $0$ lies on a superattracting 3-cycle
-$\Gamma_3=\{0,\,c_{\mathrm{r}},\,c_{\mathrm{r}}^2+c_{\mathrm{r}}\}$ and
-Algorithm~\ref{alg:critical} returns $P=3$ as for the airplane.
-
-Geometrically the two maps are strikingly different.  The airplane Julia set
-has thin antenna-like tendrils; the Douady rabbit Julia set is a connected,
-locally connected compact set with three prominent \emph{round petals}---the
-visual origin of its name \cite{DouadyHubbard1985}.  These large, rounded
-sub-basins make the rabbit a cleaner illustration of the
-\texttt{pcycle\_lch} colour encoding: with
-\texttt{hue\_band}$=120^\circ$ each of the three sub-basins $B_0$,
-$B_{c_{\mathrm{r}}}$, $B_{c_{\mathrm{r}}^2+c_{\mathrm{r}}}$ receives a
-hue offset of $40^\circ$ within the same perceptual hue family, producing
-three clearly distinguishable shades
-(see Figure~\ref{fig:rabbit_pcycle_lch}).
-
-\begin{example}[Douady rabbit with LCH coloring]
-\begin{verbatim}
-  using RiemannBasins
-  # c is the complex root of c^3 + 2c^2 + c + 1 = 0, Im(c) > 0
-  c_rabbit = let x = complex(-0.12, 0.75)
-               for _ in 1:80
-                 x -= (x^3 + 2x^2 + x + 1) / (3x^2 + 4x + 1)
-               end; x
-             end
-  num = ComplexF64.([c_rabbit, 0.0, 1.0])
-  den = ComplexF64.([1.0])
-  basin_portrait_pcycle(num, den, 3;
-                        iter = 400,
-                        colorstrategy = "pcycle_lch",
-                        hue_band = 120.0,
-                        show_cyclic_palette = true,
-                        xinterval = (-1.5, 1.5),
-                        yinterval = (-1.5, 1.5))
-\end{verbatim}
-\end{example}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.70\textwidth]{../figures/pcycle_rabbit_3cycle_lch.png}
-  \caption{Basin portrait of the Douady rabbit $f_c(z)=z^2+c$
-           ($c\approx -0.1226+0.7449i$, the complex root with positive
-           imaginary part of $c^3+2c^2+c+1=0$)
-           rendered with the \texttt{pcycle\_lch} colour strategy
-           (\texttt{hue\_band}$=120^\circ$).
-           The three sub-basins $B_0$, $B_{c_{\mathrm{r}}}$,
-           $B_{c_{\mathrm{r}}^2+c_{\mathrm{r}}}$ are separated by
-           hue offsets of $40^\circ$; grey is the basin of~$\infty$.
-           Compared with the airplane (Figure~\ref{fig:airplane_pcycle}),
-           the sub-basins are large and round, making the cyclic permutation
-           $f\colon B_0\to B_{c_{\mathrm{r}}}\to
-           B_{c_{\mathrm{r}}^2+c_{\mathrm{r}}}\to B_0$
-           directly readable from the colours.}
-  \label{fig:rabbit_pcycle_lch}
-\end{figure}
-
-%% ---------------------------------------------------------------------------
-\subsection{Period-5 centre $f_c(z)=z^2+c$
-            ($c\approx-0.5043+0.5628i$, 5-cycle)}
-\label{subsec:period5}
-%% ---------------------------------------------------------------------------
-
-The Mandelbrot set contains a hyperbolic component of period~5 attached to
-the main cardioid at internal angle $1/5$.  Its centre satisfies
-$f_c^{\circ 5}(0)=0$ and is located at
-\[
-  c_5\approx -0.50434017545 + 0.56276576145i.
-\]
-For this parameter the critical orbit closes after exactly five steps, so
-Algorithm~\ref{alg:critical} returns $P=5$.
-
-The five sub-basins $B_0,B_1,\ldots,B_4$ (indexed by the position of a
-pixel's limit point in $\Gamma_5$) are related by the cyclic permutation
-$f\colon B_k\to B_{k+1\bmod 5}$.  With \texttt{hue\_band}$=150^\circ$
-the encoding assigns hue offsets $0^\circ,30^\circ,60^\circ,90^\circ,
-120^\circ$ to $B_0,\ldots,B_4$, yielding five perceptually well-separated
-shades within a single Okabe-Ito hue family
-(see Figure~\ref{fig:period5_lch}).  The image reveals the five-fold
-rotational near-symmetry of the Julia set and makes the cyclic dynamics
-directly legible at a glance.  The circular colour-wheel inset in the
-top-right corner displays the five sub-basin hues in cyclic order
-($B_0\to B_1\to\cdots\to B_4\to B_0$), serving as an on-figure legend
-for the colour encoding.
-
-\begin{example}[Period-5 centre]
-\begin{verbatim}
-  using RiemannBasins
-  c5 = let x = complex(-0.5024, 0.5629)
-         for _ in 1:100
-           z = 0+0im; dz = 0+0im
-           for _ in 1:5
-             z, dz = z^2 + x, 2z*dz + 1
-           end
-           x -= z/dz
-         end; x
-       end   # = -0.50434...+0.56277...i
-  num = ComplexF64.([c5, 0.0, 1.0])
-  den = ComplexF64.([1.0])
-  basin_portrait_pcycle(num, den, 5;
-                        iter = 500,
-                        colorstrategy = "pcycle_lch",
-                        hue_band = 150.0,
-                        show_cyclic_palette = true,
-                        xinterval = (-1.5, 1.6),
-                        yinterval = (-1.2, 1.9))
-\end{verbatim}
-\end{example}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.70\textwidth]{../figures/pcycle_period5_lch.png}
-  \caption{Basin portrait of the period-5 centre
-           $f_c(z)=z^2+c$ ($c\approx-0.5043+0.5628i$, superattracting
-           5-cycle) with the \texttt{pcycle\_lch} colour strategy
-           (\texttt{hue\_band}$=150^\circ$, hue step $30^\circ$ per
-           sub-basin).  The five sub-basins $B_0,\ldots,B_4$ are encoded
-           by increasing hue within the same perceptual family; the
-           five-fold near-symmetry of the Julia set and the cyclic
-           permutation $f\colon B_0\to B_1\to\cdots\to B_4\to B_0$
-           are readable directly from the colour progression.
-           The circular colour-wheel inset (top right) shows the five
-           sub-basin hues in their cyclic order.}
-  \label{fig:period5_lch}
-\end{figure}
-
-\subsection{A proper rational map: $f(z)=(z^2-1)/(z^2+1)$}
-\label{subsec:rational}
-
-All preceding examples are either polynomials or related to root-finding
-iteration.  We now exhibit a \emph{genuinely rational} function whose
-dynamics is not conjugate to any polynomial---here both $0$ and $\infty$
-play symmetric roles---and that has a superattracting $2$-cycle.
-
-\paragraph{The map and its critical points.}
-Set $f(z)=(z^2-1)/(z^2+1)$, a rational map of degree $d=2$.
-The Wronskian (affine chart) is
-\[
-  W(z) = P'Q - PQ' = 2z(z^2+1) - (z^2-1)2z = 4z,
-\]
-so the only affine critical point is $z=0$ (with multiplicity~1); the
-second critical point is $z=\infty$ (Wronskian degree $=2d-2=2$). 
-
-\paragraph{Superattracting 2-cycle.}
-Direct calculation gives
-\[
-  f(0) = \frac{0-1}{0+1} = -1, \qquad f(-1) = \frac{1-1}{1+1} = 0,
-\]
-so $\{0,-1\}$ is a $2$-cycle.  Since $f'(0)=4\cdot 0/(0+1)^2=0$, the
-cycle point $z_0=0$ is a critical point; hence $\{0,-1\}$ is a
-\emph{superattracting} $2$-cycle (Lyapunov constant $c(\{0,-1\})=0$).
-
-The orbit of the second critical point: $f(\infty)=1$, $f(1)=0$, and
-from that point on the orbit follows the $2$-cycle.  Thus \emph{both}
-critical points are attracted to $\{0,-1\}$, confirming by
-Corollary~\ref{cor:bound} that this is the \emph{only} attracting cycle
-and $P=2$.
-
-\paragraph{Fixed points.}
-Solving $f(z)=z$ gives $z^3-z^2+z+1=0$, whose three solutions are all
-repelling (since both critical orbits converge to the $2$-cycle, there
-is no critical point available to stabilize a fixed point).
-
-\begin{example}[Proper rational portrait]
-\begin{verbatim}
-  # f(z) = (z^2 - 1) / (z^2 + 1)
-  num = complex([-1.0, 0.0, 1.0])   # z^2 - 1
-  den = complex([ 1.0, 0.0, 1.0])   # z^2 + 1
-  print_critical_orbit_summary(num, den)
-  # → 1 superattracting 2-cycle, 3 repelling fixed points
-  # → P = 2
-  basin_portrait_pcycle(num, den, 2; iter=400, colorstrategy="pcycle_lch",
-                        hue_band=180.0, show_plot=true)
-\end{verbatim}
-\end{example}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.90\textwidth]{../figures/pcycle_rational_2cycle.png}
-  \caption{Basin portrait of $f(z)=(z^2-1)/(z^2+1)$, the simplest
-           proper rational map with a superattracting $2$-cycle $\{0,-1\}$.
-           Degree $d=2$, two critical points ($z=0$ and $z=\infty$), both
-           attracted to the cycle.  Chart~1 (left): the two immediate basins
-           $B^0_0$ (orange) and $B^0_{-1}$ (blue) separated by the Julia set.
-           Chart~2 (right): the neighbourhood of $\infty$, which lies in
-           $B^0_0$ since $\infty\to 1\to 0$.}
-  \label{fig:rational_2cycle}
-\end{figure}
-
 \subsection{Summary table}
 
 \begin{center}
@@ -1493,10 +960,7 @@ $f(z)=z^2$         & 2 & 1  & 1 & superattr.\ ($p=1$) \\
 $f(z)=z^2-1$       & 2 & 2  & 2 & superattr.\ ($p=2$) + superattr.\ ($p=1$ at $\infty$) \\
 Newton $z^3-1$     & 3 & 4  & 1 & 3 superattr.\ ($p=1$) + 1 indet. \\
 Airplane $z^2+c$   & 2 & 2  & 3 & superattr.\ ($p=3$) + superattr.\ ($p=1$ at $\infty$) \\
-Rabbit $z^2+c$     & 2 & 2  & 3 & superattr.\ ($p=3$) + superattr.\ ($p=1$ at $\infty$) \\
-Period-5 $z^2+c$   & 2 & 2  & 5 & superattr.\ ($p=5$) + superattr.\ ($p=1$ at $\infty$) \\
-Halley $z^3-1$     & 4 & 6  & 1 & 3 superattr.\ ($p=1$), 2 repelling fixed pts \\
-$(z^2-1)/(z^2+1)$  & 2 & 2  & 2 & 1 superattr.\ $2$-cycle (proper rational) \\
+Halley $z^3-1$     & 5 & 8  & 1 & 3 superattr.\ ($p=1$) \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -1530,26 +994,10 @@ of the orbit to detect irrational rotation numbers).
 
 For a one-parameter family $f_c$ (e.g., $z^2+c$),
 the function $c\mapsto P(c)$ records the attracting period.  Its level
-sets are the \emph{hyperbolic components} of the Mandelbrot set
-$\mathcal{M}$ (Section~\ref{subsec:mandelbrot}, \cite{DouadyHubbard1985}):
-$P(c)=p$ on the interior of $H_p$, while $P(c)=0$ on the exterior
-of $\mathcal{M}$ (escaping parameters) and on the boundary
-$\partial\mathcal{M}$ (parabolic, Siegel, Misiurewicz and other
-non-hyperbolic parameters).
-
-The Mandelbrot portrait produced by \texttt{mandelbrot\_portrait}
-(Figure~\ref{fig:mandelbrot_portrait}) can therefore be read as a
-\emph{parameter portrait}: each pixel colour encodes the escape speed
-of the critical orbit, and the near-black interior is exactly
-$\mathcal{M}$.  The four superattracting centres studied in this article
-are marked explicitly on the figure; they are canonical representatives
-of periods $2$, $3$, $3$, and $5$.
-
-An algorithmic study of the hyperbolic boundaries of $\mathcal{M}$ via
-\texttt{max\_attracting\_period} applied to a dense parameter grid is
-a natural extension of the present work, and would yield a computational
-counterpart to the theoretical description of $\mathcal{M}$ in
-\cite{DouadyHubbard1985}.
+sets are the hyperbolic components of the Mandelbrot set
+\cite{DouadyHubbard1985}.  An algorithmic study of these boundaries via
+\texttt{max\_attracting\_period} applied to a parameter grid is a natural
+extension of the present work.
 
 \subsection{Algorithmic complexity and parallelism}
 
@@ -1604,7 +1052,7 @@ computation.
 \bigskip
 \noindent\textbf{Acknowledgements.}
 This work is a continuation of the program
-initiated in \cite{Extremiana2019,AlvarezAparicio2023}.  Computations were
+initiated in \cite{Extremiana2019,Alvarez2023}.  Computations were
 performed using the Julia language \cite{Julia2017} with the
 \texttt{RiemannBasins.jl} package \cite{RiemannBasins}.
 L.\,J.\,H.-P.\ acknowledges support from project REGI25/61 of the

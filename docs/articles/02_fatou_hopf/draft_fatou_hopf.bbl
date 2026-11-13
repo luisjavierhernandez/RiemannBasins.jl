@@ -1,0 +1,90 @@
+\begin{thebibliography}{10}
+
+\bibitem{LCD2022}
+V.~\'Alvarez-Aparicio.
+\newblock {LCD.jl}: {L}yapunov {C}ycle {D}etector for rational self-maps of the
+  {H}opf fibration, 2022.
+\newblock Julia package.
+
+\bibitem{Alvarez2023}
+V.~\'Alvarez-Aparicio, M.~Garc\'ia-Calcines, J.\, J.~Hern\'andez-Paricio, L.\,
+  and T.~Rivas-Rodr\'iguez, M.\.
+\newblock Algorithms for computing basins of attraction associated with a
+  rational self-map of the {H}opf fibration based on {L}yapunov exponents.
+\newblock {\em Topology and its Applications}, 339:108578, 2023.
+\newblock Article 108578.
+
+\bibitem{RiemannBasins}
+V.~\'Alvarez-Aparicio, J.~Hern\'andez-Paricio, L.\, and T.~Rivas-Rodr\'iguez,
+  M.\.
+\newblock {RiemannBasins.jl}: Basins of attraction on the {R}iemann sphere,
+  2026.
+\newblock Julia package.
+
+\bibitem{Beardon1991}
+F.~Beardon, A.\.
+\newblock {\em Iteration of Rational Functions}.
+\newblock Number 132 in Graduate Texts in Mathematics. Springer-Verlag, New
+  York, 1991.
+
+\bibitem{Julia2017}
+J.~Bezanson, A.~Edelman, S.~Karpinski, and B.~Shah, V.\.
+\newblock Julia: A fresh approach to numerical computing.
+\newblock {\em SIAM Review}, 59(1):65--98, 2017.
+
+\bibitem{Extremiana2019}
+I.~Extremiana-Aldana, J.\, J.~Hern\'andez-Paricio, L.\, and
+  T.~Rivas-Rodr\'iguez, M.\.
+\newblock A {J}ulia implementation of a numerical method based on the
+  {L}yapunov exponent for detecting basins of attraction.
+\newblock {\em Applied Numerical Mathematics}, 145:72--90, 2019.
+
+\bibitem{Gelfert2010}
+K.~Gelf\`ert and M.~Rams.
+\newblock The {L}yapunov spectrum of some parabolic systems.
+\newblock {\em Ergodic Theory and Dynamical Systems}, 29(3):919--940, 2010.
+
+\bibitem{HernandezParicio2012}
+J.~Hern\'andez-Paricio, L.\.
+\newblock Plotting basins of attraction in the complex plane via iteration of
+  rational functions.
+\newblock {\em Revista de la Real Academia de Ciencias Exactas, F\'isicas y
+  Naturales. Serie A. Matem\'aticas}, 2012.
+\newblock (to be completed with volume/pages).
+
+\bibitem{PBURF2019}
+J.~Hern\'andez-Paricio, L.\.
+\newblock {PBURF.jl}: {P}lot {B}asins of attraction and {U}nits for {R}ational
+  {F}unctions, 2019.
+\newblock Julia package.
+
+\bibitem{McMullen1987}
+T.~McMullen, C.\.
+\newblock Families of rational maps and iterative root-finding algorithms.
+\newblock {\em Annals of Mathematics}, 125(3):467--493, 1987.
+
+\bibitem{Milnor2006}
+J.~Milnor.
+\newblock {\em Dynamics in One Complex Variable}.
+\newblock Number 160 in Annals of Mathematics Studies. Princeton University
+  Press, 3rd edition, 2006.
+
+\bibitem{Siegel1942}
+L.~Siegel, C.\.
+\newblock Iteration of analytic functions.
+\newblock {\em Annals of Mathematics}, 43:607--612, 1942.
+
+\bibitem{Sullivan1983}
+D.~Sullivan.
+\newblock Quasiconformal homeomorphisms and dynamics~{I}: Solution of the
+  {F}atou-{J}ulia problem on wandering domains.
+\newblock {\em Annals of Mathematics}, 122(3):401--418, 1985.
+
+\bibitem{Yoccoz1988}
+J.-C. Yoccoz.
+\newblock Lin\'earisation des germes de diff\'eomorphismes holomorphes de
+  $(\mathbf{C},0)$.
+\newblock {\em Comptes Rendus de l'Acad\'emie des Sciences, Paris}, 306:55--58,
+  1988.
+
+\end{thebibliography}

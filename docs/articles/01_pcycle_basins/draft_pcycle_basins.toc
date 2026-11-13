@@ -1,0 +1,51 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Preliminaries: the Riemann sphere in homogeneous coordinates}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}The projective line $\mathbf {P}^1(\mathbb {C})$}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Chordal metric}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Rational maps in homogeneous coordinates}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Spherical derivative --- two-chart formula}{5}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Periodic orbits and their stability}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}$p$-Cycles}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Stability and the Lyapunov constant}{6}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Superattracting cycles and critical points}{7}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Fatou components and basins of $p$-cycles}{7}{section.4}%
+\contentsline {subsection}{\numberline {4.1}The Fatou and Julia decomposition}{7}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Basins of $p$-cycles}{7}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}B\"ottcher coordinates near superattracting cycles}{8}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}K\oe nigs linearization near attracting cycles}{8}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Algorithmic framework}{9}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Homogeneous iteration and normalisation}{9}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Algorithm 1: Critical orbit analysis}{9}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Algorithm 2: Basin portrait for $p$-cycles}{9}{subsection.5.3}%
+\contentsline {section}{\numberline {6}Colour encoding for $p$-cycle basin portraits}{10}{section.6}%
+\contentsline {subsection}{\numberline {6.1}The $\mathrm {LCH}_{ab}$ perceptual colour space}{11}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Three-level encoding scheme}{12}{subsection.6.2}%
+\contentsline {paragraph}{Level 1 (which cycle) --- hue $H$.}{12}{section*.2}%
+\contentsline {paragraph}{Level 2 (which sub-basin) --- hue shift $\Delta H$.}{12}{section*.3}%
+\contentsline {paragraph}{Level 3 (convergence speed) --- lightness $L$.}{12}{section*.4}%
+\contentsline {paragraph}{Coherence with $p=1$ (fixed points).}{12}{section*.5}%
+\contentsline {subsection}{\numberline {6.3}Implementation in \texttt {RiemannBasins.jl}}{12}{subsection.6.3}%
+\contentsline {section}{\numberline {7}Examples and visualizations}{13}{section.7}%
+\contentsline {subsection}{\numberline {7.1}The quadratic family $f_c(z)=z^2+c$ and the Mandelbrot set}{13}{subsection.7.1}%
+\contentsline {paragraph}{External rays and the Green's function.}{15}{section*.6}%
+\contentsline {subsection}{\numberline {7.2}The quadratic family $f_c(z)=z^2+c$ (Bas\'ilica, $c=-1$)}{15}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Newton's method for $z^3-1$}{16}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Halley's method for $z^3-1$}{18}{subsection.7.4}%
+\contentsline {paragraph}{Rational form for $p(z)=z^3-1$.}{18}{section*.7}%
+\contentsline {paragraph}{Fixed-point analysis.}{19}{section*.8}%
+\contentsline {subsection}{\numberline {7.5}The map $f(z)=z^2$ (superattracting fixed point)}{19}{subsection.7.5}%
+\contentsline {subsection}{\numberline {7.6}The airplane map $f_c(z)=z^2+c$ (3-cycle, $c\approx -1.7549$)}{19}{subsection.7.6}%
+\contentsline {subsection}{\numberline {7.7}The Douady rabbit $f_c(z)=z^2+c$ (3-cycle, $c\approx -0.1226+0.7449i$)}{22}{subsection.7.7}%
+\contentsline {subsection}{\numberline {7.8}Period-5 centre $f_c(z)=z^2+c$ ($c\approx -0.5043+0.5628i$, 5-cycle)}{22}{subsection.7.8}%
+\contentsline {subsection}{\numberline {7.9}A proper rational map: $f(z)=(z^2-1)/(z^2+1)$}{24}{subsection.7.9}%
+\contentsline {paragraph}{The map and its critical points.}{24}{section*.9}%
+\contentsline {paragraph}{Superattracting 2-cycle.}{24}{section*.10}%
+\contentsline {paragraph}{Fixed points.}{26}{section*.11}%
+\contentsline {subsection}{\numberline {7.10}Summary table}{27}{subsection.7.10}%
+\contentsline {section}{\numberline {8}Discussion and open problems}{27}{section.8}%
+\contentsline {subsection}{\numberline {8.1}The bound $P$ and its sharpness}{27}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Beyond attracting cycles}{27}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Families and bifurcations}{27}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Algorithmic complexity and parallelism}{28}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Homogeneous arithmetic and exact computation}{28}{subsection.8.5}%
+\contentsline {section}{\numberline {9}Conclusions}{28}{section.9}%
