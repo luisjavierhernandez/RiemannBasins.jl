@@ -156,8 +156,7 @@ point in a \emph{Siegel disc or Herman ring} the orbit is quasi-periodic
 and the sequence of Lyapunov approximations oscillates around $1$ without
 converging.
 
-These three regimes --- geometric decay below $1$, polynomial approach
-to $1$, and oscillation around $1$ --- form the basis of our classification
+These three regimes --- geometric decay below $1$, logarithmically slow approach\nto $1$ (at rate $\tfrac{\log N}{N}$), and oscillation around $1$ --- form the basis of our classification
 algorithm.
 
 The paper is organised as follows.  Section~\ref{sec:prelim} recalls the
@@ -344,7 +343,7 @@ We briefly recall the criterion proved in \cite{Alvarez2023}.
 The convergence rate in part~(iii) is geometric: the gap between
 consecutive approximations decays as $O(c^k)$ with $c < 1$.
 
-\subsection{Parabolic basins: polynomial convergence}
+\subsection{Parabolic basins: logarithmically slow convergence}
 
 Let $f^q$ have a parabolic fixed point $\zeta$ with multiplier
 $\lambda = e^{2\pi ip/q}$ and parabolic multiplicity $m \ge 1$ (so
@@ -722,8 +721,9 @@ the standard affine approach.
 
 The two main new technical contributions are:
 \begin{enumerate}[label=(\arabic*)]
-  \item The \emph{parabolic detection criterion} based on the polynomial
-        convergence rate of the Lyapunov approximation sequence, which
+  \item The \emph{parabolic detection criterion} based on the
+        $\tfrac{\log N}{N}$ convergence rate of the Lyapunov approximation
+        sequence, which
         allows one to distinguish parabolic basins from attracting ones
         and from the Julia set without computing Fatou coordinates
         explicitly.
