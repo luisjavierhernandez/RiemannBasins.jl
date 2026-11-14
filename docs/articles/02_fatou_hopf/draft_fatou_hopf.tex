@@ -82,9 +82,9 @@ The main contributions of the present paper are:
   \item A \emph{convergence-rate criterion} that distinguishes parabolic
         basins from attracting basins and from the Julia set: for orbits
         tending to a parabolic cycle the Lyapunov approximation sequence
-        $L_{f^S}^{[0,N]}(\phi^S)$ converges to~$1$ with polynomial rate
-        $O(N^{-1/m})$, where $m$ is the parabolic multiplicity, whereas
-        for attracting basins the convergence is geometric.
+        $L_{f^S}^{[0,N]}(\phi^S)$ converges to~$1$ at rate
+        $\tfrac{m+1}{m}\cdot\tfrac{\log N}{N}$, where $m$ is the parabolic
+        multiplicity, whereas for attracting basins the convergence is geometric.
   \item A \emph{rotation-number algorithm on $S^3$} that detects and
         measures the irrational rotation in Siegel discs and Herman rings,
         working entirely within the normalised homogeneous coordinates of
@@ -148,7 +148,8 @@ between consecutive Lyapunov approximations satisfies (see
 for $k$ large enough, with the gap decreasing \emph{geometrically} at rate
 $c_i < 1$.  For a point in a \emph{parabolic} basin, by contrast, the
 analogous sequence converges to $1$ but the gap decreases only
-polynomially, at rate $k^{-1/m-1}$ where $m$ is the parabolic multiplicity
+at the slower rate $\tfrac{m+1}{m}\cdot\tfrac{\log k}{k}$,
+where $m$ is the parabolic multiplicity
 (the number of attracting petals of the fixed point of $f^{q_i}$).  For a
 point in a \emph{Siegel disc or Herman ring} the orbit is quasi-periodic
 and the sequence of Lyapunov approximations oscillates around $1$ without
@@ -359,11 +360,14 @@ The key estimate is:
     \item The Lyapunov approximations satisfy
           \begin{equation}\label{eq:parabolic_rate}
             1 - L_{f^S}^{[0,N]}(\phi^S)(y)
-            \sim \frac{C_m}{\log N}
-            \quad\text{as }N\to\infty,
+            \sim \frac{m+1}{m}\cdot\frac{\log N}{N}
+            \quad\text{as }N\to\infty.
           \end{equation}
-          for a constant $C_m > 0$ depending only on $m$ and the local
-          dynamics near $\zeta$.
+          In particular, the gap between consecutive approximations satisfies
+          $\bigl|L_{f^S}^{[0,N-1]}(\phi^S)(y) - L_{f^S}^{[0,N]}(\phi^S)(y)\bigr|
+          \sim \tfrac{m+1}{m}\cdot\tfrac{\log N}{N^2}$,
+          which tends to zero much more slowly than the geometric rate $O(c^N)$
+          of the attracting case, but much faster than $1/\!\log N$.
   \end{enumerate}
 \end{proposition}
 
@@ -399,16 +403,17 @@ three cases:
 
 \begin{algorithm_desc}[Lyapunov regime detection]\label{alg:lyapunov}
   Input: a point $y \in S^3$, a maximum number of iterations $M$,
-  a tolerance $\epsilon > 0$, and a polynomial-rate threshold $\alpha_0$.
+  and a tolerance $\epsilon > 0$.
   \begin{enumerate}[label=Step \arabic*.]
     \item Compute the sequence $a_k := L_{f^S}^{[0,k]}(\phi^S)(y)$ for
           $k = 0, 1, \ldots, M$.
     \item If $a_M < 1 - \epsilon$ and
           $|a_{M-1} - a_M| \le \epsilon^2$:
           declare \textsc{attracting} basin and record $c \approx a_M$.
-    \item Else, if $|a_M - 1| \le \epsilon$ and
-          $1 - a_k \ge C k^{-\alpha_0}$ for some $C > 0$ fitted by least
-          squares on $\{(k, 1-a_k)\}$:
+    \item Else, if $|a_M - 1| \le \epsilon$ and the sequence
+          $k(1-a_k)/\log k$ is approximately constant
+          (least-squares fit of $\tfrac{m+1}{m}$ on
+          $\{(k,\, k(1-a_k)/\log k)\}_{k\ge k_0}$):
           declare \textsc{parabolic} basin.
     \item Else: defer to the rotation-number algorithm
           (Algorithm~\ref{alg:rotation}).
