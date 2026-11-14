@@ -156,7 +156,7 @@ point in a \emph{Siegel disc or Herman ring} the orbit is quasi-periodic
 and the sequence of Lyapunov approximations oscillates around $1$ without
 converging.
 
-These three regimes --- geometric decay below $1$, logarithmically slow approach\nto $1$ (at rate $\tfrac{\log N}{N}$), and oscillation around $1$ --- form the basis of our classification
+These three regimes --- geometric decay below $1$, logarithmically slow approach into $1$ (at rate $\tfrac{\log N}{N}$), and oscillation around $1$ --- form the basis of our classification
 algorithm.
 
 The paper is organised as follows.  Section~\ref{sec:prelim} recalls the
@@ -272,6 +272,16 @@ L_g^{[0,s]}(\phi)(x)$ is constant on basins of attracting cycles:
 $L_f(\phi)|_{B_f(C_i)} = c_i$ (almost everywhere), where the \emph{Lyapunov
 constant} $c_i$ of cycle $C_i$ equals the $q_i$-th geometric mean of the
 spherical derivative around the cycle \cite[Prop.~5]{Alvarez2023}.
+
+\begin{remark}[Birkhoff averages]\label{rem:birkhoff}
+Taking logarithms, $\log L_g^{[0,N]}(\phi)(x) = \frac{1}{N+1}\sum_{k=0}^{N}
+\log\phi(g^k(x))$ is the \emph{Birkhoff average} of $\log\phi$ along the
+orbit of~$x$.  Birkhoff's ergodic theorem therefore guarantees that
+$L_g(\phi)(x)$ exists and equals $c_i$ almost everywhere on $B_f(C_i)$,
+with respect to any ergodic $f$-invariant measure supported on the basin.
+In particular no additional argument is required to justify the ``almost
+everywhere'' qualifier in the statement above.
+\end{remark}
 
 %% ===========================================================================
 \section{Sullivan's classification of Fatou components}
@@ -770,6 +780,19 @@ Several directions for future work remain open:
         boundaries have fractal structure and their numerical
         visualisation is currently limited by the speed of convergence
         near parabolic parameters.
+
+  \item \textbf{Acceleration of Birkhoff averages in parabolic basins.}
+        As noted in Remark~\ref{rem:birkhoff}, the Lyapunov approximation
+        sequence is a Birkhoff average of $\log\phi^S$.  In parabolic
+        basins its convergence rate is $\tfrac{\log N}{N}$, which makes
+        basin classification slow for orbits close to the parabolic
+        boundary.  Classical summability methods for Birkhoff
+        averages---Cesàro means of higher order, Richardson extrapolation,
+        or the Shanks--Aitken transformation applied to the partial
+        sums---can recover the limit with far fewer orbit steps.
+        Implementing such an accelerator in \texttt{RiemannBasins.jl}
+        is a natural next step that could substantially reduce the
+        iteration count in the parabolic regime.
 \end{itemize}
 
 \bigskip
