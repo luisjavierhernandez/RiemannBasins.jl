@@ -197,7 +197,7 @@ see \cite[Def.~12]{Alvarez2023}), there are well-defined induced maps:
 \]
 \[
   \RS:\Sthree\to\Sthree,\quad
-  \RS(z,t) = \frac{(F(z,t),G(z,t))}{\|(F(z,t),G(z,t))\|},
+  \RS(z,t) = \frac{(F(z,t),G(z,t))}{\sqrt{|F(z,t)|^2+|G(z,t)|^2}},
 \]
 \[
   \RP:\Pone\to\Pone,\quad \RP[z:t]=[F(z,t):G(z,t)],
@@ -210,21 +210,29 @@ $q:\Sthree\to\Pone$ is the Hopf fibration $q(z,t) = [z:t]$.
 
 \subsection{Normalisation and overflow prevention}
 
-The \emph{normalised homogeneous pair} $[F,G]$ is defined by
+The normalisation in the definition of $\RS$ uses the
+\emph{pointwise Euclidean norm} on $\C^2$:
 \[
-  [F,G] := \frac{(F,G)}{\|(F,G)\|},
+  \|(F(z,t),G(z,t))\|_2 := \sqrt{|F(z,t)|^2+|G(z,t)|^2},
 \]
-where $\|(F,G)\| = \|F\| + \|G\|$ and $\|F\| = \sum |a_i|$ for
-$F(z,t) = \sum a_i z^i t^{d-i}$.  Since coefficients are bounded and
-evaluation on the unit disc satisfies \eqref{eq:eval_bound} below, the
-Hopf endomorphism $\RS$ maps $S^3$ into $S^3$ without overflow.
+which is the unique norm that maps a nonzero vector to the unit sphere
+$S^3 \subset \C^2$ and is compatible with the Hopf fibration as a
+Riemannian submersion; in particular it is smooth on $\C^2\setminus\{0\}$.
+
+\medskip\noindent
+\textbf{Overflow prevention.}
+To guarantee that the values $F(z,t)$ and $G(z,t)$ remain finite
+throughout iteration, we use the \emph{coefficient $\ell^1$-norm}
+$\|F\|_1 := \sum |a_i|$ for $F(z,t) = \sum a_i z^i t^{d-i}$.
 Specifically, for $(z,t) \in D^2 \times D^2 := \{|z|\le 1\}\times\{|t|\le
 1\}$,
 \begin{equation}\label{eq:eval_bound}
-  |F(z,t)| \le \|F\|, \qquad |G(z,t)| \le \|G\|,
+  |F(z,t)| \le \|F\|_1, \qquad |G(z,t)| \le \|G\|_1,
 \end{equation}
 so all arithmetic stays within a bounded domain regardless of the orbit
-length \cite[Prop.~2]{Alvarez2023}.
+length \cite[Prop.~2]{Alvarez2023}.  Note that this coefficient bound is
+used only to control overflow; the actual normalisation in $\RS$ always
+uses the Euclidean norm $\|\cdot\|_2$ as above.
 
 \subsection{The augmented projective line and the super-zero}
 
@@ -535,7 +543,7 @@ an r-irreducible pair $(F,G) \in \C_h[z,t]_{\mathrm{ri}}\C_h[z,t]$.
   \quad\\
   \textbf{Phase 1: grid and Hopf normalisation.}
   Choose a grid $D \subset \Pone$ of test points.  For each $x=[z:t]\in D$
-  with $|z|+|t|=1$, let $y=(z,t)\in S^3$.
+  with $|z|^2+|t|^2=1$, let $y=(z,t)\in S^3$.
 
   \textbf{Phase 2: attracting cycle detection.}
   Apply Algorithm~\ref{alg:lyapunov} Steps~1--2.  Collect all attracting
