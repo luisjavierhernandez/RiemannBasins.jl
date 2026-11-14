@@ -23,6 +23,7 @@
 include("../src/RiemannBasins.jl")
 using .RiemannBasins
 using LinearAlgebra
+using Printf
 
 println("=" ^ 60)
 println("Birkhoff average acceleration — parabolic basin tests")
@@ -48,8 +49,7 @@ d1    = 2
 hpair1 = RiemannBasins._pair_of_functions(cnum1, cden1)
 
 # Starting point inside the parabolic basin of 0
-start1 = (complex(0.1 + 0.05im), complex(1.0 + 0.0im))
-start1 = RiemannBasins._homogeneous_normalize(start1[1], start1[2])
+start1 = RiemannBasins._homogeneous_normalize((complex(0.1 + 0.05im), complex(1.0 + 0.0im)))
 
 cps    = [100, 200, 400, 800]
 B1     = RiemannBasins._birkhoff_partial_averages(hpair1, cnum1, cden1, d1,
@@ -75,8 +75,7 @@ cden2 = ComplexF64.([1, 0, 0])   # 1
 d2    = 2
 hpair2 = RiemannBasins._pair_of_functions(cnum2, cden2)
 
-start2 = (complex(0.3 + 0.1im), complex(1.0 + 0.0im))
-start2 = RiemannBasins._homogeneous_normalize(start2[1], start2[2])
+start2 = RiemannBasins._homogeneous_normalize((complex(0.3 + 0.1im), complex(1.0 + 0.0im)))
 
 B2 = RiemannBasins._birkhoff_partial_averages(hpair2, cnum2, cden2, d2, start2, cps)
 println("  Birkhoff averages at N = $cps:")
