@@ -1809,6 +1809,149 @@ function _detect_period_orbit(
     return 0, curr    # indeterminate
 end
 
+# ---- Birkhoff average tools for parabolic detection ----------------------
+
+"""
+    _birkhoff_partial_averages(hpair, cnum, cden, d, start_pt, checkpoints)
+
+Compute partial Birkhoff averages of `log(f^#)` along the orbit of `start_pt`.
+
+Returns a vector `B` where
+    `B[i] = (1/checkpoints[i]) ∑_{k=0}^{checkpoints[i]-1} log(f^#(orbit[k]))`
+in the same order as the sorted `checkpoints`.
+
+**Sign convention**: `B[i] < 0` when the orbit is attracted toward a cycle
+(where `f^# < 1`).  For a **parabolic** basin `B[i] → 0⁻` at the slow rate
+`∼ log(N)/N` (Birkhoff's ergodic theorem applied to the neutral measure on the
+parabolic cycle).
+"""
+function _birkhoff_partial_averages(
+        hpair       ,
+        cnum        :: Vector{Complex{Float64}},
+        cden        :: Vector{Complex{Float64}},
+        d           :: Int,
+        start_pt    :: Tuple{Complex{Float64},Complex{Float64}},
+        checkpoints :: Vector{Int})
+
+    isempty(checkpoints) && return Float64[]
+    checkpoints = sort(checkpoints)
+    N_max    = last(checkpoints)
+    averages = Float64[]
+
+    curr    = start_pt
+    log_sum = 0.0
+    ci      = 1          # checkpoint index
+
+    for n in 1:N_max
+        s        = _sph_deriv_hom(cnum, cden, d, curr[1], curr[2])
+        log_sum += log(max(s, 1e-300))
+        curr     = _rational_function(hpair, curr)
+
+        if ci <= length(checkpoints) && n == checkpoints[ci]
+            push!(averages, log_sum / n)
+            ci += 1
+        end
+    end
+
+    return averages
+end
+
+"""
+    _aitken_accelerate(seq)
+
+Apply one pass of Aitken's Δ² process to `seq`, returning an accelerated
+sequence of length `length(seq) − 2`.
+
+For a sequence converging as `sₙ = L + a·ρⁿ` with `|ρ| < 1`, the transform
+recovers `L` exactly from three consecutive terms:
+```
+sₙ* = sₙ − (sₙ₊₁ − sₙ)² / (sₙ₊₂ − 2sₙ₊₁ + sₙ)
+```
+Applied to Birkhoff partial averages it removes the leading-order error term
+and dramatically accelerates convergence in both the geometric (attracting)
+and the logarithmic (parabolic) regimes.
+"""
+function _aitken_accelerate(seq::Vector{Float64})
+    n = length(seq)
+    n < 3 && return copy(seq)
+    result = Vector{Float64}(undef, n - 2)
+    for i in 1:(n-2)
+        Δ   = seq[i+1] - seq[i]
+        Δ2  = seq[i+2] - 2*seq[i+1] + seq[i]
+        result[i] = abs(Δ2) < 1e-30 * (abs(seq[i]) + 1e-100) ? seq[i] :
+                    seq[i] - Δ^2 / Δ2
+    end
+    return result
+end
+
+"""
+    _classify_marginal(hpair, cnum, cden, d, start_pt, q, cycle_pts, c;
+                       N_birkhoff=800)
+
+Attempt to separate `:parabolic` from generic `:indeterminate` for a critical
+orbit whose Lyapunov constant `c` lies above the attracting threshold `0.9999`.
+
+**Algorithm**:
+1. Compute four partial Birkhoff averages of `log(f^#)` at
+   `N = N_birkhoff÷8, N÷4, N÷2, N`.
+2. Apply Aitken's Δ² process to accelerate convergence.
+3. Use three criteria jointly:
+   - **Sign**: all four averages are strictly negative (orbit is contracting).
+   - **Monotone growth**: averages increase toward zero (slow convergence).
+   - **Rate**: the ratio `|B_{N÷4}| / |B_N|` exceeds 1.3, indicating
+     sub-geometric (logarithmic) convergence characteristic of parabolic basins.
+4. If all three hold and the Aitken-accelerated estimate is within `1e-5` of
+   zero, label the component `:parabolic`.  If the accelerated estimate is
+   instead clearly negative (`< −1e-5`), re-label as `:attracting` with the
+   corrected Lyapunov constant `exp(accelerated_estimate)`.
+   Otherwise return `:indeterminate`.
+
+# Returns
+`(label, c_refined)` — `label ∈ {:parabolic, :attracting, :indeterminate}`
+and `c_refined` is the best available estimate of the Lyapunov constant.
+"""
+function _classify_marginal(
+        hpair      ,
+        cnum       :: Vector{Complex{Float64}},
+        cden       :: Vector{Complex{Float64}},
+        d          :: Int,
+        start_pt   :: Tuple{Complex{Float64},Complex{Float64}},
+        q          :: Int,
+        cycle_pts  :: Vector{Tuple{Complex{Float64},Complex{Float64}}},
+        c          :: Float64;
+        N_birkhoff :: Int = 800)
+
+    # Four logarithmically-spaced checkpoints
+    cps = [N_birkhoff ÷ 8, N_birkhoff ÷ 4, N_birkhoff ÷ 2, N_birkhoff]
+    B   = _birkhoff_partial_averages(hpair, cnum, cden, d, start_pt, cps)
+
+    length(B) < 4 && return :indeterminate, c
+
+    # Criterion 1: all Birkhoff averages negative (orbit is attracted, f^# < 1 on avg)
+    all_negative = all(b < 0.0 for b in B)
+    # Criterion 2: averages increase monotonically toward zero (not oscillating)
+    monotone_up  = all(B[i] < B[i+1] for i in 1:length(B)-1)
+    # Criterion 3: sub-geometric convergence rate (parabolic gives log(N)/N decay)
+    #   For B_N ≈ A·log(N)/N:  |B_{N/4}| / |B_N| ≈ 4·log(N/4)/log(N) ≈ 2–4
+    #   For geometric:          ratio ≈ 1
+    ratio        = abs(B[end]) > 1e-15 ? abs(B[2]) / abs(B[end]) : 0.0
+
+    # Aitken-accelerated estimate of the limit
+    B_accel      = _aitken_accelerate(B)
+    accel_limit  = isempty(B_accel) ? B[end] : B_accel[end]
+
+    if all_negative && monotone_up && ratio > 1.3 && abs(accel_limit) < 1e-5
+        return :parabolic, 1.0
+    end
+
+    # If Aitken reveals a clearly attracting cycle (c was barely above threshold)
+    if accel_limit < -1e-5
+        return :attracting, exp(accel_limit)
+    end
+
+    return :indeterminate, c
+end
+
 # ---- Public API ----------------------------------------------------------
 
 """
@@ -1892,20 +2035,28 @@ For each critical point the algorithm:
    formula of [Álvarez et al. 2023, Def. 16].
 4. Labels `:superattracting` if `c < 10⁻⁸`, `:attracting` if `c < 0.9999`,
    `:indeterminate` otherwise.
+5. *(When `detect_parabolic=true`)* For marginal cycles (`c ≥ 0.9999`), applies
+   Birkhoff average acceleration (`_classify_marginal`) to distinguish
+   `:parabolic` components (Lyapunov constant exactly 1, Birkhoff averages
+   converge to 0 at rate `∼ log(N)/N`) from Siegel/Herman `:indeterminate`
+   components (quasi-periodic, averages oscillate around 0).
 
 By Fatou's theorem this procedure is **complete**: every attracting cycle is
 found because it must attract at least one critical point.
 
 # Returns
 `Vector{CriticalOrbitResult}` — one entry per critical point.
+Possible labels: `:superattracting`, `:attracting`, `:parabolic`, `:indeterminate`.
 """
 function critical_orbit_analysis(
         coefficientlistnum :: Vector{T},
         coefficientlistden :: Vector{T};
-        max_iter        :: Int  = 600,
-        aproxprecision  :: Int  = 8,
-        max_period      :: Int  = 30,
-        check_infinity  :: Bool = false) where {T <: Number}
+        max_iter          :: Int  = 600,
+        aproxprecision    :: Int  = 8,
+        max_period        :: Int  = 30,
+        check_infinity    :: Bool = false,
+        detect_parabolic  :: Bool = true,
+        N_birkhoff        :: Int  = 800) where {T <: Number}
 
     cnum   = ComplexF64.(coefficientlistnum)
     cden   = ComplexF64.(coefficientlistden)
@@ -1949,9 +2100,25 @@ function critical_orbit_analysis(
         end
 
         if label == :indeterminate
-            push!(results, CriticalOrbitResult(
-                cpt, :indeterminate, 0,
-                Tuple{Complex{Float64},Complex{Float64}}[], c))
+            # Attempt to separate parabolic from Siegel/Herman via Birkhoff averages
+            if detect_parabolic
+                label2, c2 = _classify_marginal(hpair, cnum, cden, d, cpt,
+                                                q, cycle_pts, c;
+                                                N_birkhoff = N_birkhoff)
+                if label2 == :parabolic
+                    push!(results, CriticalOrbitResult(cpt, :parabolic, q, cycle_pts, 1.0))
+                elseif label2 == :attracting
+                    push!(results, CriticalOrbitResult(cpt, :attracting, q, cycle_pts, c2))
+                else
+                    push!(results, CriticalOrbitResult(
+                        cpt, :indeterminate, 0,
+                        Tuple{Complex{Float64},Complex{Float64}}[], c))
+                end
+            else
+                push!(results, CriticalOrbitResult(
+                    cpt, :indeterminate, 0,
+                    Tuple{Complex{Float64},Complex{Float64}}[], c))
+            end
         else
             push!(results, CriticalOrbitResult(cpt, label, q, cycle_pts, c))
         end
