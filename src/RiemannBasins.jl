@@ -1940,7 +1940,10 @@ function _classify_marginal(
     B_accel      = _aitken_accelerate(B)
     accel_limit  = isempty(B_accel) ? B[end] : B_accel[end]
 
-    if all_negative && monotone_up && ratio > 1.3 && abs(accel_limit) < 1e-5
+    # Parabolic: three structural criteria plus Aitken limit not clearly < 0.
+    # Note: Aitken applied to a log(N)/N sequence overshoots slightly positive,
+    # so we only require accel_limit > -0.01 (not clearly attracting), not ≈ 0.
+    if all_negative && monotone_up && ratio > 1.3 && accel_limit > -0.01
         return :parabolic, 1.0
     end
 
