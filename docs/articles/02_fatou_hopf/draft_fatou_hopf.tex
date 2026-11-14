@@ -493,16 +493,20 @@ on initial conditions, while rotation-domain orbits are stable.
   constant factor at each point, and after one period $q$ the product
   $\prod_{k=0}^{q-1} f^{\#}(f^k(x)) = 1$).  Part~(ii) follows from the
   quasi-periodicity of the orbit itself together with the continuity of
-  $\phi^S$.  Part~(iii) follows because the orbit visits all points of the
-  Hopf fibre $q^{-1}(x)$ densely (by ergodicity of the irrational
-  rotation), so the spherical derivative oscillates.
+  $\phi^S$.  Part~(iii) follows because the orbit $\{(\RS)^k(y)\}$ is
+  quasi-periodic in $S^3$ and $\phi^S$ is not constant along it
+  (a rigid rotation on a disc or annulus changes the spherical
+  derivative as $y$ moves away from and back toward the centre of
+  the rotation domain), so the sequence $\phi^S((\RS)^k(y))$
+  oscillates without converging.
 \end{proof}
 
 \begin{algorithm_desc}[Rotation-number detection]\label{alg:rotation}
   Input: a point $y\in S^3$, a maximum period $Q$, iteration count $N$.
   \begin{enumerate}[label=Step \arabic*.]
     \item For $q = 1, 2, \ldots, Q$: compute
-          $\delta_q := \|(\RS)^{qN/Q}(y) - y\|_{S^3}$.
+          $\delta_q := \|(\RS)^{N}(y) - y\|_{S^3}$ after iterating
+          $N$ steps of $(\RS)^q$ (i.e.~$qN$ total iterates of $\RS$).
           If $\delta_q < \varepsilon$ for some $q$: candidate period found.
     \item Compute the angular sequence $\{\theta_n\}_{n=1}^N$ of
           \eqref{eq:angle_seq} with $\RS$ replaced by $(\RS)^q$.
