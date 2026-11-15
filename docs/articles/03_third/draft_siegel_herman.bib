@@ -1,0 +1,496 @@
+%% draft_siegel_herman.bib
+%% Bibliography for "Detecting and Visualizing Siegel Disks and Herman Rings
+%% via the Hopf Fibration and Birkhoff Averages"
+%% November 2026
+%%
+%% Based on draft_fatou_hopf.bib (02_fatou_hopf) with additions for
+%% Siegel/Herman literature and rotation-number algorithms.
+
+%% ---- Main references: our previous papers --------------------------------
+
+@article{Alvarez2023,
+  author    = {\'Alvarez-Aparicio, V. and
+               Garc\'ia-Calcines, J.\,M. and
+               Hern\'andez-Paricio, L.\,J. and
+               Rivas-Rodr\'iguez, M.\,T.},
+  title     = {Algorithms for computing basins of attraction associated
+               with a rational self-map of the {H}opf fibration based
+               on {L}yapunov exponents},
+  journal   = {Topology and its Applications},
+  volume    = {339},
+  pages     = {108578},
+  year      = {2023},
+  doi       = {10.1016/j.topol.2023.108578},
+}
+
+@unpublished{FatouHopf2026,
+  author    = {Hern\'andez-Paricio, L.\,J. and
+               \'Alvarez-Aparicio, V. and
+               Rivas-Rodr\'iguez, M.\,T.},
+  title     = {Classifying {F}atou components of rational maps via the
+               {H}opf fibration and {L}yapunov functions},
+  year      = {2026},
+  note      = {Preprint.},
+}
+
+%% ---- Software packages ---------------------------------------------------
+
+@software{RiemannBasins,
+  author    = {\'Alvarez-Aparicio, V. and
+               Hern\'andez-Paricio, L.\,J. and
+               Rivas-Rodr\'iguez, M.\,T.},
+  title     = {{RiemannBasins.jl}: Basins of attraction on the
+               {R}iemann sphere},
+  year      = {2026},
+  url       = {https://github.com/luisjavierhernandez/RiemannBasins.jl},
+  note      = {Julia package},
+}
+
+@software{LCD2022,
+  author    = {\'Alvarez-Aparicio, V.},
+  title     = {{LCD.jl}: {L}yapunov {C}ycle {D}etector for
+               rational self-maps of the {H}opf fibration},
+  year      = {2022},
+  url       = {https://github.com/valvarezapa/LCD},
+  note      = {Julia package},
+}
+
+%% ---- Our earlier computational papers -----------------------------------
+
+@article{Extremiana2019,
+  author    = {Extremiana-Aldana, J.\,I. and
+               Hern\'andez-Paricio, L.\,J. and
+               Rivas-Rodr\'iguez, M.\,T.},
+  title     = {A {J}ulia implementation of a numerical method based
+               on the {L}yapunov exponent for detecting basins of
+               attraction},
+  journal   = {Applied Numerical Mathematics},
+  volume    = {145},
+  pages     = {72--90},
+  year      = {2019},
+  doi       = {10.1016/j.apnum.2019.06.003},
+}
+
+@article{Extremiana2018,
+  author    = {Extremiana-Aldana, J.\,I. and
+               Hern\'andez-Paricio, L.\,J. and
+               Rivas-Rodr\'iguez, M.\,T.},
+  title     = {Self-overlays and symmetries of {J}ulia sets of expanding maps},
+  journal   = {Revista de la Real Academia de Ciencias Exactas,
+               F\'isicas y Naturales. Serie A. Matem\'aticas},
+  volume    = {112},
+  number    = {3},
+  pages     = {829--848},
+  year      = {2018},
+  doi       = {10.1007/s13398-018-0501-4},
+}
+
+%% ---- Standard references in complex dynamics ----------------------------
+
+@book{Milnor2006,
+  author    = {Milnor, J.},
+  title     = {Dynamics in One Complex Variable},
+  edition   = {3rd},
+  series    = {Annals of Mathematics Studies},
+  number    = {160},
+  publisher = {Princeton University Press},
+  year      = {2006},
+}
+
+@book{Beardon1991,
+  author    = {Beardon, A.\,F.},
+  title     = {Iteration of Rational Functions},
+  series    = {Graduate Texts in Mathematics},
+  number    = {132},
+  publisher = {Springer-Verlag},
+  address   = {New York},
+  year      = {1991},
+}
+
+@book{Carleson1993,
+  author    = {Carleson, L. and Gamelin, T.\,W.},
+  title     = {Complex Dynamics},
+  publisher = {Springer-Verlag},
+  address   = {New York},
+  year      = {1993},
+}
+
+@book{McMullen1994,
+  author    = {McMullen, C.\,T.},
+  title     = {Complex Dynamics and Renormalization},
+  series    = {Annals of Mathematics Studies},
+  number    = {135},
+  publisher = {Princeton University Press},
+  year      = {1994},
+}
+
+@book{Devaney2003,
+  author    = {Devaney, Robert L.},
+  title     = {An Introduction to Chaotic Dynamical Systems},
+  edition   = {2nd},
+  publisher = {Westview Press},
+  address   = {Boulder, {CO}},
+  year      = {2003},
+}
+
+%% ---- Sullivan's no-wandering-domains theorem ----------------------------
+
+@article{Sullivan1983,
+  author    = {Sullivan, D.},
+  title     = {Quasiconformal homeomorphisms and dynamics~{I}:
+               Solution of the {F}atou-{J}ulia problem on wandering
+               domains},
+  journal   = {Annals of Mathematics},
+  volume    = {122},
+  number    = {3},
+  pages     = {401--418},
+  year      = {1985},
+  doi       = {10.2307/1971308},
+}
+
+%% ---- Siegel disks: linearization ----------------------------------------
+
+@article{Siegel1942,
+  author    = {Siegel, C.\,L.},
+  title     = {Iteration of analytic functions},
+  journal   = {Annals of Mathematics},
+  volume    = {43},
+  pages     = {607--612},
+  year      = {1942},
+  doi       = {10.2307/1968952},
+}
+
+@article{Brjuno1972,
+  author    = {Brjuno, A.\,D.},
+  title     = {Analytic form of differential equations},
+  journal   = {Transactions of the Moscow Mathematical Society},
+  volume    = {25},
+  pages     = {131--288},
+  year      = {1972},
+}
+
+@article{Yoccoz1988,
+  author    = {Yoccoz, J.-C.},
+  title     = {Lin\'earisation des germes de diff\'eomorphismes holomorphes
+               de $(\mathbf{C},0)$},
+  journal   = {Comptes Rendus de l'Acad\'emie des Sciences, Paris},
+  volume    = {306},
+  pages     = {55--58},
+  year      = {1988},
+}
+
+@article{Yoccoz1995,
+  author    = {Yoccoz, J.-C.},
+  title     = {Th\'eor\`eme de {S}iegel, nombres de {B}runo et polyn\^omes
+               quadratiques},
+  journal   = {Ast\'erisque},
+  volume    = {231},
+  pages     = {3--88},
+  year      = {1995},
+  note      = {In: Petits diviseurs en dimension 1.},
+}
+
+%% ---- Herman rings and quasiconformal surgery ----------------------------
+
+@article{Herman1979,
+  author    = {Herman, M.\,R.},
+  title     = {Sur la conjugaison diff\'erentiable des diff\'eomorphismes
+               du cercle \`a des rotations},
+  journal   = {Publications Math\'ematiques de l'IH\'ES},
+  volume    = {49},
+  pages     = {5--233},
+  year      = {1979},
+  doi       = {10.1007/BF02684798},
+}
+
+@article{Shishikura1987,
+  author    = {Shishikura, M.},
+  title     = {On the quasiconformal surgery of rational functions},
+  journal   = {Annales Scientifiques de l'\'Ecole Normale Sup\'erieure},
+  volume    = {20},
+  number    = {1},
+  pages     = {1--29},
+  year      = {1987},
+  doi       = {10.24033/asens.1522},
+}
+
+@article{Douady1987,
+  author    = {Douady, A.},
+  title     = {Disques de {S}iegel et anneaux de {H}erman},
+  journal   = {Ast\'erisque},
+  volume    = {152--153},
+  pages     = {151--172},
+  year      = {1987},
+  note      = {S\'eminaire Bourbaki, ann\'ee 1986--87, expos\'e no.\,677.},
+}
+
+@inproceedings{Douady1986,
+  author    = {Douady, A.},
+  title     = {Chirurgie sur les applications holomorphes},
+  booktitle = {Proceedings of the International Congress of Mathematicians
+               ({B}erkeley 1986)},
+  pages     = {724--738},
+  publisher = {American Mathematical Society},
+  year      = {1987},
+}
+
+@book{Ahlfors1966,
+  author    = {Ahlfors, L.\,V.},
+  title     = {Lectures on Quasiconformal Mappings},
+  publisher = {Van Nostrand},
+  address   = {Princeton},
+  year      = {1966},
+}
+
+%% ---- P\'erez-Marco: hedgehogs and small divisors ------------------------
+
+@article{PerezMarco1992,
+  author    = {P\'erez-Marco, R.},
+  title     = {Sur les dynamiques holomorphes non lin\'earisables et une
+               conjecture de {V}.\,{I}.\ {A}rnold},
+  journal   = {Annales Scientifiques de l'\'Ecole Normale Sup\'erieure},
+  volume    = {26},
+  number    = {5},
+  pages     = {565--644},
+  year      = {1993},
+}
+
+@article{PerezMarco1997,
+  author    = {P\'erez-Marco, R.},
+  title     = {Fixed points and circle maps},
+  journal   = {Acta Mathematica},
+  volume    = {179},
+  pages     = {243--294},
+  year      = {1997},
+  doi       = {10.1007/BF02392745},
+}
+
+%% ---- McMullen: self-similarity of Siegel disks --------------------------
+
+@article{McMullen1998,
+  author    = {McMullen, C.\,T.},
+  title     = {Self-similarity of {S}iegel disks and {H}ausdorff dimension
+               of {J}ulia sets},
+  journal   = {Acta Mathematica},
+  volume    = {180},
+  pages     = {247--292},
+  year      = {1998},
+  doi       = {10.1007/BF02392901},
+}
+
+@article{McMullen1987,
+  author    = {McMullen, C.\,T.},
+  title     = {Families of rational maps and iterative root-finding
+               algorithms},
+  journal   = {Annals of Mathematics},
+  volume    = {125},
+  number    = {3},
+  pages     = {467--493},
+  year      = {1987},
+  doi       = {10.2307/1971408},
+}
+
+%% ---- Buff-Ch\'eritat: Siegel disks with positive area ------------------
+
+@article{BuffCheritat2012,
+  author    = {Buff, X. and Ch\'eritat, A.},
+  title     = {Quadratic {J}ulia sets with positive area},
+  journal   = {Annals of Mathematics},
+  volume    = {176},
+  number    = {2},
+  pages     = {673--746},
+  year      = {2012},
+  doi       = {10.4007/annals.2012.176.2.1},
+}
+
+%% ---- Near-parabolic/Siegel interaction ----------------------------------
+
+@article{Cheraghi2013,
+  author    = {Cheraghi, D.},
+  title     = {Typical orbits of quadratic polynomials with a parabolic
+               fixed point: bounded type},
+  journal   = {Annales Scientifiques de l'\'Ecole Normale Sup\'erieure},
+  volume    = {46},
+  number    = {1},
+  pages     = {1--100},
+  year      = {2013},
+  doi       = {10.24033/asens.2186},
+}
+
+%% ---- Rotation number: classical and computational -----------------------
+
+@article{Arnold1961,
+  author    = {Arnold, V.\,I.},
+  title     = {Small denominators {I}: {M}appings of the circumference
+               onto itself},
+  journal   = {American Mathematical Society Translations, Series~2},
+  volume    = {46},
+  pages     = {213--284},
+  year      = {1965},
+  note      = {Translated from {I}zvestiya {A}kad.\ Nauk {SSSR} Ser.\
+               Mat.\ {\bf 25} (1961), 21--86.},
+}
+
+@article{Laskar1993,
+  author    = {Laskar, J.},
+  title     = {Frequency analysis for multi-dimensional systems.
+               {G}lobal dynamics and diffusion},
+  journal   = {Physica D},
+  volume    = {67},
+  pages     = {257--281},
+  year      = {1993},
+  doi       = {10.1016/0167-2789(93)90210-R},
+}
+
+@article{LuqueVillanueva2014,
+  author    = {Luque, A. and Villanueva, J.},
+  title     = {Numerical computation of rotation numbers of quasi-periodic
+               planar curves},
+  journal   = {Physica D},
+  volume    = {273--274},
+  pages     = {32--44},
+  year      = {2014},
+  doi       = {10.1016/j.physd.2014.01.001},
+}
+
+%% ---- Fatou's original papers --------------------------------------------
+
+@article{Fatou1919,
+  author    = {Fatou, P.},
+  title     = {Sur les \'equations fonctionnelles},
+  journal   = {Bulletin de la Soci\'et\'e Math\'ematique de France},
+  volume    = {47},
+  pages     = {161--271},
+  year      = {1919},
+}
+
+@article{Fatou1920,
+  author    = {Fatou, P.},
+  title     = {Sur les \'equations fonctionnelles},
+  journal   = {Bulletin de la Soci\'et\'e Math\'ematique de France},
+  volume    = {48},
+  pages     = {33--94; 208--314},
+  year      = {1920},
+}
+
+@article{Julia1918,
+  author    = {Julia, G.},
+  title     = {M\'emoire sur l'it\'eration des fonctions rationnelles},
+  journal   = {Journal de Math\'ematiques Pures et Appliqu\'ees},
+  volume    = {8},
+  number    = {1},
+  pages     = {47--245},
+  year      = {1918},
+}
+
+%% ---- Hopf fibration -----------------------------------------------------
+
+@article{Hopf1931,
+  author    = {Hopf, H.},
+  title     = {{\"U}ber die {A}bbildungen der dreidimensionalen
+               {S}ph\"are auf die {K}ugelfl\"ache},
+  journal   = {Mathematische Annalen},
+  volume    = {104},
+  pages     = {637--665},
+  year      = {1931},
+  doi       = {10.1007/BF01457962},
+}
+
+%% ---- Birkhoff ergodic theorem -------------------------------------------
+
+@article{Birkhoff1931,
+  author    = {Birkhoff, George D.},
+  title     = {Proof of the ergodic theorem},
+  journal   = {Proceedings of the National Academy of Sciences},
+  volume    = {17},
+  number    = {12},
+  pages     = {656--660},
+  year      = {1931},
+  doi       = {10.1073/pnas.17.12.656},
+}
+
+%% ---- The Julia programming language ------------------------------------
+
+@article{Julia2017,
+  author    = {Bezanson, J. and Edelman, A. and
+               Karpinski, S. and Shah, V.\,B.},
+  title     = {Julia: A fresh approach to numerical computing},
+  journal   = {SIAM Review},
+  volume    = {59},
+  number    = {1},
+  pages     = {65--98},
+  year      = {2017},
+  doi       = {10.1137/141000671},
+}
+
+%% ---- DynamicalSystems.jl -----------------------------------------------
+
+@article{Datseris2022,
+  author    = {Datseris, George and Wagemakers, Alexandre},
+  title     = {Effortless initialization of {J}ulia's {DynamicalSystems.jl}},
+  journal   = {Journal of Open Source Software},
+  volume    = {7},
+  number    = {77},
+  pages     = {4432},
+  year      = {2022},
+  doi       = {10.21105/joss.04432},
+}
+
+%% ---- Visualisation of complex dynamical systems -------------------------
+
+@book{PeitgenRichter1986,
+  author    = {Peitgen, Heinz-Otto and Richter, Peter H.},
+  title     = {The Beauty of Fractals: Images of Complex Dynamical Systems},
+  publisher = {Springer},
+  address   = {Berlin},
+  year      = {1986},
+  isbn      = {978-3-642-61717-1},
+}
+
+%% ---- Mandelbrot set (Douady--Hubbard Orsay notes) ----------------------
+
+@book{DouadyHubbard1985,
+  author    = {Douady, Adrien and Hubbard, John H.},
+  title     = {{\'E}tude dynamique des polyn{\^o}mes complexes},
+  series    = {Publications math{\'e}matiques d'Orsay},
+  number    = {84-02 and 85-04},
+  publisher = {Universit{\'e} de Paris-Sud},
+  address   = {Orsay},
+  year      = {1984--1985},
+  note      = {Two volumes.},
+}
+
+%% ---- Acceleration of slowly convergent series ---------------------------
+
+@article{Shanks1955,
+  author    = {Shanks, Daniel},
+  title     = {Non-linear transformations of divergent and slowly convergent sequences},
+  journal   = {Journal of Mathematics and Physics},
+  volume    = {34},
+  number    = {1--4},
+  pages     = {1--42},
+  year      = {1955},
+  doi       = {10.1002/sapm19553411},
+}
+
+@article{Gelfert2010,
+  author    = {Gelf\`ert, K. and Rams, M.},
+  title     = {The {L}yapunov spectrum of some parabolic systems},
+  journal   = {Ergodic Theory and Dynamical Systems},
+  volume    = {29},
+  number    = {3},
+  pages     = {919--940},
+  year      = {2010},
+  doi       = {10.1017/S0143385708080462},
+}
+
+@article{LCD2022ref,
+  author    = {\'Alvarez-Aparicio, V. and
+               Hern\'andez-Paricio, L.\,J. and
+               Rivas-Rodr\'iguez, M.\,T.},
+  title     = {Basins of attraction and {L}yapunov functions for
+               rational maps of the {H}opf fibration},
+  journal   = {Preprint},
+  year      = {2022},
+}
+
