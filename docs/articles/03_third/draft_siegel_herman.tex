@@ -9,6 +9,7 @@
 \usepackage{mathtools}
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage{graphicx}
+\graphicspath{{figures/}}
 \usepackage{subcaption}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -590,6 +591,20 @@ Birkhoff convergence rate \cite{FatouHopf2026}.
 The combined palette renders all five types of Fatou component and the
 Julia set in a single image.
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.60\textwidth]{fig2_rotation_field}
+  \caption{%
+    Rotation number $\rho$ along the main cardioid of the Mandelbrot set.
+    Each point $c=\lambda(2-\lambda)/4$ on the cardioid corresponds to a
+    multiplier $\lambda=e^{i\theta}$ and rotation number
+    $\rho=\theta/(2\pi)$.  Color encodes $\rho\in[0,1)$ (HSV hue).
+    Points with Brjuno rotation number support Siegel disks; rational
+    parameters are parabolic.%
+  }
+  \label{fig:rotation_field}
+\end{figure}
+
 %% --------------------------------------------------------------------------
 \subsection{Visualization on $S^3$}
 \label{ssec:color_s3}
@@ -650,8 +665,24 @@ Algorithm~\ref{alg:rot} estimates $\hat\rot\approx 0.6180$,
 and Algorithm~\ref{alg:topology} labels it \texttt{:siegel}
 (all critical values on the same side of the orbit).
 
-\emph{[Figure: Siegel disk of $f_{c_0}$, colored by rotation number;
-corresponding solid torus in $S^3$ via stereographic projection.]}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.48\textwidth]{fig1_siegel_disk}%
+  \hfill
+  \includegraphics[width=0.48\textwidth]{fig4_quasiperiodic_orbit}
+  \caption{%
+    \textbf{Left}: Basin portrait of $f_{c_0}(z)=z^2+c_0$ with
+    $c_0=\lambda(2-\lambda)/4$, $\lambda=e^{2\pi i\rho}$,
+    $\rho=(\sqrt{5}-1)/2$.  Dark pixels escaped to~$\infty$; the white
+    region centered on the indifferent fixed point $p_0=\lambda/2$ is the
+    Siegel disk $\Delta$.
+    \textbf{Right}: $N=2000$ iterates of the critical point $z=0$ inside
+    $\Delta$, colored by cumulative rotation angle $\in[0,2\pi)$ (HSV
+    hue), exhibiting the expected quasi-periodic filling.
+    In $S^3$, $q^{-1}(\Delta)$ is a solid torus $D^2\times S^1$.%
+  }
+  \label{fig:siegel_examples}
+\end{figure}
 
 %% --------------------------------------------------------------------------
 \subsection{A rational map with Herman ring}
@@ -672,8 +703,20 @@ Algorithm~\ref{alg:rot} recovers $\hat\rot\approx 0.6180$;
 Algorithm~\ref{alg:topology} and Algorithm~\ref{alg:spectral} both label it
 \texttt{:herman}.
 
-\emph{[Figure: Herman ring of $f$, colored by rotation number;
-corresponding thickened torus in $S^3$.]}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.60\textwidth]{fig3_herman_ring}
+  \caption{%
+    Basin portrait of the Blaschke product
+    $B_a(z)=e^{2\pi i\rho}\,z(z-a)/(1-az)$ with $a=0.7$,
+    $\rho=(\sqrt{5}-1)/2$.  The unit circle $|z|=1$ (green) is invariant
+    and forms the equator of the Herman ring~$A$.
+    Dark-blue pixels escape to~$\infty$; dark-red pixels collapse to~$0$;
+    white pixels lie in the Herman ring.
+    In $S^3$, $q^{-1}(A)$ is a thickened torus $S^1\times S^1\times(-1,1)$.%
+  }
+  \label{fig:herman_ring}
+\end{figure}
 
 %% --------------------------------------------------------------------------
 \subsection{Near-parabolic transition}
