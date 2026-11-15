@@ -1688,14 +1688,18 @@ Encapsulates the result of tracing one critical orbit.
 Fields
 ------
 - `critical_point`    — normalised homogeneous pair for the critical point.
-- `label`             — `:attracting`, `:superattracting`, or `:indeterminate`.
-  `:indeterminate` covers parabolic, Siegel, Herman, Julia, and orbits that
-  did not converge to a cycle within the allotted iterations.
-- `period`            — minimal period of the attracting cycle (0 when `:indeterminate`).
+- `label`             — `:attracting`, `:superattracting`, `:parabolic`,
+  `:siegel`, `:herman`, or `:indeterminate`.
+  `:indeterminate` covers Julia-set orbits and orbits that did not converge
+  within the allotted iterations.
+- `period`            — minimal period of the attracting or neutral cycle (0
+  when not applicable).
 - `cycle_points`      — the `period` representative points of the cycle (empty
-  when `:indeterminate`).
+  when not applicable).
 - `lyapunov_constant` — c = (∏ f^#(zₖ))^{1/q} around the cycle; 0 for
-  superattracting, 1.0 for `:indeterminate`.
+  superattracting, 1.0 otherwise.
+- `rotation_number`   — estimated Brjuno rotation number ρ ∈ (0,1) for
+  `:siegel` and `:herman` labels; `NaN` otherwise.
 """
 struct CriticalOrbitResult
     critical_point    :: Tuple{Complex{Float64},Complex{Float64}}
@@ -1703,6 +1707,14 @@ struct CriticalOrbitResult
     period            :: Int
     cycle_points      :: Vector{Tuple{Complex{Float64},Complex{Float64}}}
     lyapunov_constant :: Float64
+    rotation_number   :: Float64
+
+    # 5-argument backward-compatible constructor (rotation_number = NaN)
+    CriticalOrbitResult(cp, lbl, per, cyc, lyap) =
+        new(cp, lbl, per, cyc, lyap, NaN)
+    # 6-argument constructor (explicit rotation number)
+    CriticalOrbitResult(cp, lbl, per, cyc, lyap, rho) =
+        new(cp, lbl, per, cyc, lyap, rho)
 end
 
 # ---- Internal helpers ----------------------------------------------------
@@ -1955,6 +1967,190 @@ function _classify_marginal(
     return :indeterminate, c
 end
 
+# ---- Siegel disk and Herman ring detection --------------------------------
+
+"""
+    _hom_to_affine(pt)
+
+Convert a normalised homogeneous pair `(z, t)` to the affine complex number
+`z/t`.  Returns `Inf + 0im` when the point is at infinity (`|t| ≪ |z|`).
+"""
+function _hom_to_affine(pt::Tuple{Complex{Float64},Complex{Float64}})
+    z, t = pt
+    abs(t) < 1e-13 * max(abs(z), 1.0) && return complex(Inf)
+    return z / t
+end
+
+"""
+    _check_brjuno(rho, k_max = 14)
+
+Return `true` if the rotation number `rho ∈ (0,1)` appears to satisfy the
+Brjuno condition  `∑_{n≥1} log(q_{n+1})/q_n < ∞`, estimated via the first
+`k_max` partial quotients of its continued-fraction expansion.
+
+The golden ratio `(√5−1)/2` and all numbers of bounded-type satisfy the
+condition; Liouville-type numbers do not.
+"""
+function _check_brjuno(rho::Float64, k_max::Int = 14)
+    isnan(rho)                       && return false
+    rho < 1e-7 || rho > 1.0 - 1e-7  && return false   # essentially rational
+
+    x       = rho
+    q_prev  = Int64(0)   # q_{-1}
+    q_curr  = Int64(1)   # q_0
+    brjuno  = 0.0
+
+    for _ in 1:k_max
+        x < 1e-13 && return false         # orbit closed up → rational
+        a      = floor(Int64, 1.0 / x)
+        a == 0 && return false
+        x      = 1.0 / x - a
+        q_next = a * q_curr + q_prev
+
+        # Brjuno sum term: log(q_{n+1}) / q_n
+        brjuno += log(Float64(q_next)) / Float64(q_curr)
+        brjuno > 50.0 && return false     # sum diverging → not Brjuno
+
+        q_prev  = q_curr
+        q_curr  = q_next
+        q_curr > 10^14 && break           # overflow guard; sum converged
+    end
+
+    return brjuno < 30.0
+end
+
+"""
+    _winding_number_discrete(orbit_affine, center)
+
+Approximate the winding number of the closed discrete curve `orbit_affine`
+around `center` by summing argument increments (divided by 2π).
+
+The curve is closed by connecting `orbit_affine[end]` back to `orbit_affine[1]`.
+"""
+function _winding_number_discrete(
+        orbit_affine :: Vector{Complex{Float64}},
+        center       :: Complex{Float64})
+
+    w = 0.0
+    N = length(orbit_affine)
+    for k in 1:N
+        z_k   = orbit_affine[k]
+        z_kp1 = orbit_affine[k < N ? k + 1 : 1]
+        d_k   = z_k   - center
+        d_kp1 = z_kp1 - center
+        (abs(d_k) < 1e-10 || abs(d_kp1) < 1e-10) && continue
+        w += angle(d_kp1 / d_k) / (2π)
+    end
+    return w
+end
+
+"""
+    _classify_quasi_periodic(hpair, cnum, cden, d, cpt_after_warmup,
+                              all_crits; N_orbit, eps_var)
+
+Attempt to classify a critical orbit that did not converge to a periodic cycle
+as either `:siegel` (Siegel disk), `:herman` (Herman ring), or `:indeterminate`.
+
+Also returns the estimated rotation number `rho`.
+
+**Algorithm**
+1. Iterate the map `N_orbit` more steps from `cpt_after_warmup`.
+2. Discard if orbit escapes to infinity.
+3. Compute variance of the affine orbit; if too small the orbit is still
+   converging and is not quasi-periodic.
+4. Estimate rotation number by Birkhoff average of argument increments
+   around the orbit centroid.
+5. Verify the Brjuno condition via the continued-fraction expansion.
+6. Distinguish Siegel/Herman by the winding-number signature of the orbit
+   around the other finite critical points.
+   - **Siegel**: all other critical points on the same side of the orbit
+     (all winding numbers equal, hence all inside or all outside).
+   - **Herman**: at least one critical point on each side (mixed winding
+     numbers, indicating the orbit separates the plane nontrivially).
+"""
+function _classify_quasi_periodic(
+        hpair            ,
+        cnum             :: Vector{Complex{Float64}},
+        cden             :: Vector{Complex{Float64}},
+        d                :: Int,
+        cpt_after_warmup :: Tuple{Complex{Float64},Complex{Float64}},
+        all_crits        :: Vector{Tuple{Complex{Float64},Complex{Float64}}};
+        N_orbit          :: Int     = 1200,
+        eps_var          :: Float64 = 1e-6)
+
+    # 1. Run N_orbit additional iterates
+    curr    = cpt_after_warmup
+    orbit_h = Vector{Tuple{Complex{Float64},Complex{Float64}}}(undef, N_orbit)
+    for k in 1:N_orbit
+        curr       = _rational_function(hpair, curr)
+        orbit_h[k] = curr
+    end
+
+    orbit_a = [_hom_to_affine(pt) for pt in orbit_h]
+
+    # 2. Discard if orbit escaped to ∞
+    any(isinf(real(z)) for z in orbit_a) && return :indeterminate, NaN
+
+    # 3. Variance check: orbit must be spatially spread out
+    n_a   = length(orbit_a)
+    mu_z  = sum(orbit_a) / n_a
+    var_z = sum(abs2(z - mu_z) for z in orbit_a) / n_a
+    var_z < eps_var && return :indeterminate, NaN
+
+    # 4. Estimate rotation number via Birkhoff average of argument increments
+    psi_sum = 0.0
+    psi_sq  = 0.0
+    n_valid = 0
+    for k in 1:N_orbit - 1
+        d_k   = orbit_a[k]     - mu_z
+        d_kp1 = orbit_a[k + 1] - mu_z
+        (abs(d_k) < 1e-10 || abs(d_kp1) < 1e-10) && continue
+        psi_k    = angle(d_kp1 / d_k) / (2π)   # ∈ (−0.5, 0.5]
+        psi_sum += psi_k
+        psi_sq  += psi_k^2
+        n_valid += 1
+    end
+
+    n_valid < 20 && return :indeterminate, NaN
+
+    psi_mean = psi_sum / n_valid
+    psi_var  = psi_sq  / n_valid - psi_mean^2
+
+    # Low variance of increments confirms quasi-periodicity (near-constant rotation)
+    psi_var > 0.05 && return :indeterminate, NaN
+
+    rho = mod(psi_mean, 1.0)
+    abs(rho) < 1e-5 || abs(rho - 1.0) < 1e-5 && return :indeterminate, NaN
+
+    # 5. Brjuno condition
+    _check_brjuno(rho) || return :indeterminate, rho
+
+    # 6. Siegel vs Herman: winding-number signature around other finite critical points
+    cpt_a         = _hom_to_affine(cpt_after_warmup)
+    other_crits_a = Complex{Float64}[]
+    for c in all_crits
+        ca = _hom_to_affine(c)
+        isinf(real(ca))         && continue   # skip ∞
+        abs(ca - cpt_a) < 1e-5 && continue   # skip self
+        push!(other_crits_a, ca)
+    end
+
+    # Only one finite critical point (e.g. quadratic polynomial) → Siegel disk
+    isempty(other_crits_a) && return :siegel, rho
+
+    # Compute winding numbers of the orbit around each other critical point
+    winds     = [_winding_number_discrete(orbit_a, c) for c in other_crits_a]
+    wind_ints = round.(Int, winds)
+
+    # Siegel: all winding numbers equal (all crits on the same side of the orbit)
+    # Herman: mixed winding numbers (the orbit separates critical points)
+    if all(w == wind_ints[1] for w in wind_ints)
+        return :siegel, rho
+    else
+        return :herman, rho
+    end
+end
+
 # ---- Public API ----------------------------------------------------------
 
 """
@@ -2040,16 +2236,17 @@ For each critical point the algorithm:
    `:indeterminate` otherwise.
 5. *(When `detect_parabolic=true`)* For marginal cycles (`c ≥ 0.9999`), applies
    Birkhoff average acceleration (`_classify_marginal`) to distinguish
-   `:parabolic` components (Lyapunov constant exactly 1, Birkhoff averages
-   converge to 0 at rate `∼ log(N)/N`) from Siegel/Herman `:indeterminate`
-   components (quasi-periodic, averages oscillate around 0).
+   `:parabolic` components from quasi-periodic ones, then attempts to
+   classify the latter as `:siegel` (Siegel disk) or `:herman` (Herman ring)
+   via rotation-number estimation and winding-number tests.
 
 By Fatou's theorem this procedure is **complete**: every attracting cycle is
 found because it must attract at least one critical point.
 
 # Returns
 `Vector{CriticalOrbitResult}` — one entry per critical point.
-Possible labels: `:superattracting`, `:attracting`, `:parabolic`, `:indeterminate`.
+Possible labels: `:superattracting`, `:attracting`, `:parabolic`,
+`:siegel`, `:herman`, `:indeterminate`.
 """
 function critical_orbit_analysis(
         coefficientlistnum :: Vector{T},
@@ -2078,9 +2275,21 @@ function critical_orbit_analysis(
         q, y = _detect_period_orbit(hpair, cpt, warmup, tol, max_period)
 
         if q == 0
-            push!(results, CriticalOrbitResult(
-                cpt, :indeterminate, 0,
-                Tuple{Complex{Float64},Complex{Float64}}[], 1.0))
+            # Orbit did not converge to any periodic cycle within max_period.
+            # This is the typical case for Siegel disks and Herman rings (the
+            # critical orbit stays quasi-periodic rather than landing on a cycle).
+            if detect_parabolic
+                qp_lbl, rho = _classify_quasi_periodic(
+                    hpair, cnum, cden, d, y, crits;
+                    N_orbit = N_birkhoff)
+                push!(results, CriticalOrbitResult(
+                    cpt, qp_lbl, 0,
+                    Tuple{Complex{Float64},Complex{Float64}}[], 1.0, rho))
+            else
+                push!(results, CriticalOrbitResult(
+                    cpt, :indeterminate, 0,
+                    Tuple{Complex{Float64},Complex{Float64}}[], 1.0))
+            end
             continue
         end
 
@@ -2113,9 +2322,19 @@ function critical_orbit_analysis(
                 elseif label2 == :attracting
                     push!(results, CriticalOrbitResult(cpt, :attracting, q, cycle_pts, c2))
                 else
-                    push!(results, CriticalOrbitResult(
-                        cpt, :indeterminate, 0,
-                        Tuple{Complex{Float64},Complex{Float64}}[], c))
+                    # _classify_marginal returned :indeterminate but a cycle WAS found.
+                    # Could be a Siegel disk with a near-resonant period; try QP test.
+                    qp_lbl, rho = _classify_quasi_periodic(
+                        hpair, cnum, cden, d, y, crits;
+                        N_orbit = N_birkhoff)
+                    if qp_lbl !== :indeterminate
+                        push!(results, CriticalOrbitResult(
+                            cpt, qp_lbl, q, cycle_pts, c, rho))
+                    else
+                        push!(results, CriticalOrbitResult(
+                            cpt, :indeterminate, 0,
+                            Tuple{Complex{Float64},Complex{Float64}}[], c))
+                    end
                 end
             else
                 push!(results, CriticalOrbitResult(
