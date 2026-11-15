@@ -559,7 +559,7 @@ function _render_basin_image(
         ),
         yticks = (
             range(1, nrows, length=5),
-            string.(round.(range(c, d, length=5), digits=2))
+            string.(round.(range(d, c, length=5), digits=2))
         ),
         xlabel = "Re(z)",
         ylabel = "Im(z)",
@@ -1507,7 +1507,7 @@ function _render_basin_image_lch(
         xticks = (range(1, ncols, length=5),
                   string.(round.(range(a, b, length=5), digits=2))),
         yticks = (range(1, nrows, length=5),
-                  string.(round.(range(c, d, length=5), digits=2))),
+                  string.(round.(range(d, c, length=5), digits=2))),
         xlabel = "Re(z)",
         ylabel = "Im(z)",
         title  = title,
