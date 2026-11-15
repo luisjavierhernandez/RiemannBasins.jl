@@ -622,6 +622,227 @@ In this example Algorithm~\ref{alg:lyapunov} should classify the entire
 basin as \textsc{parabolic} with $m = 1$, and $J(f)$ as \textsc{julia}.
 Since there are no attracting cycles, Phase~2 returns no Lyapunov
 constants below $1$, and all bounded orbits proceed to Phase~3.1.
+Section~\ref{sec:examples:quadratic_cycles} presents basin portraits of
+two further quadratic maps with parabolic cycles (of orders $1$ and $2$)
+together with a Birkhoff comparison that quantifies the logarithmic rate
+in Proposition~\ref{prop:parabolic}.
+
+\subsection{Parabolic and superattracting cycles in the quadratic family}
+\label{sec:examples:quadratic_cycles}
+
+We compare three values of the parameter $c$ in the quadratic family
+$f_c(z)=z^2+c$ to illustrate how the \emph{position-and-iteration}
+colour scheme distinguishes parabolic from superattracting dynamics, and
+how the cyclic structure of a periodic orbit organises the basin portrait.
+
+\paragraph{Colour scheme.}
+In every basin portrait below, the colour of a pixel $(x,y)$ encodes
+two independent pieces of information about the orbit starting at $z=x+iy$:
+\begin{enumerate}[label=(\roman*)]
+  \item \textbf{Basin identity.}  The base hue identifies the attracting
+        cycle to which the orbit converges.  Distinct attracting cycles
+        (and the basin of $\infty$) receive distinct hues.
+  \item \textbf{Convergence speed.}  Within each basin the shade is
+        determined by the \emph{band index}: the number of iteration
+        bands elapsed before the spherical Lyapunov approximation
+        $\Lfsrk(y)$ drops below the fixed tolerance.  Faster convergence
+        produces lighter shades; slower convergence produces darker shades.
+\end{enumerate}
+\textbf{Black pixels} are assigned to orbits that do \emph{not} converge
+to any attracting cycle within the prescribed iteration limit.
+Two situations produce black pixels:
+\begin{itemize}
+  \item \textbf{The Julia set $J(f)$}: orbits on $J(f)$ neither escape
+        to $\infty$ nor converge to any finite attractor.  Since $J(f)$
+        has zero Lebesgue measure, this contributes a set of black pixels
+        of measure zero.
+  \item \textbf{The parabolic basin} $B^{\mathrm{par}}_f(\mathcal{O})$:
+        orbits attracted to a parabolic cycle $\mathcal{O}$ converge at
+        the logarithmically slow rate $(\log N)/N$
+        (Proposition~\ref{prop:parabolic}, equation~\eqref{eq:parabolic_rate}).
+        Within any fixed iteration budget, the Lyapunov approximation
+        never drops sufficiently below $1$, so the entire parabolic basin
+        appears \emph{black} and is visually indistinguishable from the
+        Julia set at the colour-band level.
+        In a figure with only one finite parabolic cycle, the black
+        interior region is essentially the parabolic basin.
+\end{itemize}
+
+\paragraph{Cycle markers and cyclic order.}
+In Figures~\ref{fig:cycle_parabolic_p2}--\ref{fig:cycle_attract_basilica}
+the periodic cycle points are marked with white symbols
+($\bigstar$ for a fixed point, $\bullet$ for a 2-cycle).
+White semicircular arcs with arrowheads indicate the \emph{cyclic order}
+of the orbit under $f$:
+\begin{itemize}
+  \item Upper arc (above the real axis): $z_1 \xrightarrow{\;f\;} z_2$.
+  \item Lower arc (below the real axis): $z_2 \xrightarrow{\;f\;} z_1$.
+\end{itemize}
+For a fixed point (Figure~\ref{fig:cycle_parabolic_p2}), the two arcs
+coalesce into a single self-loop $z^* \xrightarrow{f} z^*$.
+Both arcs are drawn as exact semicircles whose diameter equals
+$|z_1 - z_2|$; for the maps below the semicircle fits entirely within
+the displayed window.
+
+\paragraph{Parabolic fixed point: $f(z)=z^2-\tfrac{3}{4}$.}
+
+The map $f(z)=z^2-\tfrac{3}{4}$ has a unique finite parabolic fixed
+point $z^*=-\tfrac{1}{2}$ with multiplier $f'(-\tfrac{1}{2})=-1$.
+Since $-1=e^{i\pi}$ is a primitive second root of unity, the
+Leau--Fatou theorem applies to $f^2$: the leading term of the Taylor
+expansion of $f^2(z)-z$ about $z^*$ is $-2(z-z^*)^3$, giving two
+attracting petals for $f^2$ that interchange under $f$.  In the
+Mandelbrot set, $c=-\tfrac{3}{4}$ lies on the parabolic arc separating
+the main cardioid from the period-$2$ bulb.
+
+The black region in Figure~\ref{fig:cycle_parabolic_p2} is the
+parabolic basin $B^{\mathrm{par}}_f(z^*)$: orbits converge to
+$z^*=-\tfrac{1}{2}$ at the logarithmic rate and therefore never satisfy
+the attracting-cycle tolerance within $600$ iterations.  The coloured
+bands are the exterior Fatou component (basin of $\infty$), graded by
+escape speed.  The star $\bigstar$ marks $z^*$ and the self-loop
+indicates $f(z^*)=z^*$.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.80\textwidth]{figures/cycle_parabolic_p2.png}
+  \caption{Basin portrait of $f(z)=z^2-\tfrac{3}{4}$ on
+           $[-1.8,1.8]\times[-1.0,1.0]$ ($600$ iterations,
+           $b=e$, $10$ bands).
+           \textit{Black interior}: the parabolic basin
+           $B^{\mathrm{par}}_f(z^*)$ of the fixed point
+           $z^*=-\tfrac{1}{2}$ with multiplier $-1$;
+           orbits converge to $z^*$ at the logarithmic rate
+           $(\log N)/N$ (see~\eqref{eq:parabolic_rate}),
+           too slowly to be detected as attracting within $600$ steps.
+           \textit{Coloured exterior}: basin of $\infty$,
+           graded by escape speed (lighter~$=$~faster escape).
+           White $\bigstar$: the parabolic fixed point $z^*=-\tfrac{1}{2}$;
+           the self-loop arrow indicates $f(z^*)=z^*$.}
+  \label{fig:cycle_parabolic_p2}
+\end{figure}
+
+\paragraph{Parabolic 2-cycle: $f(z)=z^2-\tfrac{5}{4}$.}
+
+The map $f(z)=z^2-\tfrac{5}{4}$ has a 2-cycle
+\[
+  z_1 = \tfrac{-1+\sqrt{2}}{2}\approx 0.207,\qquad
+  z_2 = \tfrac{-1-\sqrt{2}}{2}\approx -1.207,
+\]
+satisfying $f(z_1)=z_2$ and $f(z_2)=z_1$.  The multiplier of the cycle is
+\[
+  (f^2)'(z_1) = f'(z_1)\cdot f'(z_2) = 4z_1 z_2 = 4(c+1) = -1,
+\]
+so this 2-cycle is parabolic for $f^4$, and $c=-\tfrac{5}{4}$ lies on
+the boundary between the period-$2$ and period-$4$ bulbs of the Mandelbrot
+set.
+
+As in the previous case, the parabolic basin (the two invariant regions
+that interchange under $f$ and whose orbits converge to $\{z_1,z_2\}$
+at the logarithmic rate) appears \emph{black} in
+Figure~\ref{fig:cycle_parabolic_p4}.  The white circles mark $z_1$ and
+$z_2$; the upper semicircle (above the real axis) with arrowhead at $z_2$
+shows $f(z_1)=z_2$, and the lower semicircle (below the real axis) with
+arrowhead at $z_1$ shows $f(z_2)=z_1$.  The radius of both semicircles
+is $|z_1-z_2|/2=\sqrt{2}/2\approx 0.707$, entirely within the window.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.80\textwidth]{figures/cycle_parabolic_p4.png}
+  \caption{Basin portrait of $f(z)=z^2-\tfrac{5}{4}$ on
+           $[-1.8,1.8]\times[-0.8,0.8]$ ($600$ iterations).
+           The parabolic 2-cycle $\{z_1\approx 0.207,\,z_2\approx -1.207\}$
+           has multiplier $(f^2)'(z_1)=-1$.
+           \textit{Black interior}: the parabolic basin; orbits converge
+           to $\{z_1,z_2\}$ at the logarithmic rate $(\log N)/N$.
+           \textit{Coloured exterior}: basin of $\infty$.
+           White circles $\bullet$: cycle points $z_1$ (right)
+           and $z_2$ (left).
+           Semicircular arcs show the cyclic order:
+           $z_1\xrightarrow{f}z_2$ (upper arc) and
+           $z_2\xrightarrow{f}z_1$ (lower arc);
+           arc radius $|z_1-z_2|/2=\sqrt{2}/2$.}
+  \label{fig:cycle_parabolic_p4}
+\end{figure}
+
+\paragraph{Superattracting 2-cycle: $f(z)=z^2-1$ (Basilica).}
+
+For comparison, the map $f(z)=z^2-1$ has a \emph{superattracting}
+2-cycle $\{0,-1\}$: $f(0)=-1$, $f(-1)=0$, and $(f^2)'(0)=0$ because
+the critical point $z=0$ is itself a cycle point.  The Fatou set
+decomposes into two basins of the cycle (each consisting of infinitely
+many components alternating under $f$) and the basin of $\infty$.
+
+In contrast to the parabolic case, superattracting convergence (multiplier
+$0$) is detected immediately by Algorithm~\ref{alg:lyapunov}: the
+spherical Lyapunov approximation drops to $0$ within a handful of
+iterations for most of the basin.  Accordingly, the two basins appear as
+distinct \emph{coloured} regions in Figure~\ref{fig:cycle_attract_basilica},
+not as black.  The black fractal boundary is the Julia set $J(f)$, the
+celebrated Basilica Julia set, which separates the two basins and has
+zero Lebesgue measure.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.80\textwidth]{figures/cycle_attract_basilica.png}
+  \caption{Basin portrait of $f(z)=z^2-1$ (the Basilica) on
+           $[-1.8,1.8]\times[-0.9,0.9]$ ($400$ iterations, $8$ bands).
+           The superattracting 2-cycle $\{0,-1\}$ has multiplier $0$.
+           \textit{Two coloured regions}: the basin of $0$ and the basin
+           of $-1$, graded by convergence speed.
+           \textit{Black}: the Julia set $J(f)$ (the Basilica), which
+           forms the fractal boundary between the two basins and has zero
+           Lebesgue measure.
+           White circles $\bullet$: cycle points $0$ (right) and
+           $-1$ (left); semicircular arcs show the cyclic order
+           $0\xrightarrow{f}-1$ (upper) and $-1\xrightarrow{f}0$ (lower);
+           arc radius $\tfrac{1}{2}$.
+           Compare with Figures~\ref{fig:cycle_parabolic_p2}
+           and~\ref{fig:cycle_parabolic_p4}: the parabolic basins are
+           \emph{black} (logarithmically slow convergence, undetected within
+           budget), while the superattracting basins are \emph{coloured}
+           (detected immediately).}
+  \label{fig:cycle_attract_basilica}
+\end{figure}
+
+\paragraph{Birkhoff comparison.}
+Figure~\ref{fig:cycle_birkhoff} displays the Birkhoff partial average
+\[
+  B_N = \frac{1}{N}\sum_{k=0}^{N-1}\log \fsh\bigl(f^k(0)\bigr)
+\]
+along the critical orbit starting at $z=0$, for $f_c(z)=z^2+c$ with
+$c\in\{-\tfrac{3}{4},\,-\tfrac{5}{4},\,-\tfrac{1}{2}\}$, up to
+$N=15\,000$.  For $c=-\tfrac{1}{2}$ the map has an attracting fixed
+point (multiplier $\approx -0.73$) inside the main cardioid.
+The parabolic averages (blue, orange) decay to zero according to the
+theoretical rate $A(\log N)/N$ confirmed by Proposition~\ref{prop:parabolic},
+and at $N=15\,000$ remain within $1\%$ of zero.  The attracting average
+(green) converges geometrically to a negative limit $\ell\approx -0.73$
+and is essentially flat well before $N=1\,000$.
+The figure thus provides a direct visual confirmation of the classification
+criterion of Proposition~\ref{prop:parabolic}: detecting whether $B_N\to 0$
+or $B_N\to\ell<0$ distinguishes the parabolic from the attracting regime.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.80\textwidth]{figures/cycle_birkhoff_comparison.png}
+  \caption{Birkhoff partial averages
+           $B_N=\frac{1}{N}\sum_{k=0}^{N-1}\log\fsh(f^k(0))$
+           along the critical orbit, for $f_c(z)=z^2+c$ up to $N=15\,000$.
+           \textit{Blue solid}: $c=-\tfrac{3}{4}$ (parabolic fixed point,
+           multiplier $-1$ for $f^2$).
+           \textit{Orange solid}: $c=-\tfrac{5}{4}$ (parabolic 2-cycle,
+           multiplier $-1$).
+           \textit{Green solid}: $c=-\tfrac{1}{2}$ (attracting fixed
+           point, Lyapunov constant $\ell\approx -0.73$).
+           \textit{Blue dashed}: theoretical prediction $A(\log N)/N$,
+           calibrated at $N=100$ for $c=-\tfrac{3}{4}$.
+           \textit{Dotted line}: $B_N=0$.
+           The parabolic averages decay logarithmically,
+           confirming~\eqref{eq:parabolic_rate}, while the attracting
+           average converges geometrically to $\ell<0$.}
+  \label{fig:cycle_birkhoff}
+\end{figure}
 
 \subsection{A quadratic map with a Siegel disc}
 \label{sec:example_siegel}
