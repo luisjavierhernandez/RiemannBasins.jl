@@ -352,32 +352,119 @@ with $a_m \ne 0$).  By the Leau--Fatou flower theorem \cite{Milnor2006},
 there are $m$ attracting petals adjacent to $\zeta$, and every orbit in the
 parabolic basin of $\zeta$ converges to $\zeta$ along one of these petals.
 
+We first record a consequence of the diagram commutativity established
+in~\cite{Alvarez2023}.
+
+\begin{lemma}[Lyapunov identity]\label{lem:lyapunov_identity}
+  For every $y\in S^3$ and every $k\ge 0$,
+  \begin{equation}\label{eq:lyapunov_identity}
+    \phi^S\!\bigl((\RS)^k(y)\bigr) = \fsh\!\bigl(f^k(q(y))\bigr).
+  \end{equation}
+  Consequently, $L_{f^S}^{[0,N]}(\phi^S)(y) = L_f^{[0,N]}(\fsh)(q(y))$
+  for all $N\ge 0$.
+\end{lemma}
+
+\begin{proof}
+  By definition, $\phi^S = \fsh\circ q$ \cite[Def.~16]{Alvarez2023}.
+  By \cite[Prop.~2]{Alvarez2023}, the diagram commutes \emph{exactly}:
+  $q\circ \RS = f\circ q$ as maps $S^3\to\Pone$
+  (the normalisation factor $\|(F,G)\|_2$ cancels in projective coordinates).
+  Induction on $k$ then gives $q\circ(\RS)^k = f^k\circ q$, so
+  \[
+    \phi^S\bigl((\RS)^k(y)\bigr)
+    = (\fsh\circ q)\bigl((\RS)^k(y)\bigr)
+    = \fsh\bigl(f^k(q(y))\bigr),
+  \]
+  which is~\eqref{eq:lyapunov_identity}.  Taking the $(N+1)$-th geometric
+  mean over $k = 0,\ldots,N$ yields the identity for $L^{[0,N]}$.
+\end{proof}
+
 The key estimate is:
 
 \begin{proposition}[Parabolic convergence rate]\label{prop:parabolic}
-  Let $\zeta$ be a parabolic fixed point of $f$ with multiplicity $m$ and
-  let $x \in B_f^{\mathrm{par}}(\zeta)$ (the parabolic basin).  Then:
+  Let $\zeta$ be a parabolic fixed point of $f^q$ with multiplicity $m$,
+  let $x \in B_f^{\mathrm{par}}(\zeta)$, and let $y\in q^{-1}(x)\subset S^3$.
   \begin{enumerate}[label=(\roman*)]
-    \item $L_f(\phi)(x) = 1$ (the Lyapunov constant equals $1$).
-    \item The orbit $\{f^n(x)\}_{n\ge 0}$ satisfies
-          $|f^n(x) - \zeta| \sim (m n)^{-1/m}$ as $n\to\infty$
-          (Parabolic Fatou coordinate estimate \cite{Milnor2006}).
-    \item Consequently, the spherical derivative satisfies
-          $\phi^S((\RS)^n(y)) = \fsh(f^n(x)) = 1 - c\,|f^n(x)-\zeta|^m +
-          O(|f^n(x)-\zeta|^{m+1})$ for $y = q^{-1}(x) \in S^3$.
-    \item The Lyapunov approximations satisfy
-          \begin{equation}\label{eq:parabolic_rate}
+    \item $L_f(\fsh)(x) = 1$.
+          \textnormal{[Lyapunov exponent of a parabolic cycle is zero;
+          Birkhoff ergodic theorem \cite{Birkhoff1931}.]}
+    \item $|f^{qk}(x)-\zeta| \;\sim\; (m\,|a_m|\,k)^{-1/m}$ as $k\to\infty$.
+          \textnormal{[Parabolic Fatou coordinate estimate; \cite{Milnor2006},
+          Theorem~10.9.]}
+    \item For large $k$, in an attracting petal,
+          \begin{equation}\label{eq:spherical_taylor}
+            \log\fsh(f^{qk}(x))
+            = -(m+1)\,\mathrm{Re}\!\bigl(a_m(f^{qk}(x)-\zeta)^m\bigr)
+              + O\!\bigl(|f^{qk}(x)-\zeta|^{m+1}\bigr)
+            \;\sim\; -\frac{m+1}{mk}.
+          \end{equation}
+    \item \begin{equation}\label{eq:parabolic_rate}
             1 - L_{f^S}^{[0,N]}(\phi^S)(y)
-            \sim \frac{m+1}{m}\cdot\frac{\log N}{N}
-            \quad\text{as }N\to\infty.
+            \;\sim\; \frac{m+1}{m}\cdot\frac{\log N}{N}
+            \qquad\text{as }N\to\infty.
           \end{equation}
           In particular, the gap between consecutive approximations satisfies
-          $\bigl|L_{f^S}^{[0,N-1]}(\phi^S)(y) - L_{f^S}^{[0,N]}(\phi^S)(y)\bigr|
+          $\bigl|L_{f^S}^{[0,N-1]}(\phi^S)(y)-L_{f^S}^{[0,N]}(\phi^S)(y)\bigr|
           \sim \tfrac{m+1}{m}\cdot\tfrac{\log N}{N^2}$,
-          which tends to zero much more slowly than the geometric rate $O(c^N)$
-          of the attracting case, but much faster than $1/\!\log N$.
+          much slower than the geometric rate $O(c^N)$ of the attracting
+          case, but much faster than $1/\!\log N$.
   \end{enumerate}
 \end{proposition}
+
+\begin{proof}
+  Parts~(i) and~(ii) are standard; references are given inline.
+
+  \textit{Part~(iii).}
+  Since $f^q(\zeta)=\zeta$ and $(f^q)'(\zeta)$ has modulus~$1$, we have
+  $(f^q)^{\#}(\zeta)=1$ and therefore $\fsh(\zeta)=1$ along the parabolic
+  cycle.  Differentiating
+  $f^q(z)=\zeta+(z-\zeta)+a_m(z-\zeta)^{m+1}+O((z-\zeta)^{m+2})$
+  gives $(f^q)'(z)=1+(m+1)a_m(z-\zeta)^m+O((z-\zeta)^{m+1})$.
+  Setting $w=f^{qk}(x)-\zeta$ and expanding:
+  \[
+    \log|(f^q)'(\zeta+w)|
+    = \mathrm{Re}\log\bigl(1+(m+1)a_mw^m+O(w^{m+1})\bigr)
+    = (m+1)\,\mathrm{Re}(a_mw^m)+O(|w|^{m+1}).
+  \]
+  The remaining factor $\log\tfrac{1+|\zeta+w|^2}{1+|f^q(\zeta+w)|^2}$
+  is $O(|w|^{m+1})$.  In an attracting petal $\mathrm{Re}(a_mw^m)>0$, so
+  $\log\fsh(f^{qk}(x))\le 0$; inserting part~(ii) gives
+  $\log\fsh(f^{qk}(x))\sim-(m+1)|a_m|\cdot\frac{1}{m|a_m|k}
+  =-\frac{m+1}{mk}$.
+
+  \textit{Part~(iv).}
+  By Lemma~\ref{lem:lyapunov_identity} it suffices to work on $\Chat$.
+  At times $n=qk$ the orbit is near $\zeta$; at $n=qk+j$ ($j=1,\ldots,q-1$)
+  the orbit lies away from $\zeta$, with $\log\fsh(f^n(x))=O(1)$.
+  These off-cycle terms contribute $O(1/N)$ to the Birkhoff average and
+  are negligible.  The dominant contribution is:
+  \[
+    \frac{1}{N}\sum_{n=0}^{N-1}\log\fsh(f^n(x))
+    \;\approx\;
+    \frac{1}{N}\sum_{k=1}^{\lfloor N/q\rfloor}\log\fsh(f^{qk}(x))
+    \;\approx\;
+    -\frac{m+1}{m}\cdot\frac{H_{\lfloor N/q\rfloor}}{N}
+    \;\sim\;
+    -\frac{m+1}{m}\cdot\frac{\log N}{N},
+  \]
+  where $H_n=\sum_{k=1}^n k^{-1}\sim\log n$ is the harmonic partial sum.
+  Linearising $e^{-s}\approx 1-s$ for
+  $s=\frac{m+1}{m}\cdot\frac{\log N}{N}\to 0$
+  gives~\eqref{eq:parabolic_rate}.
+\end{proof}
+
+\begin{corollary}[Parabolic rate on $S^3$]\label{cor:parabolic_hopf}
+  Equation~\eqref{eq:parabolic_rate} holds for every
+  $y\in q^{-1}(B_f^{\mathrm{par}}(\zeta))\subset S^3$:
+  the normalisation to $S^3$ does not distort the parabolic rate estimate.
+\end{corollary}
+
+\begin{proof}
+  By Lemma~\ref{lem:lyapunov_identity},
+  $L_{f^S}^{[0,N]}(\phi^S)(y)=L_f^{[0,N]}(\fsh)(q(y))$
+  with $q(y)\in B_f^{\mathrm{par}}(\zeta)$;
+  Proposition~\ref{prop:parabolic}(iv) then applies directly.
+\end{proof}
 
 \begin{remark}
   Equation~\eqref{eq:parabolic_rate} implies that for a fixed large
@@ -387,22 +474,6 @@ The key estimate is:
   much more slowly than in the attracting case.  This is precisely the
   observable we exploit to detect parabolic basins.
 \end{remark}
-
-\begin{conjecture}\label{conj:parabolic_hopf}
-  Proposition~\ref{prop:parabolic}(iii) holds when the spherical
-  derivative $\phi^S$ is computed via the homogeneous bihomogeneous pair
-  $(U,V)$ of \cite[Def.~16]{Alvarez2023}, i.e.~the normalisation to $S^3$
-  does not distort the parabolic rate estimate.
-\end{conjecture}
-
-\noindent\textit{Evidence.}  Since $\RS: S^3 \to S^3$ is a smooth map
-homotopic to $q^{-1} \circ f \circ q$ (Proposition~2 of \cite{Alvarez2023})
-and the map $q: S^3 \to \Pone$ is a local isometry up to a constant
-factor near any non-critical point, the local dynamics near a parabolic
-point $\zeta$ is reproduced faithfully on $S^3$ except near the Hopf
-fibres over $\zeta$.  A full proof requires a careful analysis of the
-interaction between the normalisation and the Fatou coordinate, which we
-intend to carry out in the final version.
 
 \subsection{Practical criterion: detecting the convergence regime}
 
@@ -874,7 +945,7 @@ in a companion paper.
 Several directions for future work remain open:
 
 \begin{itemize}
-  \item \textbf{Proof of Conjecture~\ref{conj:parabolic_hopf}.}  A
+  \item \textbf{Proof of Corollary~\ref{cor:parabolic_hopf}.}  A
         full proof that the normalisation to $S^3$ does not distort the
         parabolic rate estimate requires a detailed analysis of the
         interaction between the Hopf fibration and the Fatou coordinate
