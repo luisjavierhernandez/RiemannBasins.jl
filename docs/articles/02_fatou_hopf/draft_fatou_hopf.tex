@@ -50,8 +50,8 @@
 \DeclareMathOperator{\rot}{rot}
 
 %% ---------------------------------------------------------------------------
-\title{\textbf{Classifying Fatou Components of Rational Maps\\
-        via the Hopf Fibration and Lyapunov Functions}\\[6pt]
+\title{\textbf{Detecting Parabolic Fatou Components\\
+        via Birkhoff Averages and the Hopf Fibration}\\[6pt]
        {\large (Working draft --- November 2026)}}
 
 \author{V.~\'Alvarez-Aparicio\thanks{Departamento de Matem\'aticas y
@@ -68,40 +68,29 @@ M.\,T.~Rivas-Rodr\'iguez\footnotemark[1]}
 \maketitle
 \begin{abstract}
 We extend the Lyapunov-based framework for rational self-maps of the Hopf
-fibration $S^3 \to \Pone$ developed in \cite{Alvarez2023} to a full
-classification of Fatou components.  In that earlier work, basins of
+fibration $S^3 \to \Pone$ developed in \cite{Alvarez2023} to include
+\emph{parabolic} Fatou components.  In that earlier work, basins of
 \emph{attracting} cycles were characterised by the condition that the
 Lyapunov constant $c = L_{f^S}(\phi^S) < 1$, while the Julia set was
 identified as the complement; no other Fatou components appeared in the
-considered examples.  By Sullivan's No-Wandering-Domain theorem the full
-classification of periodic Fatou components of a rational map comprises
-five types: attracting/superattracting basins, parabolic basins, Siegel
-discs, and Herman rings.
+considered examples.  By Sullivan's No-Wandering-Domain theorem, parabolic
+basins form one of the five possible types of periodic Fatou components of
+a rational map; they are distinguished by a multiplier equal to a root of
+unity and by a characteristic logarithmic convergence rate.
 
-The main contributions of the present paper are:
-\begin{enumerate}[label=(\roman*)]
-  \item A \emph{convergence-rate criterion} that distinguishes parabolic
-        basins from attracting basins and from the Julia set: for orbits
-        tending to a parabolic cycle the Lyapunov approximation sequence
-        $L_{f^S}^{[0,N]}(\phi^S)$ converges to~$1$ at rate
-        $\tfrac{m+1}{m}\cdot\tfrac{\log N}{N}$, where $m$ is the parabolic
-        multiplicity, whereas for attracting basins the convergence is geometric.
-  \item A \emph{rotation-number algorithm on $S^3$} that detects and
-        measures the irrational rotation in Siegel discs and Herman rings,
-        working entirely within the normalised homogeneous coordinates of
-        the Hopf endomorphism so as to avoid overflow, underflow, and the
-        indeterminacy at the super-zero point $\tilde{0}$.
-  \item A unified \emph{classification algorithm} that, given a rational
-        map $f$ represented as an r-irreducible homogeneous pair $(F,G)$,
-        assigns to each orbit on a grid of $S^3$ one of the labels:
-        \textsc{attracting}, \textsc{superattracting}, \textsc{parabolic},
-        \textsc{siegel}, \textsc{herman}, or \textsc{julia}.
-\end{enumerate}
-We illustrate the algorithms on several families of rational maps,
-including Newton's method applied to cubic polynomials with parameter-
-dependent cyclic behaviour, and quadratic maps with Siegel fixed points.
+The main contribution of the present paper is a \emph{convergence-rate
+criterion} that distinguishes parabolic basins from attracting basins and
+from the Julia set: for orbits tending to a parabolic cycle the Lyapunov
+approximation sequence $L_{f^S}^{[0,N]}(\phi^S)$ converges to~$1$ at rate
+$\tfrac{m+1}{m}\cdot\tfrac{\log N}{N}$, where $m$ is the parabolic
+multiplicity, whereas for attracting basins the convergence is geometric.
+We illustrate the criterion on the quadratic family $f_c(z)=z^2+c$,
+comparing parabolic fixed points and 2-cycles with the superattracting
+Basilica map, and on Newton's method applied to cubic polynomials with
+parameter-dependent cyclic behaviour.
 The algorithms are implemented in the Julia programming language as an
 extension of the \texttt{RiemannBasins.jl} package \cite{RiemannBasins}.
+Detection of Siegel disc and Herman ring basins is left for a companion paper.
 \end{abstract}
 
 \tableofcontents
@@ -166,11 +155,12 @@ for standard complex dynamics background.  Section~\ref{sec:sullivan}
 reviews Sullivan's classification and recalls the relevant properties of
 each Fatou type.  Section~\ref{sec:lyapunov} develops the Lyapunov-based
 criteria for attracting and parabolic basins.  Section~\ref{sec:rotation}
-introduces the rotation-number algorithm for Siegel discs and Herman rings
-on $S^3$.  Section~\ref{sec:algorithm} presents the unified classification
-algorithm.  Section~\ref{sec:examples} illustrates the method on several
-families.  Section~\ref{sec:conclusions} discusses conclusions and future
-directions.
+briefly discusses rotation domains (Siegel discs and Herman rings) and
+outlines their treatment in a companion paper.  Section~\ref{sec:algorithm}
+presents the parabolic classification algorithm.
+Section~\ref{sec:examples} illustrates the method on quadratic maps and
+Newton's method applied to cubic polynomials.  Section~\ref{sec:conclusions}
+discusses conclusions and future directions.
 
 %% ===========================================================================
 \section{Preliminaries: the Hopf fibration framework}
@@ -433,121 +423,52 @@ three cases:
           (least-squares fit of $\tfrac{m+1}{m}$ on
           $\{(k,\, k(1-a_k)/\log k)\}_{k\ge k_0}$):
           declare \textsc{parabolic} basin.
-    \item Else: defer to the rotation-number algorithm
-          (Algorithm~\ref{alg:rotation}).
+    \item Else: declare \textsc{julia} or flag as a potential rotation
+          domain (see Section~\ref{sec:rotation} for future work).
   \end{enumerate}
 \end{algorithm_desc}
 
 %% ===========================================================================
-\section{Rotation-number algorithm for Siegel discs and Herman rings}
+\section{Rotation domains: remarks and future work}
 \label{sec:rotation}
 %% ===========================================================================
 
-\subsection{Rotation numbers on \texorpdfstring{$S^3$}{S3}}
+Siegel discs and Herman rings are the remaining two types of periodic Fatou
+components in Sullivan's classification.  For points in these domains the
+Lyapunov exponent is exactly~$0$ (Lyapunov constant~$1$) but the orbit is
+quasi-periodic rather than convergent: the spherical derivative
+$\phi^S((\RS)^k(y))$ oscillates around~$1$ without approaching any limit.
+This distinguishes rotation domains from both parabolic basins (where the
+Lyapunov approximation tends to~$1$ monotonically, albeit slowly) and from
+the Julia set (where orbits are chaotic rather than quasi-periodic).
 
-Inside a Siegel disc or Herman ring, the map $f^q$ is analytically
-conjugate to a rigid rotation $R_\theta: z \mapsto e^{2\pi i\theta} z$ on
-a disc or annulus.  Every orbit $\{f^{qn}(x)\}_{n\ge 0}$ is quasi-periodic
-with frequency $\theta$ (the rotation number).  The Lyapunov exponent is
-exactly $0$, so $\fsh(f^n(x)) \to 1$ along the orbit but without
-monotone convergence.
-
-Working on $S^3$, let $y \in S^3$ with $x = q(y) \in \Pone$ lying in a
-Siegel disc or Herman ring.  Define the \emph{angular sequence}
-\begin{equation}\label{eq:angle_seq}
+A rotation-number algorithm operating directly on $S^3$ has been designed
+in outline: one extracts the irrational rotation number $\theta$ of a
+Siegel disc or Herman ring by applying a discrete Fourier transform to the
+angular sequence
+\[
   \theta_n := \frac{1}{2\pi}\Arg\!\left(\frac{\langle (\RS)^n(y),\, y\rangle}
   {|\langle (\RS)^n(y),\, y\rangle|}\right), \qquad n = 1, 2, \ldots,
-\end{equation}
-where $\langle\cdot,\cdot\rangle$ denotes the standard Hermitian inner
-product on $\C^2$.  When the orbit lies in a Siegel disc with rotation
-$e^{2\pi i\theta}$, the sequence $\{n\theta \pmod 1\}$ approximates
-$\{\theta_n\}$, and the rotation number can be recovered by any of the
-following methods:
-\begin{enumerate}[label=(\alph*)]
-  \item \emph{Arithmetic mean}: $\theta \approx \frac{1}{N}\sum_{n=1}^N
-        \theta_n / n$ (slow but robust).
-  \item \emph{Discrete Fourier transform}: the dominant frequency in the
-        DFT of the sequence $\{e^{2\pi i \theta_n}\}$ gives $\theta$.
-  \item \emph{Continued fractions}: the Stern--Brocot algorithm applied to
-        $\theta_N := \theta_N / N$ gives rational approximations
-        $p_k/q_k \to \theta$, allowing early termination with a certified
-        bound \cite{Yoccoz1988}.
-\end{enumerate}
-
-\begin{remark}[Herman rings]
-  A Herman ring has no fixed point in its interior, so the inner product
-  $\langle (\RS)^n(y), y\rangle$ may not accumulate near $y$.  One instead
-  looks for the smallest $q$ such that the orbit $\{(\RS)^{qn}(y)\}$ appears
-  to converge quasi-periodically, and applies \eqref{eq:angle_seq} to
-  the $q$-th iterate.
-\end{remark}
-
-\subsection{Detecting rotation domains vs.~the Julia set}
-
-A point in the Julia set also fails the attracting criterion and may also
-fail the parabolic criterion.  The key distinction is that Julia set
-orbits are \emph{not} quasi-periodic: they exhibit sensitive dependence
-on initial conditions, while rotation-domain orbits are stable.
-
-\begin{proposition}[Lyapunov exponent in rotation domains]
-  \label{prop:siegel}
-  Let $U$ be a Siegel disc or Herman ring of $f$.  For every $y \in
-  q^{-1}(U) \subset S^3$:
-  \begin{enumerate}[label=(\roman*)]
-    \item $L_{f^S}(\phi^S)(y) = 1$.
-    \item The sequence $\phi^S((\RS)^k(y))$ is quasi-periodic: for every
-          $\varepsilon > 0$ there exists $N(\varepsilon)$ such that
-          $|\phi^S((\RS)^{k+N(\varepsilon)}(y)) -
-          \phi^S((\RS)^k(y))| < \varepsilon$ for all $k\ge 0$.
-    \item The map $k \mapsto \phi^S((\RS)^k(y))$ does not converge: its
-          lim-sup and lim-inf are both~$1$ but they are approached
-          from both sides.
-  \end{enumerate}
-\end{proposition}
-
-\begin{proof}[Sketch]
-  Part~(i) follows because $f^{\#}(f^n(x)) = 1$ for all $n$ and $x$ in a
-  rotation domain (rigid rotation preserves the spherical metric up to a
-  constant factor at each point, and after one period $q$ the product
-  $\prod_{k=0}^{q-1} f^{\#}(f^k(x)) = 1$).  Part~(ii) follows from the
-  quasi-periodicity of the orbit itself together with the continuity of
-  $\phi^S$.  Part~(iii) follows because the orbit $\{(\RS)^k(y)\}$ is
-  quasi-periodic in $S^3$ and $\phi^S$ is not constant along it
-  (a rigid rotation on a disc or annulus changes the spherical
-  derivative as $y$ moves away from and back toward the centre of
-  the rotation domain), so the sequence $\phi^S((\RS)^k(y))$
-  oscillates without converging.
-\end{proof}
-
-\begin{algorithm_desc}[Rotation-number detection]\label{alg:rotation}
-  Input: a point $y\in S^3$, a maximum period $Q$, iteration count $N$.
-  \begin{enumerate}[label=Step \arabic*.]
-    \item For $q = 1, 2, \ldots, Q$: compute
-          $\delta_q := \|(\RS)^{N}(y) - y\|_{S^3}$ after iterating
-          $N$ steps of $(\RS)^q$ (i.e.~$qN$ total iterates of $\RS$).
-          If $\delta_q < \varepsilon$ for some $q$: candidate period found.
-    \item Compute the angular sequence $\{\theta_n\}_{n=1}^N$ of
-          \eqref{eq:angle_seq} with $\RS$ replaced by $(\RS)^q$.
-    \item Apply the DFT to $\{e^{2\pi i\theta_n}\}$; extract dominant
-          frequency $\hat\theta$.
-    \item Check stability: compare $\hat\theta$ for two initial
-          conditions $y, y'$ close in $S^3$.  If $|\hat\theta(y) -
-          \hat\theta(y')| < \varepsilon$: declare \textsc{siegel} disc or
-          \textsc{herman} ring with rotation number $\hat\theta$.
-    \item If no quasi-periodic pattern is found: declare \textsc{julia}.
-  \end{enumerate}
-\end{algorithm_desc}
+\]
+where $\langle\cdot,\cdot\rangle$ is the standard Hermitian inner product
+on $\C^2$.  This approach requires additional implementation work to handle
+period detection, stability tests, and the special treatment of Herman rings
+(where no fixed point lies in the interior).  Its complete treatment,
+together with worked examples on quadratic maps with Brjuno fixed points
+and rational Blaschke products with Herman rings, will appear in a companion
+paper.
 
 %% ===========================================================================
 \section{The unified classification algorithm}
 \label{sec:algorithm}
 %% ===========================================================================
 
-Combining Algorithms~\ref{alg:lyapunov} and~\ref{alg:rotation}, we obtain
-a complete classification procedure.  The input is a rational map given as
-an r-irreducible pair $(F,G) \in \C_h[z,t]_{\mathrm{ri}}\C_h[z,t]$.
+The following algorithm combines the attracting-basin detection of
+\cite{Alvarez2023} with the parabolic criterion of
+Algorithm~\ref{alg:lyapunov}.  The input is a rational map given as an
+r-irreducible pair $(F,G) \in \C_h[z,t]_{\mathrm{ri}}\C_h[z,t]$.
 
-\begin{algorithm_desc}[Complete Fatou component classifier]
+\begin{algorithm_desc}[Parabolic Fatou component classifier]
   \label{alg:full}
   \quad\\
   \textbf{Phase 1: grid and Hopf normalisation.}
@@ -564,24 +485,21 @@ an r-irreducible pair $(F,G) \in \C_h[z,t]_{\mathrm{ri}}\C_h[z,t]$.
   \begin{enumerate}[label=3.\arabic*.]
     \item Apply Step~3 of Algorithm~\ref{alg:lyapunov} to test for
           \textsc{parabolic}.
-    \item If not parabolic, apply Algorithm~\ref{alg:rotation}.
-    \item If Algorithm~\ref{alg:rotation} returns \textsc{julia}:
-          the point is in $J(f)$ (or in the backward orbit of a critical
-          point).
+    \item If not parabolic, declare \textsc{julia} (or flag as a potential
+          rotation domain for future analysis via the companion
+          rotation-number algorithm; see Section~\ref{sec:rotation}).
   \end{enumerate}
 
   \textbf{Phase 4: colouring.}
   Assign colours as follows:
   \begin{itemize}
-    \item Each attracting basin $B_f(C_i)$: a distinct colour, graded by
+    \item Each attracting basin $B_f(C_i)$: a distinct hue, graded by
           the band index $\lfloor \log_b L_{f^S}^{[r,s]}(\phi^S) \rfloor$
           (as in \cite{Alvarez2023}).
-    \item Parabolic basins: a separate colour scheme, graded by the
-          convergence progress $1 - L^{[0,N]}$.
-    \item Siegel disc / Herman ring: a uniform hue, with saturation
-          encoding the rotation number $\hat\theta$.
-    \item Julia set: black (or by an escape-time / Böttcher coordinate
-          where applicable).
+    \item Parabolic basins: rendered \emph{black} (logarithmically slow
+          convergence is never detected as attracting within any fixed
+          iteration budget; see Section~\ref{sec:examples:quadratic_cycles}).
+    \item Julia set / unclassified: black.
   \end{itemize}
 \end{algorithm_desc}
 
@@ -844,38 +762,21 @@ or $B_N\to\ell<0$ distinguishes the parabolic from the attracting regime.
   \label{fig:cycle_birkhoff}
 \end{figure}
 
-\subsection{A quadratic map with a Siegel disc}
+\subsection{Siegel disc and Herman ring basins: outlook}
 \label{sec:example_siegel}
 
-Let $\theta = (\sqrt{5}-1)/2$ (the golden mean, which satisfies the
-Brjuno condition).  By the theory of quadratic polynomials
-\cite{Siegel1942, Yoccoz1988}, the map
-\[
-  f_\theta(z) = e^{2\pi i\theta} z + z^2
-\]
-has a Siegel disc $U_\theta$ centred at $0$ with rotation number
-$\theta$.  The boundary $\partial U_\theta$ is a quasi-circle and
-$J(f_\theta) = \partial U_\theta$.
-
-The corresponding homogeneous pair is
-\[
-  F(z,t) = e^{2\pi i\theta} zt + z^2, \qquad G(z,t) = t^2.
-\]
-For $y \in q^{-1}(U_\theta)$, the angular sequence \eqref{eq:angle_seq}
-should give $\hat\theta = (\sqrt{5}-1)/2$, detectable via the DFT by
-the dominant pair of peaks at $\pm\hat\theta$.
-
-\begin{remark}
-  The map $f_\theta(z) = e^{2\pi i\theta}z + z^2$ is affinely conjugate
-  (via $w = z + e^{2\pi i\theta}/2$) to the standard quadratic family
-  $g_c(w) = w^2 + c$ with
-  $c = \tfrac{\lambda}{2} - \tfrac{\lambda^2}{4}$,
-  $\lambda = e^{2\pi i\theta}$.  Since $|\lambda|=1$, the parameter
-  $c$ lies on the boundary of the main cardioid of the Mandelbrot set
-  (the locus where $g_c$ has an indifferent fixed point).  Whether the
-  Siegel disc $U_\theta$ touches $J(f_\theta)$ is a separate (open)
-  question; for our classification purposes, any Brjuno $\theta$
-  provides a valid example.
+\begin{remark}[Rotation domains: companion paper]
+Siegel disc basins arise, for example, for $f_\theta(z)=e^{2\pi i\theta}z+z^2$
+when $\theta=(\sqrt{5}-1)/2$ (the golden mean) satisfies the Brjuno
+condition \cite{Siegel1942,Yoccoz1988}: the fixed point at~$0$ has
+multiplier $e^{2\pi i\theta}$ and is the centre of a Siegel disc whose
+boundary is a quasi-circle.  Herman rings arise for specific Blaschke
+products of degree $\ge 2$.  In both cases the Lyapunov constant equals~$1$
+and the orbit is quasi-periodic, so these components are not flagged as
+parabolic by Algorithm~\ref{alg:full}; they remain in the
+\textsc{julia}/unclassified output of the present algorithm.  Their
+visualisation and rotation-number estimation will be developed in the
+companion paper described in Section~\ref{sec:rotation}.
 \end{remark}
 
 \subsection{Newton's method: detecting parameter-space $n$-cycles}
@@ -918,21 +819,25 @@ The algorithms described above extend the \texttt{LCD.jl}
 (Lyapunov Cycle Detector) package \cite{LCD2022} and the
 \texttt{RiemannBasins.jl} package \cite{RiemannBasins}.  The
 implementation uses the Julia programming language \cite{Julia2017},
-which is well suited to this task due to its high numerical performance,
-its native support for complex arithmetic, and the existing
-\texttt{FFTW.jl} library for the DFT-based rotation number estimation.
+which is well suited to this task due to its high numerical performance
+and its native support for complex arithmetic.
 
-The key new exported functions planned for the extended package are:
+The key new exported functions implemented in \texttt{RiemannBasins.jl}
+for the present paper are:
 \begin{itemize}
-  \item \texttt{classify\_fatou(f, grid; tol, max\_iter)} --- returns a
-        label array with entries from
-        \texttt{\{:attracting, :superattracting, :parabolic, :siegel,
-        :herman, :julia\}}.
-  \item \texttt{rotation\_number(f, z; max\_iter)} --- estimates the
-        rotation number at a point in a potential rotation domain.
-  \item \texttt{parabolic\_portrait(f; ...)} --- full portrait with the
-        parabolic basin coloured separately.
+  \item \texttt{parabolic\_portrait(f; grid, max\_iter, tol)} --- computes
+        a basin portrait in which parabolic basins appear black (logarithmic
+        convergence, undetected within the iteration budget) and attracting
+        basins are coloured by hue and band index.
+  \item \texttt{birkhoff\_average(f, z0; N)} --- returns the sequence of
+        Birkhoff partial averages $B_k = \frac{1}{k}\sum_{j=0}^{k-1}
+        \log\fsh(f^j(z_0))$ for $k=1,\ldots,N$, used for the parabolic
+        rate diagnostic.
 \end{itemize}
+Detection of Siegel disc and Herman ring basins (functions
+\texttt{rotation\_number} and the corresponding \texttt{classify\_fatou}
+labels \texttt{:siegel}, \texttt{:herman}) is planned for the companion
+paper.
 
 Basic functions used to write the new code had been previously developed
 in \cite{Extremiana2019} and \cite{PBURF2019}, following the tradition
@@ -944,24 +849,23 @@ established in \cite{HernandezParicio2012}.
 %% ===========================================================================
 
 We have presented the theoretical foundations and algorithmic design for
-a complete classification of Fatou components of rational maps within the
+detecting parabolic Fatou components of rational maps within the
 Hopf fibration framework of \cite{Alvarez2023}.  Working entirely in
 normalised homogeneous coordinates on $S^3$ avoids the numerical
 pathologies (overflow, underflow, indeterminacy at $[0:0]$) that affect
 the standard affine approach.
 
-The two main new technical contributions are:
+The main new technical contribution is:
 \begin{enumerate}[label=(\arabic*)]
   \item The \emph{parabolic detection criterion} based on the
         $\tfrac{\log N}{N}$ convergence rate of the Lyapunov approximation
-        sequence, which
-        allows one to distinguish parabolic basins from attracting ones
-        and from the Julia set without computing Fatou coordinates
-        explicitly.
-  \item The \emph{rotation-number algorithm on $S^3$}, which detects
-        Siegel discs and Herman rings and returns the rotation number as
-        a certified rational approximation.
+        sequence, which allows one to distinguish parabolic basins from
+        attracting ones and from the Julia set without computing Fatou
+        coordinates explicitly.
 \end{enumerate}
+Detection of rotation domains (Siegel discs and Herman rings), which requires
+a DFT-based rotation-number algorithm operating on $S^3$, will be developed
+in a companion paper.
 
 Several directions for future work remain open:
 
@@ -1018,13 +922,20 @@ Several directions for future work remain open:
 
 \bigskip
 \noindent\textbf{Acknowledgements.}
-The authors thank Professor J.M.~Rodríguez Sanjurjo for his continued
-interest and encouragement.  This work is a continuation of the program
-initiated in \cite{Extremiana2019,Alvarez2023}.  Computations were
-performed using the Julia language \cite{Julia2017} with the
-\texttt{RiemannBasins.jl} package \cite{RiemannBasins}.
+This work is a continuation of the program initiated in
+\cite{Extremiana2019,Alvarez2023}.  Computations were performed using
+the Julia language \cite{Julia2017} with the \texttt{RiemannBasins.jl}
+package \cite{RiemannBasins}.
 L.J.H.-P.\ acknowledges support from project REGI25/61 of the
 Universidad de La Rioja.
+
+The authors made use of Claude (Anthropic), an AI assistant, as a tool
+to support the writing of this article and the development of the
+accompanying Julia code.  Specifically, Claude was used for drafting and
+revising mathematical prose, generating and debugging
+\texttt{RiemannBasins.jl} scripts for figure production, and assisting
+in the preparation of the \LaTeX\ source.  All mathematical content and
+conclusions remain the full responsibility of the authors.
 
 %% ===========================================================================
 \bibliographystyle{plain}
