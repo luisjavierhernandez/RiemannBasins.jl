@@ -9,6 +9,9 @@
 #   cycle_attract_basilica.png  f(z)=z²-1    : 2-ciclo superatractor (control)
 #   cycle_birkhoff_comparison.png: B_N para parabólico vs atractor (hasta N=15000)
 
+import Pkg
+Pkg.activate(joinpath(@__DIR__, ".."))
+
 using RiemannBasins, Colors, Plots, Printf
 
 outdir = joinpath(@__DIR__, "..", "docs", "articles", "02_fatou_hopf", "figures")
