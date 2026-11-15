@@ -106,7 +106,7 @@ No-Wandering-Domain theorem of Sullivan \cite{Sullivan1983}, every periodic
 Fatou component of a rational map of degree $d \ge 2$ belongs to exactly
 one of five types: an attracting basin, a superattracting basin, a
 parabolic basin, a Siegel disc, or a Herman ring \cite{Milnor2006,
-Beardon1991}.  While the theoretical classification has been understood
+Beardon1991, Devaney2003}.  While the theoretical classification has been understood
 since the 1980s, its \emph{computational} detection remains subtle:
 standard orbit algorithms converge to attracting cycles with no difficulty
 but give ambiguous output near parabolic cycles (slow convergence) or
@@ -266,7 +266,7 @@ spherical derivative around the cycle \cite[Prop.~5]{Alvarez2023}.
 \begin{remark}[Birkhoff averages]\label{rem:birkhoff}
 Taking logarithms, $\log L_g^{[0,N]}(\phi)(x) = \frac{1}{N+1}\sum_{k=0}^{N}
 \log\phi(g^k(x))$ is the \emph{Birkhoff average} of $\log\phi$ along the
-orbit of~$x$.  Birkhoff's ergodic theorem therefore guarantees that
+orbit of~$x$.  Birkhoff's ergodic theorem \cite{Birkhoff1931} therefore guarantees that
 $L_g(\phi)(x)$ exists and equals $c_i$ almost everywhere on $B_f(C_i)$,
 with respect to any ergodic $f$-invariant measure supported on the basin.
 In particular no additional argument is required to justify the ``almost
@@ -568,6 +568,9 @@ two independent pieces of information about the orbit starting at $z=x+iy$:
 \end{enumerate}
 \textbf{Black pixels} are assigned to orbits that do \emph{not} converge
 to any attracting cycle within the prescribed iteration limit.
+This \emph{position-and-iteration} colour convention is in the tradition
+of basin portrait visualisation for complex dynamical systems; we refer
+to \cite{PeitgenRichter1986} for the pioneering images in this area.
 Two situations produce black pixels:
 \begin{itemize}
   \item \textbf{The Julia set $J(f)$}: orbits on $J(f)$ neither escape
@@ -610,7 +613,7 @@ Since $-1=e^{i\pi}$ is a primitive second root of unity, the
 Leau--Fatou theorem applies to $f^2$: the leading term of the Taylor
 expansion of $f^2(z)-z$ about $z^*$ is $-2(z-z^*)^3$, giving two
 attracting petals for $f^2$ that interchange under $f$.  In the
-Mandelbrot set, $c=-\tfrac{3}{4}$ lies on the parabolic arc separating
+Mandelbrot set \cite{DouadyHubbard1985}, $c=-\tfrac{3}{4}$ lies on the parabolic arc separating
 the main cardioid from the period-$2$ bulb.
 
 The black region in Figure~\ref{fig:cycle_parabolic_p2} is the
@@ -653,7 +656,7 @@ satisfying $f(z_1)=z_2$ and $f(z_2)=z_1$.  The multiplier of the cycle is
 \]
 so this 2-cycle is parabolic for $f^4$, and $c=-\tfrac{5}{4}$ lies on
 the boundary between the period-$2$ and period-$4$ bulbs of the Mandelbrot
-set.
+set \cite{DouadyHubbard1985}.
 
 As in the previous case, the parabolic basin (the two invariant regions
 that interchange under $f$ and whose orbits converge to $\{z_1,z_2\}$
@@ -782,7 +785,7 @@ companion paper described in Section~\ref{sec:rotation}.
 \subsection{Newton's method: detecting parameter-space $n$-cycles}
 
 This extends \cite[\S6]{Alvarez2023}, which applied the Lyapunov
-framework to Newton's method for cubic polynomials of the form
+framework to Newton's method \cite{Schleicher2004,Shub1993} for cubic polynomials of the form
 $p_\alpha(x) = (x-\alpha)(x^2+1)$.  For values of $\alpha$ in the
 Mandelbrot-like set of Figure~1 of \cite{Alvarez2023}, Newton's method
 has attracting $n$-cycles for $n \ge 2$ rather than converging to a root.
@@ -803,7 +806,7 @@ This provides a finer picture of the parameter space than the binary
 
 \subsection{Halley's method and other rational iteration schemes}
 
-The homogeneous-pair formalism applies equally to Halley's method and
+The homogeneous-pair formalism applies equally to Halley's method \cite{Halley1694} and
 any iterative method representable as a rational map.  For Halley's
 method applied to $p(x) = x^n - 1$, the basins and their boundaries
 are qualitatively similar to Newton's but with higher symmetry.  The
@@ -821,6 +824,8 @@ The algorithms described above extend the \texttt{LCD.jl}
 implementation uses the Julia programming language \cite{Julia2017},
 which is well suited to this task due to its high numerical performance
 and its native support for complex arithmetic.
+Other tools in the Julia ecosystem for nonlinear dynamics and chaotic systems
+include \texttt{DynamicalSystems.jl} \cite{Datseris2022}.
 
 The key new exported functions implemented in \texttt{RiemannBasins.jl}
 for the present paper are:
@@ -912,8 +917,8 @@ Several directions for future work remain open:
         basins its convergence rate is $\tfrac{\log N}{N}$, which makes
         basin classification slow for orbits close to the parabolic
         boundary.  Classical summability methods for Birkhoff
-        averages---Cesàro means of higher order, Richardson extrapolation,
-        or the Shanks--Aitken transformation applied to the partial
+        averages---Cesàro means of higher order, Richardson extrapolation \cite{Richardson1911},
+        or the Shanks--Aitken transformation \cite{Shanks1955} applied to the partial
         sums---can recover the limit with far fewer orbit steps.
         Implementing such an accelerator in \texttt{RiemannBasins.jl}
         is a natural next step that could substantially reduce the
