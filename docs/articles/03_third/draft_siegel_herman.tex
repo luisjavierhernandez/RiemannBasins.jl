@@ -396,8 +396,9 @@ In the parabolic case $\phi_k\to 0$ monotonically, so $\sigma^2_N\to 0$.
 In the Siegel/Herman case $\phi_k$ oscillates around~$0$ with bounded
 amplitude, so $\sigma^2_N$ stabilises to a positive constant $\sigma^2>0$.
 
-\begin{algorithm}[Variance test]
-\label{alg:variance}
+\begin{algorithm}
+  \caption{Variance test}
+  \label{alg:variance}
   Given orbit data $(\phi_k)_{k=0}^{N-1}$ with $N = 800$ (default):
   \begin{enumerate}
     \item Compute $\sigma^2_N$ as in~\eqref{eq:variance}.
@@ -464,8 +465,9 @@ faster for numbers of bounded type; for practical computation we use
 Laskar's frequency analysis \cite{Laskar1993} or the method of
 \cite{LuqueVillanueva2014} to accelerate convergence.
 
-\begin{algorithm}[Rotation number estimate]
-\label{alg:rot}
+\begin{algorithm}
+  \caption{Rotation number estimate}
+  \label{alg:rot}
   Given orbit $f^{rk}(\hat{z})$, $k = 0,\ldots, N-1$, and cycle point
   $\zeta_0$:
   \begin{enumerate}
@@ -503,8 +505,9 @@ topologically a disk (Siegel); if it separates the critical values into two
 non-empty groups, it is an annulus (Herman).
 More precisely:
 
-\begin{algorithm}[Siegel/Herman topological test]
-\label{alg:topology}
+\begin{algorithm}
+  \caption{Siegel/Herman topological test}
+  \label{alg:topology}
   Given period-$r$ orbit $O = \{f^{rk}(\hat{z})\}_{k=0}^{M-1}$ (a closed
   curve in $\Pone \cong S^2$) and critical points $c_1,\ldots,c_{2d-2}$:
   \begin{enumerate}
@@ -531,8 +534,9 @@ frequency $\rot$.
 In the Herman case there are generically two dominant peaks corresponding to
 the two independent frequencies of the torus.
 
-\begin{algorithm}[Spectral frequency count]
-\label{alg:spectral}
+\begin{algorithm}
+  \caption{Spectral frequency count}
+  \label{alg:spectral}
   Given $N$-point orbit $w_k$:
   \begin{enumerate}
     \item Compute the DFT $|\hat{w}_j|$ for $j = 0,\ldots,N-1$.
