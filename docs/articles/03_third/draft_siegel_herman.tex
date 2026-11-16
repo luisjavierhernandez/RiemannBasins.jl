@@ -172,8 +172,15 @@ $y\in\Sthree$ and $k\ge 0$,
   = \log\phi^S\!\bigl((\RS)^k(y)\bigr),
 \end{equation}
 where $\phi^S = \fsh\circ\qmap$.
-In particular, the Birkhoff averages satisfy
-$\Lbirk(\phi^S)(y) = \Lbirk(\fsh)(\qmap(y))$ for all $N\ge 0$.
+Denoting the \emph{Birkhoff average} of a function $\psi$ along an orbit by
+\begin{equation}\label{eq:birkhoff_avg}
+  \Lbirk(\psi)(y)
+  \;:=\; \frac{1}{N}\sum_{k=0}^{N-1}\psi\!\bigl((\RS)^k(y)\bigr),
+\end{equation}
+identity~\eqref{eq:lyapunov_id} gives immediately
+$\Lbirk(\phi^S)(y) = \Lbirk(\fsh)(\qmap(y))$ for all $N\ge 0$:
+Birkhoff averages of the spherical derivative can be computed
+entirely in~$\Pone$.
 
 %% --------------------------------------------------------------------------
 \subsection{Fatou components and their multipliers}
