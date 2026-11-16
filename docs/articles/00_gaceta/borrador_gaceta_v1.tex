@@ -9,6 +9,8 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 % babel spanish not available in this TeX installation
+\renewcommand{\figurename}{Figura}
+\renewcommand{\tablename}{Tabla}
 \usepackage{microtype}
 
 % --- Matemáticas ---
@@ -102,12 +104,12 @@
 Estudiamos la dinámica de iteración de funciones racionales desde la
 perspectiva natural de la esfera de Riemann~$\Puno$.
 El uso de coordenadas homogéneas elimina el carácter especial del punto
-en el infinito y permite ver la dinámica completa: cuencas de atracción
-que envuelven la esfera, fronteras fractales que conectan todas las
+del infinito y permite ver la dinámica completa: cuencas de atracción
+que recubren la esfera, fronteras fractales que conectan todas las
 cartas, y puntos fijos en el infinito que quedan ocultos cuando se
 trabaja únicamente en~$\C$.
-Ilustramos la teoría con los ejemplos clásicos de Milnor —Newton,
-Halley, la familia $z^2+c$— e incluimos la visualización de cuencas
+Ilustramos la teoría con los ejemplos clásicos de Milnor (Newton,
+Halley, la familia $z^2+c$) e incluimos la visualización de cuencas
 de ciclos periódicos de período~$p\geq 2$, implementada en el paquete
 \pkg{RiemannBasins.jl} que acompaña al artículo.
 Una parte significativa del trabajo está dedicada al diseño de
@@ -172,20 +174,20 @@ El presente artículo tiene cuatro objetivos.
 El primero es mostrar que $\Puno$, lejos de ser una complicación
 abstracta, es el marco más sencillo para estudiar la dinámica de
 funciones racionales: elimina los casos especiales ligados al infinito y
-hace manifiesta la simetría global de los sistemas.
-El segundo es ilustrar la teoría con los ejemplos más iluminadores de la
+pone de  manifiesto la simetría global de los sistemas.
+El segundo es ilustrar la teoría con algunos de los ejemplos más iluminadores de la
 literatura, en particular los del libro seminal de Milnor~\cite{Milnor2006},
 y extenderlos a la visualización de cuencas de ciclos periódicos de
 período~$p\geq 2$.
 El tercero es describir cómo diseñar visualizaciones matemáticamente
-coherentes de las cuencas, usando el espacio de color LCHab (un espacio perceptualmente uniforme derivado del estándar CIE de 1976, descrito en §\ref{sec:visualizacion})
+coherentes de las cuencas, usando el espacio de color LCHab (un espacio perceptualmente uniforme derivado del estándar CIE de 1976, que se desciribirá  en la secci\'on §\ref{sec:visualizacion})
 para garantizar que todos los tonos sean perceptualmente equivalentes.
-El cuarto —y quizá el menos habitual en la literatura matemática— es
+El cuarto, y quizá el menos habitual en la literatura matemática,  es
 el compromiso con la \emph{inclusión visual}: todas las figuras del
 artículo están disponibles también en una paleta accesible para personas
 con daltonismo (deuteranopía y protanopía), siguiendo las directrices
 de Okabe e~Ito~\cite{OkabeIto2008}.
-Con ello, el artículo se suma a la creciente demanda de comunicación
+Con ello, este artículo desea sumarse a la creciente demanda de comunicación
 científica accesible para toda la audiencia.
 
 % ============================================================
@@ -208,20 +210,20 @@ En este artículo nos ocupamos exclusivamente de la única superficie de
 Riemann compacta de género~$0$, la \emph{esfera de Riemann}.
 Tiene dos realizaciones naturales que conviene conocer en paralelo: una
 \emph{geométrica} —la esfera unidad $S^2\subset\R^3$ con proyecciones
-estereográficas— y una \emph{algebraica} —el espacio proyectivo complejo
+estereográficas— y una \emph{algebraica} —la recta proyectiva compleja
 $\Puno$—.
-Ambas son el mismo objeto complejo visto desde ángulos distintos, y sus
-respectivas ventajas quedarán de manifiesto a lo largo del artículo.
+Ambas son el mismo objeto  visto desde ángulos distintos, y sus
+respectivas ventajas se pomdrán de manifiesto a lo largo del artículo.
 
 \subsection{La esfera \texorpdfstring{$S^2$}{S2} y las proyecciones estereográficas}
 
-Considere la esfera unidad $S^2\subset\R^3$ con el polo norte $N=(0,0,1)$
+Consideremos la esfera unidad $S^2\subset\R^3$ con el polo norte $N=(0,0,1)$
 y el plano complejo~$\C$ identificado con el plano ecuatorial $\{t=0\}$
 (figura~\ref{fig:stereo}).
 Dado un punto $(x,y,t)\in S^2\setminus\{N\}$,
-trace la semirrecta que parte de~$N$ y pasa por $(x,y,t)$; esa semirrecta
+si trazamos la semirrecta que parte de~$N$ y pasa por $(x,y,t)$; esta semirrecta
 corta al plano ecuatorial en un único punto complejo~$z$.
-Esta construcción es la \emph{proyección estereográfica desde el polo norte}:
+Esta construcción es la llamada \emph{proyección estereográfica desde el polo norte}:
 \[
   z = \frac{x+iy}{1-t}\;\in\;\C,
 \]
@@ -291,8 +293,9 @@ con fórmula inversa
 
 \end{tikzpicture}
 \caption{Proyección estereográfica desde el polo norte~$N$.
-         La semirrecta que parte de~$N$ y pasa por $P=(x,y,t)\in S^2$
-         corta al plano ecuatorial~$\mathbb{C}$ en el punto $z=(x+iy)/(1-t)$.}
+ %        La semirrecta que parte de~$N$ y pasa por $P=(x,y,t)\in S^2$
+ %        corta al plano ecuatorial~$\mathbb{C}$ en el punto $z=(x+iy)/(1-t)$.
+ }
 \label{fig:stereo}
 \end{figure}
 
@@ -306,7 +309,7 @@ obteniendo la coordenada
 \[
   \tilde{w} = \frac{x+iy}{1+t}\;\in\;\C.
 \]
-Sin embargo, el cambio de carta entre~$z$ y~$\tilde{w}$ resulta ser
+Sin embargo, el cambio de cartas entre~$z$ y~$\tilde{w}$ resulta ser
 $\tilde{w} = 1/\bar{z}$, que involucra la conjugación compleja y
 no es holomorfo (es \emph{anti}holomorfo).
 Para remediar esto basta componer con la reflexión $w=\overline{\tilde{w}}$,
@@ -319,31 +322,34 @@ simplemente
 \[
   w \;=\; \frac{1}{z},
 \]
-perfectamente holomorfo.
+que sí es holomorfo.
 Con estas dos cartas, $S^2$ tiene estructura de superficie de Riemann.
 
 \begin{observacion}
 La proyección estereográfica es \emph{conforme}: preserva los ángulos
 entre curvas, aunque no las distancias.
-Una consecuencia notable es que los círculos y rectas del plano se
-corresponden exactamente con los círculos de~$S^2$, propiedad fundamental
+Una consecuencia notable es que los círcunferencias y rectas del plano se
+corresponden exactamente con los circunferencias de~$S^2$, propiedad fundamental
 en la teoría de las transformaciones de Möbius~\cite{Needham1997}.
 \end{observacion}
 
-\subsection{El espacio proyectivo \texorpdfstring{$\Puno$}{P1(C)}}
+\subsection{La recta proyectiva \texorpdfstring{$\Puno$}{P1(C)}}
 
 La segunda realización prescinde de~$\R^3$ y trabaja directamente con
 pares de números complejos.
-El \emph{espacio proyectivo complejo unidimensional}~$\Puno$ es el conjunto
-de rectas complejas que pasan por el origen de~$\C^2$:
+Elespacio proyectivo complejo unidimensional~$\Puno$ al que se le suele llamar  \emph{recta proyectiva compleja} es el 
+espacio cociente:
+%de rectas complejas que pasan por el origen de~$\C^2$:
 \[
   \Puno = \bigl(\C^2\setminus\{(0,0)\}\bigr)\,\big/\!\sim,
   \qquad
-  (z_0,z_1)\sim(\lambda z_0,\lambda z_1)\;\forall\,\lambda\in\C^*.
+  (z_0,z_1)\sim(\lambda z_0,\lambda z_1)\;\forall\,\lambda\in\C^*= \C \setminus \{0\}.
 \]
-La clase de $(z_0,z_1)$ se escribe $[z_0:z_1]$ y se llama \emph{punto
-homogéneo}; en cada clase solo importa el cociente $z_0/z_1$,
-no los valores individuales.
+que podemos pensar como el conjunto de rectas complejas que pasan por el origen de ~$\C^2$.
+
+La clase de equivalencia de  $(z_0,z_1)$ se escribe $[z_0:z_1]$ y se llama \emph{punto
+homogéneo} (notemos que en cada clase solo importa el cociente $z_0/z_1$,
+no los valores individuales).
 
 $\Puno$ se cubre con dos cartas afines:
 \begin{align*}
@@ -357,11 +363,11 @@ con las proyecciones estereográficas—, lo que confirma que ambas
 construcciones definen la misma superficie de Riemann: $\Puno\cong\hat{\C}$.
 
 La ventaja de~$\Puno$ frente a~$\hat{\C}$ es de simetría: ningún punto
-ocupa un lugar especial.
+ocupa un lugar privilegiado.
 El «punto en el infinito» de la carta~$z$ es simplemente $[1:0]\in U_1$,
 con coordenada $w=0$ en la carta~$w$, y se trata exactamente igual que
 cualquier otro punto.
-Esta simetría resulta esencial cuando se estudian funciones racionales,
+Este equilibrio resulta esencial cuando se estudian funciones racionales,
 como veremos en la sección siguiente.
 
 % ============================================================
@@ -401,18 +407,18 @@ En la carta $w$:
 \]
 El punto $[1:0]$ (infinito en la carta $z$) tiene imagen $[1:0]$ y
 derivada~$\tilde{f}'(0)=3/2>1$: es un \emph{punto fijo repulsor}
-(el concepto de \emph{multiplicador} se precisa en la sección~\ref{sec:pfijos}).
+(el concepto de \emph{repulsor} se precisa en la sección~\ref{sec:pfijos}).
 \end{ejemplo}
 
 \subsection{Puntos fijos y su multiplicador}
 \label{sec:pfijos}
 
-Un \emph{punto fijo} de $f$ en $\Puno$ es un punto $\zeta$ con
+Dada una función racional $f \colon \hat \C  \to \hat \C $. Un \emph{punto fijo} de $f$ en $\hat \C (\cong\Puno)$ es un punto $\zeta$ con
 $f(\zeta)=\zeta$.
-Para un punto fijo finito $\zeta\in\C$, el \emph{multiplicador} es
+Para un punto fijo finito $\zeta\in\C$, se define su   \emph{multiplicador} 
 $\lambda=f'(\zeta)\in\C$.
-Para el punto $\zeta=\infty$, se usa la carta $w=1/z$: el multiplicador
-es la derivada de $\tilde{f}$ en $w=0$.
+Para el punto $\zeta=\infty$, usando la carta $w=1/z$, se define su multiplicador
+como  la derivada de $\tilde{f}$ en $w=0$.
 
 La interpretación geométrica es sencilla: si se toma un disco pequeño
 $D(\zeta,\varepsilon)$ de radio $\varepsilon$ centrado en el punto fijo~$\zeta$,
@@ -422,7 +428,7 @@ girado un ángulo $\arg\lambda$ respecto al original.
 El módulo~$|\lambda|$ es, pues, el factor de escala local:
 si $|\lambda|<1$ el disco se contrae iteración tras iteración y
 los puntos cercanos convergen a~$\zeta$;
-si $|\lambda|>1$ el disco se expande y $\zeta$ repele a sus vecinos.
+si $|\lambda|>1$ el disco se expande y $\zeta$ repele a sus puntos vecinos.
 
 El caso límite $\lambda=0$ —denominado punto fijo \emph{superatractor}— es cualitativamente distinto.
 Cuando $\lambda=0$ la aproximación lineal colapsa y la dinámica local
@@ -446,7 +452,7 @@ La clasificación por el módulo del multiplicador es la habitual:
 
 El siguiente resultado es uno de los más elegantes de la teoría:
 
-\begin{teorema}[Conteo de puntos fijos en $\Puno$]
+\begin{teorema}[Número  de puntos fijos en $\Puno$]
 \label{teo:puntosfijos}
 Una función racional de grado $d\geq 1$ tiene exactamente $d+1$
 puntos fijos en~$\Puno$, contados con multiplicidad.
