@@ -142,7 +142,7 @@ que converge a una de las tres raíces cúbicas de la unidad,
 $1,\,\omega=e^{2\pi i/3},\,\omega^2=e^{4\pi i/3}$, según la posición de
 $z_0$.
 Colorear cada punto $z_0$ según la raíz a la que converge su órbita
-produce la figura~\ref{fig:newton_z3}: un fractal con simetría de orden
+produce la Figura~\ref{fig:newton_z3}: un fractal con simetría de orden
 tres en el que las tres cuencas de atracción se entrelazan de forma
 infinitamente intrincada en su frontera común.
 
@@ -164,14 +164,14 @@ Esta imagen suscita una pregunta inmediata: ¿qué ocurre con los puntos
 que «escapan hacia el infinito»?
 En el plano complejo, $\infty$ es una singularidad que se trata de forma
 ad hoc.
-Sin embargo, para la función racional $f(z)=(2z^3+1)/(3z^2)$, el punto
+Sin embargo, para la función racional $f(z)=(2z^3+1)/(3z^2)$ asociada al método de Newton aplicado al polinomio $P(z)=z^3-1$, el punto
 $\infty$ es también un punto fijo —de hecho, \emph{repulsor}: las órbitas que empiezan cerca de él se alejan, en lugar de converger— con un papel
 perfectamente bien definido en la dinámica global.
-Verlo requiere salir de~$\C$ y trabajar en su compactificación natural:
-la \emph{esfera de Riemann}~$\Puno$.
+Verlo requiere extender~$\C$ y trabajar en su compactificación natural: $ \hat \C= \C \cup \{\infty\}$ Este objeto tiene la estructura de una variedad compleja de género cero que llamamos  la \emph{esfera de Riemann}. Adémas, la esfera de Riemann admite otras representaciones que vemos en la  secciòn \ref{sec:esfera}: Una más geométrica, la 2-esfera $S^2$;  y otra más algebraica, la recta proyectiva compleja $\Puno$ que describimos en la sección 2. 
+
 
 El presente artículo tiene cuatro objetivos.
-El primero es mostrar que $\Puno$, lejos de ser una complicación
+El primero es mostrar que  recta proyectiva compleja $\Puno$, lejos de ser una complicación
 abstracta, es el marco más sencillo para estudiar la dinámica de
 funciones racionales: elimina los casos especiales ligados al infinito y
 pone de  manifiesto la simetría global de los sistemas.
@@ -180,7 +180,7 @@ literatura, en particular los del libro seminal de Milnor~\cite{Milnor2006},
 y extenderlos a la visualización de cuencas de ciclos periódicos de
 período~$p\geq 2$.
 El tercero es describir cómo diseñar visualizaciones matemáticamente
-coherentes de las cuencas, usando el espacio de color LCHab (un espacio perceptualmente uniforme derivado del estándar CIE de 1976, que se desciribirá  en la secci\'on §\ref{sec:visualizacion})
+coherentes de las cuencas, usando el espacio de color LCHab (un espacio perceptualmente uniforme derivado del estándar CIE de 1976, que se desciribirá  en la secci\'on \ref{sec:visualizacion})
 para garantizar que todos los tonos sean perceptualmente equivalentes.
 El cuarto, y quizá el menos habitual en la literatura matemática,  es
 el compromiso con la \emph{inclusión visual}: todas las figuras del
@@ -207,17 +207,18 @@ Las superficies de Riemann compactas se clasifican topológicamente por su
 corresponde a la esfera, género~$1$ al toro, etc.
 
 En este artículo nos ocupamos exclusivamente de la única superficie de
-Riemann compacta de género~$0$, la \emph{esfera de Riemann}.
-Tiene dos realizaciones naturales que conviene conocer en paralelo: una
-\emph{geométrica} —la esfera unidad $S^2\subset\R^3$ con proyecciones
-estereográficas— y una \emph{algebraica} —la recta proyectiva compleja
-$\Puno$—.
-Ambas son el mismo objeto  visto desde ángulos distintos, y sus
-respectivas ventajas se pomdrán de manifiesto a lo largo del artículo.
+Riemann compacta de género~$0$, la \emph{esfera de Riemann}. Además de la compactificación de Alexandorff 
+$\hat \C= \C \cup \{\infty\}$, tiene las dos representaciones  naturales que ya  hemos mencionado: la 2-esfera y la recta proyectiva compleja que describimos a continuación.
+% conviene conocer en paralelo: una
+%\emph{geométrica} —la esfera unidad $S^2\subset\R^3$ con proyecciones
+%estereográficas— y una \emph{algebraica} —la recta proyectiva compleja
+%$\Puno$—.
+%Ambas son el mismo objeto  visto desde ángulos distintos, y sus
+%respectivas ventajas se pondrán de manifiesto a lo largo del artículo.
 
 \subsection{La esfera \texorpdfstring{$S^2$}{S2} y las proyecciones estereográficas}
 
-Consideremos la esfera unidad $S^2\subset\R^3$ con el polo norte $N=(0,0,1)$
+Consideremos la esfera unidad $S^2=\{x,y,t) \in \R^3 | x^2+y^2+t^2=1\}$ contendida en $\R^3$  con el polo norte $N=(0,0,1)$
 y el plano complejo~$\C$ identificado con el plano ecuatorial $\{t=0\}$
 (figura~\ref{fig:stereo}).
 Dado un punto $(x,y,t)\in S^2\setminus\{N\}$,
@@ -329,7 +330,7 @@ Con estas dos cartas, $S^2$ tiene estructura de superficie de Riemann.
 La proyección estereográfica es \emph{conforme}: preserva los ángulos
 entre curvas, aunque no las distancias.
 Una consecuencia notable es que los círcunferencias y rectas del plano se
-corresponden exactamente con los circunferencias de~$S^2$, propiedad fundamental
+corresponden exactamente con las circunferencias de~$S^2$, propiedad fundamental
 en la teoría de las transformaciones de Möbius~\cite{Needham1997}.
 \end{observacion}
 
@@ -360,9 +361,9 @@ $\Puno$ se cubre con dos cartas afines:
 \end{align*}
 con cambio de carta $w=1/z$ en $U_0\cap U_1$ —idéntico al obtenido
 con las proyecciones estereográficas—, lo que confirma que ambas
-construcciones definen la misma superficie de Riemann: $\Puno\cong\hat{\C}$.
+construcciones definen la misma superficie de Riemann: $\Puno\cong\hat{\C} \cong S^2$.
 
-La ventaja de~$\Puno$ frente a~$\hat{\C}$ es de simetría: ningún punto
+La ventaja de~$\Puno$ frente a~$\hat{\C}$ es de su homogeneidad: ningún punto
 ocupa un lugar privilegiado.
 El «punto en el infinito» de la carta~$z$ es simplemente $[1:0]\in U_1$,
 con coordenada $w=0$ en la carta~$w$, y se trata exactamente igual que
@@ -370,12 +371,15 @@ cualquier otro punto.
 Este equilibrio resulta esencial cuando se estudian funciones racionales,
 como veremos en la sección siguiente.
 
+\begin{observacion} Al trabajar con los tres modelos que representan la esfera de Riemann: $\hat \C$, $S^2$ y $\Puno$, algunas veces en este trabajo abusamos un poco de la terminología y de la  notación. Por ejemplo, la inclusión natural $\C \to \hat \C$ permite decir  que $\hat \C$ es una extensión de $\C$, pero también diremos que $S^2$ y  $\Puno$ son extensiones de  $\C$ y llamaremos punto del infinito tanto a $\infty \in\hat \C$ como al polo norte $N$  de $S^2$ o al punto $[1:0]$ de $\Puno$.
+\end{observacion}
+
 % ============================================================
 \section{Funciones racionales en \texorpdfstring{$\Puno$}{P1(C)}}
 \label{sec:racionales}
 % ============================================================
 
-\subsection{Extensión natural al espacio proyectivo}
+\subsection{Extensión natural a la recta proyectiva compleja}
 
 Una \emph{función racional} $f:\C\to\hat{\C}$ se escribe
 $f(z)=p(z)/q(z)$ con $p,q$ polinomios sin factor común.
@@ -394,10 +398,10 @@ Ambos son polinomios homogéneos de grado~$d$, y la aplicación
 está bien definida (el cociente $[P:\!Q]$ no depende del representante)
 y es holomorfa.
 En la carta afín $z=z_0/z_1$ recuperamos $f(z)=p(z)/q(z)$; en la carta
-$w=z_1/z_0$ la función toma la forma regular $\tilde{f}(w)$ sin polos.
+$w=z_1/z_0$ la función toma la forma regular que denotamos por  $\tilde{f}(w)$.
 
 \begin{ejemplo}[Newton para $z^3-1$]
-$f(z)=(2z^3+1)/(3z^2)$, de grado~$3$.
+Sea $f(z)=(2z^3+1)/(3z^2)$, de grado~$3$, la función obtenida a aplicar el método de Newton a $z^3-1$.
 Homogeneizando con $d=3$:
 $P(z_0,z_1)=2z_0^3+z_1^3$,\; $Q(z_0,z_1)=3z_0^2 z_1$.
 En la carta $w$:
@@ -405,20 +409,27 @@ En la carta $w$:
    \tilde{f}(w) = \frac{3w}{2+w^3},\qquad\tilde{f}(0)=0,\qquad
    \tilde{f}'(0)=\tfrac{3}{2}.
 \]
-El punto $[1:0]$ (infinito en la carta $z$) tiene imagen $[1:0]$ y
-derivada~$\tilde{f}'(0)=3/2>1$: es un \emph{punto fijo repulsor}
-(el concepto de \emph{repulsor} se precisa en la sección~\ref{sec:pfijos}).
+Notemos que $\tilde{f}(0)=0$; es decir,  que  $[1:0]$  tiene imagen $[1:0]$;  y la 
+derivada~$\tilde{f}'(0)=3/2>1$. Cuando el módulo de la derivada en un punto fijo es mayor que 1 diremos que  es un \emph{punto fijo repulsor}. Este concepto se precisa en la siguiente sección.
+%(el concepto de \emph{repulsor} se precisa en la sección~\ref{sec:pfijos}).
 \end{ejemplo}
 
 \subsection{Puntos fijos y su multiplicador}
 \label{sec:pfijos}
 
-Dada una función racional $f \colon \hat \C  \to \hat \C $. Un \emph{punto fijo} de $f$ en $\hat \C (\cong\Puno)$ es un punto $\zeta$ con
+Dada una función racional $f \colon \hat \C  \to \hat \C $. Un \emph{punto fijo} de $f$ en $\hat \C $ es un punto $\zeta$ con
 $f(\zeta)=\zeta$.
 Para un punto fijo finito $\zeta\in\C$, se define su   \emph{multiplicador} 
 $\lambda=f'(\zeta)\in\C$.
 Para el punto $\zeta=\infty$, usando la carta $w=1/z$, se define su multiplicador
 como  la derivada de $\tilde{f}$ en $w=0$.
+
+La clasificación por el módulo del multiplicador es la siguiente:
+\begin{itemize}
+  \item $|\lambda|<1$: punto fijo \emph{atractor}; el caso especial $\lambda=0$ es \emph{superatractor}.
+  \item $|\lambda|=1$: punto fijo \emph{indiferente}.
+  \item $|\lambda|>1$: punto fijo \emph{repulsor}.
+\end{itemize}
 
 La interpretación geométrica es sencilla: si se toma un disco pequeño
 $D(\zeta,\varepsilon)$ de radio $\varepsilon$ centrado en el punto fijo~$\zeta$,
@@ -443,14 +454,9 @@ que la lineal de los atractores ordinarios.
 En particular, las raíces simples de un polinomio~$P$ son siempre puntos
 fijos superatractores del método de Newton $f=N_P$, con $k=2$.
 
-La clasificación por el módulo del multiplicador es la habitual:
-\begin{itemize}
-  \item $|\lambda|<1$: punto fijo \emph{atractor}; el caso especial $\lambda=0$ es el \emph{superatractor} descrito arriba.
-  \item $|\lambda|=1$: punto fijo \emph{indiferente}.
-  \item $|\lambda|>1$: punto fijo \emph{repulsor}.
-\end{itemize}
 
-El siguiente resultado es uno de los más elegantes de la teoría:
+
+El siguiente resultado es interesante en el estudio de puntos fijos de funciones racionales:
 
 \begin{teorema}[Número  de puntos fijos en $\Puno$]
 \label{teo:puntosfijos}
@@ -670,13 +676,19 @@ tipos:
     \node[below, align=center] at (0,-1.5)
       {\textbf{3a.}\ Parab\'olica ($p=1$)\\[1pt]$\lambda=e^{2\pi ir}$,\ $r\in\mathbb{Q}$};
   \end{scope}
+  
+
+  
+  
+  
+
 
 %% ============================================================
 %% FILA INFERIOR: 3b · 4 · 5
 %% ============================================================
 
   %% ===== 3b. Cuenca parabolica -- 2-ciclo =====
-  \begin{scope}[xshift=0cm, yshift=-3.6cm]
+  \begin{scope}[xshift=0cm, yshift=-4.8cm]
     \fill[gray!15] (-1.25,-1.25) rectangle (1.25,1.35);
     %% Componente izquierda: gota con cuspide apuntando a la derecha
     \fill[basin]
@@ -715,7 +727,7 @@ tipos:
   \end{scope}
 
   %% ===== 4. Disco de Siegel =====
-  \begin{scope}[xshift=3.1cm, yshift=-3.6cm]
+  \begin{scope}[xshift=3.1cm, yshift=-4.8cm]
     \fill[gray!15] (-1.25,-1.25) rectangle (1.25,1.35);
     \fill[basin] (0,0) circle (1.1);
     \foreach \r in {0.33,0.62,0.91}
@@ -729,7 +741,7 @@ tipos:
   \end{scope}
 
   %% ===== 5. Anillo de Herman =====
-  \begin{scope}[xshift=6.2cm, yshift=-3.6cm]
+  \begin{scope}[xshift=6.2cm, yshift=-4.8cm]
     \fill[gray!15] (-1.25,-1.25) rectangle (1.25,1.35);
     \fill[blue!12] (0,0) circle (1.1);
     \fill[gray!15] (0,0) circle (0.46);
