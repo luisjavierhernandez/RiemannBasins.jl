@@ -590,8 +590,15 @@ tipos:
   \item \textbf{Cuenca de atractor fijo:} $f^n(z)\to\zeta$ con $|\lambda|<1$.
   \item \textbf{Cuenca de ciclo atractor:} $f^{np}(z)\to\zeta_j$ donde
         $\{\zeta_1,\ldots,\zeta_p\}$ es un ciclo de período $p\geq 2$.
-  \item \textbf{Cuenca parabólica:} convergencia a un punto fijo de
-        multiplicador $\lambda=e^{2\pi i r}$, $r\in\mathbb{Q}$.
+  \item \textbf{Cuenca parabólica:} cada punto del ciclo
+        $\{\zeta_1,\ldots,\zeta_p\}$ está en la \emph{frontera} del
+        componente ---no en su interior--- con multiplicador
+        $(f^p)'(\zeta_1)=e^{2\pi ir}$, $r\in\mathbb{Q}$.
+        Para $p=1$ (punto fijo parabólico, fig.~\textbf{3a}) el componente
+        tiene forma de pétalo convergente hacia~$\zeta$.
+        Para $p\geq 2$ (fig.~\textbf{3b}) los componentes se intercambian
+        cíclicamente bajo~$f$ y cada uno tiene su punto del ciclo en la
+        frontera.
   \item \textbf{Disco de Siegel:} componente simplemente conexo con
         dinámica de rotación irracional.
   \item \textbf{Anillo de Herman:} componente doblemente conexo (topología de corona)
@@ -606,8 +613,12 @@ tipos:
     fp/.style={fill=black, circle, minimum size=4pt, inner sep=0pt}
   ]
 
-  %% ===== 1. Cuenca de atractor fijo (centro en x=0) =====
-  \begin{scope}[xshift=0cm]
+%% ============================================================
+%% FILA SUPERIOR: 1 · 2 · 3a
+%% ============================================================
+
+  %% ===== 1. Cuenca de atractor fijo =====
+  \begin{scope}[xshift=0cm, yshift=0cm]
     \fill[gray!15] (-1.25,-1.25) rectangle (1.25,1.35);
     \fill[basin] (0,0) circle (1.1);
     \foreach \r in {0.33,0.62,0.91}
@@ -620,8 +631,8 @@ tipos:
       {\textbf{1.}\ Cuenca atractora fija\\[1pt]$|\lambda|<1$};
   \end{scope}
 
-  %% ===== 2. Cuenca de ciclo p=2 (centro en x=3.1) =====
-  \begin{scope}[xshift=3.1cm]
+  %% ===== 2. Cuenca de ciclo p=2 =====
+  \begin{scope}[xshift=3.1cm, yshift=0cm]
     \fill[gray!15] (-1.25,-1.25) rectangle (1.25,1.35);
     \fill[basin] (-0.68,0) circle (0.52);
     \fill[basin] ( 0.68,0) circle (0.52);
@@ -637,33 +648,72 @@ tipos:
       {\textbf{2.}\ Cuenca de ciclo\\[1pt]$p=2$};
   \end{scope}
 
-  %% ===== 3. Cuenca parabólica (centro en x=6.2) =====
-  \begin{scope}[xshift=6.2cm]
+  %% ===== 3a. Cuenca parabolica -- punto fijo =====
+  \begin{scope}[xshift=6.2cm, yshift=0cm]
     \fill[gray!15] (-1.25,-1.25) rectangle (1.25,1.35);
-    % Petalo: forma suave con la punta en la parte superior (punto fijo en la frontera)
     \fill[basin]
       (0,1.05) .. controls (0.90,0.80) and (0.90,-0.65) .. (0,-0.90)
                .. controls (-0.90,-0.65) and (-0.90,0.80) .. cycle;
-    % Curvas de nivel anidadas que convergen al punto parabolico
     \foreach \s in {0.55, 0.78}
       \draw[orbit, opacity=0.5]
         (0,\s*1.05) .. controls (\s*0.90,\s*0.80) and (\s*0.90,-\s*0.65) .. (0,-\s*0.90)
                     .. controls (-\s*0.90,-\s*0.65) and (-\s*0.90,\s*0.80) .. cycle;
     \draw[->, orbit] (0,0.20) -- (0,0.88);
-    % Punto fijo parabolico (en la FRONTERA del componente)
     \node[fp] at (0,1.05) {};
     \node[above=2pt, font=\tiny] at (0,1.05) {$\zeta$};
     \node[below, align=center] at (0,-1.5)
-      {\textbf{3.}\ Cuenca parab\'olica\\[1pt]$\lambda=e^{2\pi ir}$,\ $r\in\mathbb{Q}$};
+      {\textbf{3a.}\ Parab\'olica ($p=1$)\\[1pt]$\lambda=e^{2\pi ir}$,\ $r\in\mathbb{Q}$};
   \end{scope}
 
-  %% ===== 4. Disco de Siegel (centro en x=9.3) =====
-  \begin{scope}[xshift=9.3cm]
+%% ============================================================
+%% FILA INFERIOR: 3b · 4 · 5
+%% ============================================================
+
+  %% ===== 3b. Cuenca parabolica -- 2-ciclo =====
+  \begin{scope}[xshift=0cm, yshift=-3.6cm]
+    \fill[gray!15] (-1.25,-1.25) rectangle (1.25,1.35);
+    %% Componente izquierda: gota con cuspide apuntando a la derecha
+    \fill[basin]
+      (-0.07, 0)
+      .. controls (-0.05, 0.60) and (-1.02, 0.74) .. (-1.05, 0)
+      .. controls (-1.02,-0.74) and (-0.05,-0.60) .. cycle;
+    %% Componente derecha: gota con cuspide apuntando a la izquierda
+    \fill[basin]
+      ( 0.07, 0)
+      .. controls ( 0.05, 0.60) and ( 1.02, 0.74) .. ( 1.05, 0)
+      .. controls ( 1.02,-0.74) and ( 0.05,-0.60) .. cycle;
+    %% Puntos parabolicos en la FRONTERA (cuspides)
+    \node[fp] at (-0.07, 0) {};
+    \node[fp] at ( 0.07, 0) {};
+    \node[above left=1pt,  font=\tiny] at (-0.07, 0) {$\zeta_1$};
+    \node[above right=1pt, font=\tiny] at ( 0.07, 0) {$\zeta_2$};
+    %% Flechas f intercambiando componentes
+    \draw[->, orbit] (-0.55, 0.65) to[bend left=40] (0.55, 0.65);
+    \draw[->, orbit] ( 0.55,-0.65) to[bend left=40] (-0.55,-0.65);
+    \node[above, orbit, font=\tiny] at (0, 1.00) {$f$};
+    \node[below, orbit, font=\tiny] at (0,-1.00) {$f$};
+    %% Petalo interior en cada componente
+    \draw[orbit, opacity=0.5]
+      (-0.07, 0)
+      .. controls (-0.06, 0.38) and (-0.73, 0.48) .. (-0.75, 0)
+      .. controls (-0.73,-0.48) and (-0.06,-0.38) .. cycle;
+    \draw[orbit, opacity=0.5]
+      ( 0.07, 0)
+      .. controls ( 0.06, 0.38) and ( 0.73, 0.48) .. ( 0.75, 0)
+      .. controls ( 0.73,-0.48) and ( 0.06,-0.38) .. cycle;
+    %% Flechas internas convergentes hacia la cuspide
+    \draw[->, orbit] (-0.72, 0.06) -- (-0.22, 0.02);
+    \draw[->, orbit] ( 0.72,-0.06) -- ( 0.22,-0.02);
+    \node[below, align=center] at (0,-1.5)
+      {\textbf{3b.}\ Parab\'olica ($p=2$)\\[1pt]$\lambda=e^{2\pi ir}$,\ $r\in\mathbb{Q}$};
+  \end{scope}
+
+  %% ===== 4. Disco de Siegel =====
+  \begin{scope}[xshift=3.1cm, yshift=-3.6cm]
     \fill[gray!15] (-1.25,-1.25) rectangle (1.25,1.35);
     \fill[basin] (0,0) circle (1.1);
     \foreach \r in {0.33,0.62,0.91}
       \draw[orbit, opacity=0.5] (0,0) circle (\r);
-    % Flechas de ROTACION (no convergentes)
     \draw[->, orbit] (0.91,0) arc[start angle=0, end angle=52, radius=0.91];
     \draw[->, orbit] (0.62,0) arc[start angle=0, end angle=52, radius=0.62];
     \node[fp] at (0,0) {};
@@ -672,15 +722,13 @@ tipos:
       {\textbf{4.}\ Disco de Siegel\\[1pt]$\lambda=e^{2\pi i\alpha}$,\ $\alpha\notin\mathbb{Q}$};
   \end{scope}
 
-  %% ===== 5. Anillo de Herman (centro en x=12.4) =====
-  \begin{scope}[xshift=12.4cm]
+  %% ===== 5. Anillo de Herman =====
+  \begin{scope}[xshift=6.2cm, yshift=-3.6cm]
     \fill[gray!15] (-1.25,-1.25) rectangle (1.25,1.35);
-    % Corona: disco exterior relleno de azul, agujero interior en gris
     \fill[blue!12] (0,0) circle (1.1);
     \fill[gray!15] (0,0) circle (0.46);
     \draw[blue!55!black, line width=0.7pt] (0,0) circle (1.1);
     \draw[blue!55!black, line width=0.7pt] (0,0) circle (0.46);
-    % Circulos concentricos invariantes en la corona
     \foreach \r in {0.60,0.77,0.94}
       \draw[orbit, opacity=0.5] (0,0) circle (\r);
     \draw[->, orbit] (0.77,0) arc[start angle=0, end angle=52, radius=0.77];
@@ -693,12 +741,17 @@ tipos:
 (teorema de Fatou--Sullivan).
 Azul: componente del conjunto de Fatou; gris: complemento
 (conjunto de Julia y otros componentes).
-Los trazos rojos ilustran la din\'amica interna de cada componente:
-curvas de nivel convergentes al punto fijo (casos 1 y~3),
-flechas de la aplicaci\'on $f$ entre los puntos del ciclo (caso~2)
-y curvas invariantes bajo rotaci\'on irracional (casos 4 y~5).
-En el caso~3 el punto fijo parab\'olico~$\zeta$ est\'a en la \emph{frontera} del componente;
-en los casos~1 y~4 est\'a en el interior.}
+Los trazos rojos ilustran la din\'amica interna:
+curvas de nivel convergentes al atractor (casos~1 y~2),
+flechas de intercambio entre componentes (casos~2 y~3b),
+p\'etalo convergente hacia la frontera (casos~3a y~3b) y
+curvas invariantes bajo rotaci\'on irracional (casos~4 y~5).
+El caso parab\'olico aparece en dos variantes:
+\textbf{3a}~(punto fijo, $p=1$), con un \'unico componente en forma de p\'etalo, y
+\textbf{3b}~(2-ciclo, $p=2$), con dos componentes que se intercambian bajo~$f$;
+en ambas variantes el punto del ciclo~$\zeta_j$ est\'a en la
+\emph{frontera} del componente.
+En los casos~1 y~4 el punto fijo~$\zeta$ est\'a en el interior.}
 \label{fig:fatou-tipos}
 \end{figure}
 
