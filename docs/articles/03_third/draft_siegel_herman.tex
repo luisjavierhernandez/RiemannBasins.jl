@@ -231,8 +231,17 @@ The \emph{Brjuno condition} \cite{Brjuno1972}
 \begin{equation}\label{eq:brjuno}
   \mathcal{B}(\rot) := \sum_{n\ge 0} \frac{\log q_{n+1}}{q_n} < \infty,
 \end{equation}
-where $p_n/q_n$ are the convergents of the continued-fraction expansion of
-$\rot$, is \emph{sufficient} for linearization \cite{Brjuno1972} and
+Here $\rot = [0;\,a_1,a_2,a_3,\ldots]$ denotes the continued-fraction
+expansion of $\rot\in(0,1)\setminus\QQ$, with \emph{partial quotients}
+$a_n\in\ZZ_{>0}$, and
+\[
+  \frac{p_n}{q_n} \;:=\; [0;\,a_1,\ldots,a_n]
+\]
+(written in lowest terms, $q_n>0$) is the $n$-th \emph{convergent}:
+the best rational approximation to $\rot$ with denominator $\le q_n$.
+The denominators satisfy the recurrence $q_n = a_n q_{n-1}+q_{n-2}$
+($q_{-1}=0,\,q_0=1$), which guarantees $q_n\to\infty$.
+Condition~\eqref{eq:brjuno} is \emph{sufficient} for linearization \cite{Brjuno1972} and
 \emph{necessary} for quadratic polynomials \cite{Yoccoz1988}.
 Yoccoz \cite{Yoccoz1995} proved the full equivalence
 $\text{Siegel disk exists} \Leftrightarrow \mathcal{B}(\rot)<\infty$
