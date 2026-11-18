@@ -288,7 +288,9 @@ In homogeneous coordinates, let
   &
   W_t(z,t) &= \frac{\partial F}{\partial t}\,G - F\,\frac{\partial G}{\partial t}.
 \end{align*}
-Both are homogeneous of degree $2d-1$.  Euler's identity for homogeneous
+Both are homogeneous of degree $2d-1$.  Setting $t=1$ recovers the
+classical affine Wronskian $W(u)=p'(u)q(u)-p(u)q'(u)$ of the reduced
+pair $(p,q)$ via $W_z(u,1)=W(u)$.  Euler's identity for homogeneous
 functions gives $z\,\partial F/\partial z + t\,\partial F/\partial t = d\,F$,
 from which one derives
 \begin{equation}\label{eq:Wrel}
@@ -330,6 +332,13 @@ conspire to make $W_z$ vanish there, while $W_t(1,0)$ correctly
 captures the derivative in the second chart.  An implementation must
 therefore branch on the chart; see Section~\ref{sec:algorithms} and
 the note in \texttt{RiemannBasins.jl} \S14.
+
+An alternative that avoids the branching altogether is the
+bihomogeneous formulation of~\cite{AlvarezAparicio2023}, where
+$\fsh([z:t]) = |U(z,t)/V(z,t)|$ with $U, V$ continuous on
+$\C^2\setminus\{0\}$ and $V$ nowhere zero; this representation is
+well defined at every point of $\Pone$, including $[1:0]$, without
+any chart test.
 \end{remark}
 
 %% ===========================================================================
@@ -352,6 +361,8 @@ that are \emph{not} fixed points of $f^k$ for any proper divisor $k\mid p$
 with $k<p$.
 
 \begin{remark}[Counting $p$-cycles]
+Denote by $[F_p:G_p]$ the homogeneous pair representing the iterate
+$f^p$, obtained by composing $(F,G)$ with itself $p$~times.
 The number of fixed points of $f^p$ in $\Pone$ is $d^p+1$ (counted with
 multiplicity, by B\'ezout's theorem applied to the homogeneous system
 $F_p(z,t)=\lambda\,z$, $G_p(z,t)=\lambda\,t$).  By M\"obius inversion, the
@@ -527,29 +538,39 @@ the point $f^k(w)\in B^0_{z_k}$ is a critical point of~$f$.
 \begin{corollary}\label{cor:bound}
 Since $f$ has at most $2d-2$ critical points (counted with multiplicity),
 it has at most $2d-2$ distinct attracting or superattracting cycles.
-In particular, the maximum attracting period satisfies $P\leq 2d-2$.
+(The period of such a cycle is not bounded by $2d-2$ in general: for
+instance, $z^2+c$ admits attracting cycles of arbitrarily large period
+as $c$ varies.)
 \end{corollary}
 
 \begin{corollary}[Completeness of critical orbit analysis]\label{cor:complete}
 Tracing the orbit of every critical point of $f$ under iteration and
 recording the period of any attracting cycle reached is \emph{complete}:
-the maximum over all critical orbits equals the true maximum attracting
-period $P$.
+every attracting or superattracting cycle of $f$ attracts at least one
+critical point (Theorem~\ref{thm:fatou}), so no attracting cycle is
+missed.  In particular, the quantity $P$ of Definition~\ref{def:P} equals
+the true maximum period among all attracting and superattracting cycles
+of~$f$.
 \end{corollary}
 
 \subsection{B\"ottcher coordinates near superattracting cycles}
+\label{subsec:bottcher}
 
-Near a superattracting fixed point $z_0$ (i.e., $f(z_0)=z_0$,
-$f'(z_0)=0$) of local degree $m\geq 2$, the \emph{B\"ottcher coordinate}
-$\phi$ linearises $f$ as a degree-$m$ map:
+\begin{theorem}[B\"ottcher, 1904]\label{thm:bottcher}
+Let $f$ be a holomorphic map with a superattracting fixed point $z_0$
+(i.e., $f(z_0)=z_0$, $f'(z_0)=0$) of local degree $m\geq 2$.  Then
+there exists a unique conformal map $\phi\colon B^0_{z_0}\to\mathbb{D}$
+with $\phi(z_0)=0$ satisfying the B\"ottcher equation
 \begin{equation}\label{eq:bottcher}
-  \phi(f(z)) = \phi(z)^m, \qquad \phi(z_0)=0.
+  \phi(f(z)) = \phi(z)^m, \qquad z\in B^0_{z_0}.
 \end{equation}
-The B\"ottcher coordinate exists and is univalent on the immediate basin
-$B^0_{z_0}$ if and only if $B^0_{z_0}$ is simply connected, which holds
-when $B^0_{z_0}$ contains exactly one critical value \cite{Milnor2006}.
+The map $\phi$ exists and is univalent on all of $B^0_{z_0}$ if and only
+if $B^0_{z_0}$ is simply connected, which holds when $B^0_{z_0}$ contains
+exactly one critical value \cite{Milnor2006}.  Orbits in $B^0_{z_0}$
+converge to $z_0$ at doubly-exponential rate: $|f^n(z)-z_0|\sim C^{m^n}$.
+\end{theorem}
 
-For a superattracting $p$-cycle, one applies the B\"ottcher theory to
+For a superattracting $p$-cycle, one applies Theorem~\ref{thm:bottcher} to
 $f^p$ at each cycle point.
 
 \subsection{K\oe nigs linearization near attracting cycles}
@@ -577,7 +598,7 @@ The Schröder equation shows that orbits in $B^0_{z_0}$ converge to $z_0$ at
 exactly the geometric rate $|\lambda|^n$: in the $\phi$-coordinate the
 dynamics is a linear contraction by $\lambda$.
 
-Together, Theorems~\ref{thm:koenigs} and~\ref{subsec:bottcher} (Böttcher)
+Together, Theorems~\ref{thm:koenigs} (K\oe nigs) and~\ref{thm:bottcher} (B\"ottcher)
 complete the linearization picture for attracting cycles:
 \[
   \begin{array}{rll}
@@ -1217,9 +1238,11 @@ $\{|z|<1\}$ and the Julia set is the unit circle $\{|z|=1\}$ (see Figure~\ref{fi
   \centering
   \includegraphics[width=0.55\textwidth]{figures/pcycle_z2_fixed.png}
   \caption{Basin portrait of $f(z)=z^2$.  The open unit disc $\{|z|<1\}$
-           (blue) is the basin of the superattracting fixed point $z=0$;
-           the exterior $\{|z|>1\}$ is the basin of $\infty$.
-           The unit circle $\{|z|=1\}$ is the Julia set.}
+           (pink/purple tones) is the basin of the superattracting fixed
+           point $z=0$; the exterior $\{|z|>1\}$ (ochre/gold tones) is
+           the basin of~$\infty$.  The unit circle $\{|z|=1\}$ is the
+           Julia set.  Lightness bands indicate the iteration count to
+           reach the threshold.}
   \label{fig:z2_fixed}
 \end{figure}
 
@@ -1475,9 +1498,9 @@ is no critical point available to stabilize a fixed point).
            proper rational map with a superattracting $2$-cycle $\{0,-1\}$.
            Degree $d=2$, two critical points ($z=0$ and $z=\infty$), both
            attracted to the cycle.  Chart~1 (left): the two immediate basins
-           $B^0_0$ (orange) and $B^0_{-1}$ (blue) separated by the Julia set.
-           Chart~2 (right): the neighbourhood of $\infty$, which lies in
-           $B^0_0$ since $\infty\to 1\to 0$.}
+           $B^0_0$ (salmon/pink) and $B^0_{-1}$ (cyan) separated by the
+           Julia set.  Chart~2 (right): the neighbourhood of $\infty$,
+           which lies in $B^0_0$ since $\infty\to 1\to 0$.}
   \label{fig:rational_2cycle}
 \end{figure}
 
