@@ -129,4 +129,84 @@ function RiemannBasins.basin_relief_3d_makie(
     return fig
 end
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# §16  basin_sphere_portrait_3d  — interactive S² basin portrait
+# ─────────────────────────────────────────────────────────────────────────────
+
+function RiemannBasins.basin_sphere_portrait_3d(
+        coefficientlistnum::Vector{T},
+        coefficientlistden::Vector{T};
+        ntheta        ::Int          = 300,
+        nphi          ::Int          = 600,
+        aproxprecision::Int          = 8,
+        iterprecision ::Int          = 8,
+        iter          ::Int          = 200,
+        gseed         ::RGB{Float64} = RGB{Float64}(0.2, 0.6, 0.9),
+        colorblind    ::Bool         = false,
+        background                   = :black,
+        show_plot     ::Bool         = true,
+        savepath      ::String       = "") where {T<:Number}
+
+    # ── 1. Build rational-map internals ─────────────────────────────────────────
+    cnum  = ComplexF64.(coefficientlistnum)
+    cden  = ComplexF64.(coefficientlistden)
+    hpair = RiemannBasins._pair_of_functions(cnum, cden)
+
+    _, _, finitelist = RiemannBasins.fixed_points(cnum, cden, aproxprecision)
+    fp_list = Vector{Tuple{Complex{Float64},Complex{Float64}}}(finitelist)
+    push!(fp_list, (complex(1.0), complex(0.0)))   # ∞ always last
+    nfixed = length(fp_list)
+
+    # ── 2. Colour palette ────────────────────────────────────────────────────────
+    cmap  = RiemannBasins._build_colormap(nfixed, gseed; colorblind = colorblind)
+    black = RGB{Float64}(0.0, 0.0, 0.0)
+
+    # ── 3. Regular (θ,φ) parametric grid on S² ──────────────────────────────────
+    # θ ∈ (ε, π−ε)  colatitude from north pole
+    # φ ∈ [0, 2π)   longitude
+    thetas = range(1e-4, π - 1e-4, length = ntheta)
+    phis   = range(0.0,  2π,        length = nphi + 1)[1:end-1]
+
+    X = Float64[sin(θ) * cos(φ) for θ in thetas, φ in phis]   # (ntheta × nphi)
+    Y = Float64[sin(θ) * sin(φ) for θ in thetas, φ in phis]
+    Z = Float64[cos(θ)           for θ in thetas, φ in phis]
+
+    # ── 4. Classify each grid point ──────────────────────────────────────────
+    basin_idx = Matrix{Int}(undef, ntheta, nphi)
+    for j in 1:nphi, i in 1:ntheta
+        x3 = Z[i, j]
+        if x3 >= 1.0 - 1e-10          # north pole / near ∞
+            pt_hom = (complex(1.0), complex(0.0))
+        else
+            x1, x2 = X[i, j], Y[i, j]
+            pt_hom = (complex(x1, x2) / (1.0 - x3), complex(1.0))
+        end
+        pos, _, _ = RiemannBasins._position_iteration(
+            fp_list, aproxprecision, iterprecision, pt_hom, hpair, iter)
+        basin_idx[i, j] = max(0, pos)   # -1 (super-zero) → 0 (non-converged)
+    end
+
+    # ── 5. Build colour matrix for surface! ──────────────────────────────────────
+    img_mk = Matrix{RGBAf}(undef, ntheta, nphi)
+    for j in 1:nphi, i in 1:ntheta
+        k = basin_idx[i, j]
+        c = k == 0 ? black : cmap[min(k, length(cmap))]
+        img_mk[i, j] = RGBAf(Float32(red(c)), Float32(green(c)), Float32(blue(c)), 1.0f0)
+    end
+
+    # ── 6. GLMakie figure — LScene (no axes; sphere speaks for itself) ───────────
+    fig = Figure(backgroundcolor = background, size = (820, 820))
+    ax  = LScene(fig[1, 1]; show_axis = false)
+
+    surface!(ax, X, Y, Z;
+        color       = img_mk,
+        shading     = NoShading,
+        interpolate = true)
+
+    show_plot  && display(GLMakie.Screen(), fig)
+    isempty(savepath) || save(savepath, fig)
+    return fig
+end
+
 end  # module RiemannBasinsGLMakieExt
