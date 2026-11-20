@@ -66,10 +66,14 @@ den_h = complex([1.0, 0.0, 0.0, 2.0, 0.0])   # 1 + 2z^3
 
 savepath_h = joinpath(figdir, "halley_z3_two_charts.png")
 two_chart_portrait(num_h, den_h;
+    expprecision = 9,
     bands      = 8.0,
     show_plot  = false,
     savepath   = savepath_h)
 println("   Guardado en $savepath_h")
+artdir_h = joinpath(@__DIR__, "articles", "00_gaceta_cuencas_atractoras", "figures")
+cp(savepath_h, joinpath(artdir_h, "halley_z3_two_charts.png"); force=true)
+println("   Copiado a artdir: halley_z3_two_charts.png")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fig. 3: Nota para la figura GLMakie (debe generarse manualmente)
