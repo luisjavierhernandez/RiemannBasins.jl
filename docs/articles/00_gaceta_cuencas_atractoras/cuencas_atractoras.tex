@@ -173,7 +173,7 @@ Verlo requiere extender~$\C$ y trabajar en su compactificación natural: $ \hat 
 
 
 El presente artículo tiene cuatro objetivos.
-El primero es mostrar que  recta proyectiva compleja $\Puno$, lejos de ser una complicación
+El primero es mostrar que la recta proyectiva compleja $\Puno$, lejos de ser una complicación
 abstracta, es el marco más sencillo para estudiar la dinámica de
 funciones racionales: elimina los casos especiales ligados al infinito y
 pone de  manifiesto la simetría global de los sistemas.
@@ -366,7 +366,7 @@ con cambio de carta $w=1/z$ en $U_0\cap U_1$  (idéntico al obtenido
 con las proyecciones estereográficas), lo que confirma que ambas
 construcciones definen la misma superficie de Riemann: $\Puno\cong\hat{\C} \cong S^2$.
 
-La ventaja de~$\Puno$ frente a~$\hat{\C}$ es de su homogeneidad: ningún punto
+La ventaja de~$\Puno$ frente a~$\hat{\C}$ es su homogeneidad: ningún punto
 ocupa un lugar privilegiado.
 El «punto en el infinito» de la carta~$z$ es simplemente $[1:0]\in U_1$,
 con coordenada $w=0$ en la carta~$w$, y se trata exactamente igual que
@@ -564,7 +564,7 @@ Pero la misma noción se extiende de forma natural, de menos a más general:
         del grupo kleiniano, análogo del conjunto de Julia.
 \end{itemize}
 
-Ambas generalizaciones conectan directamente con las perspectivas
+Estas generalizaciones conectan directamente con las perspectivas
 descritas en la sección~\ref{sec:conclusion}.
 
 \begin{proposicion}[Propiedades del conjunto de Julia]
@@ -597,7 +597,7 @@ $\zeta$ es
 La \emph{cuenca de atracción total} $\mathcal{A}(\zeta)$ incluye
 además todas las preimágenes iteradas de $\mathcal{A}^*(\zeta)$.
 Un resultado fundamental de Fatou garantiza que $\mathcal{A}^*(\zeta)$
-es simplemente conexo si el punto crítico de $f$ más cercano a $\zeta$ pertenece a~$\mathcal{A}^*(\zeta)$.
+es simplemente conexo si algún punto crítico de $f$ pertenece a~$\mathcal{A}^*(\zeta)$.
 
 La frontera de cada cuenca de atracción es precisamente el conjunto
 de Julia $\mathcal{J}(f)$.
@@ -873,7 +873,7 @@ El \emph{método de Halley} aplicado a un   polinomio $P$ produce a partir de un
 \[
    z_{n+1} = z_n - \frac{2P(z_n)P'(z_n)}{2[P'(z_n)]^2-P(z_n)P''(z_n)}.
 \]
-Para el polinomio $P(z)=z^3-1$ se obtiene una función racional asociada de grado~5 cuyos
+Para el polinomio $P(z)=z^3-1$ se obtiene una función racional asociada de grado~4 cuyos
 puntos fijos finitos son también las raíces de~$P$, pero las cuencas
 de atracción son más «anchas» y la frontera fractal, aunque sigue siendo
 el conjunto de Julia, tiene una geometría diferente a la del método de
@@ -964,7 +964,7 @@ basin_portrait(num, den; bands = 8.0)
 basin_portrait_pcycle(num, den, 2; bands = 8.0)
 \end{lstlisting}
 
-Notemos que la función $f^2(z)=(z^2-1)^2-1$ tiene seis puntos fijos en $\Puno$
+Notemos que la función $f^2(z)=(z^2-1)^2-1$ tiene cinco puntos fijos en $\Puno$
 (cuatro finitos más $\infty$, siendo $\infty$ ya punto fijo de~$f$).
 \fn{basin\_portrait\_pcycle} agrupa las dos componentes de Fatou del 2-ciclo
 en un único color, independientemente de cuál de los dos elementos alcanza
@@ -1208,7 +1208,7 @@ conjunto de Fatou y su propio conjunto de Julia, cuya teoría fue
 iniciada por Hinkkanen y Martin~\cite{HinkkanenMartin1996}.
 Visualizar las cuencas de este semigrupo en $\Puno$ —¿qué regiones
 convergen bajo qué composiciones?— abriría una ventana a la dinámica
-comparada de métodos numéricos: ¿qué ocurre en el plano complejo
+comparada de métodos numéricos: ¿qué ocurre en~$\Puno$
 cuando se alternan Newton y Halley sobre el mismo polinomio?
 
 % ============================================================
@@ -1216,7 +1216,7 @@ cuando se alternan Newton y Halley sobre el mismo polinomio?
 % ============================================================
 
 
-El paquete \pkg{RiemannBasins.jl} consiste  una actualización y posterior extensión del paquete 
+El paquete \pkg{RiemannBasins.jl} consiste en una actualización y posterior extensión del paquete 
 PBURF.jl (ver \cite{PBURF2019}).
 El presente artículo y la actualización del mencionado paquete   se
 desarrollaron con asistencia del modelo de lenguaje Claude
