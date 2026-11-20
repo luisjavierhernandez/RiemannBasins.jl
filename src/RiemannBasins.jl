@@ -35,7 +35,10 @@ export sphere_bijection,
        basin_relief_3d,
        basin_relief_3d_makie,
        basin_portrait_pcycle,
-       mandelbrot_portrait
+       mandelbrot_portrait,
+       basin_sphere_data,
+       basin_measure,
+       basin_sphere_portrait_3d
 
 # ──────────────────────────────────────────────────────────────────────────────
 # §1  Homogeneous coordinates and sphere model
@@ -2457,6 +2460,274 @@ function print_critical_orbit_summary(
     println("By Fatou's theorem, f has no attracting cycle of period > P.\n")
 
     return results
+end
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# §15  Spherical subdivision  —  basin_sphere_data, basin_measure
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# Reference: Gutiérrez, Hernández, Magreñán, Rivas (2016).
+#   "Measures of the basins of attracting n-cycles for the relaxed Newton's method."
+#
+# The Riemann sphere S² is covered by  6 × 4^k  near-equal spherical
+# quadrilaterals obtained by projecting the uniformly-subdivided faces of the
+# circumscribed unit cube.  For each cell the orbit of its spherical centroid
+# is iterated to identify the attractor; cell areas are approximated by
+# 4π / (6 × 4^k), which converges to the true area as k → ∞.
+
+"""
+    SphereBasinData
+
+Result of [`basin_sphere_data`](@ref).
+
+Fields
+------
+- `points`           — cell-centre positions on S² as `NTuple{3,Float64}`.
+- `basin_indices`    — attractor index for each cell (0 = not converged / Julia set,
+                        k ≥ 1 = converged to `fixed_point_list[k]`).
+- `fixed_point_list` — attractor list (homogeneous pairs); last entry is always
+                        ∞ = `(1+0im, 0+0im)`.
+- `cell_area`        — approximate spherical area per cell: `4π / total_cells`.
+- `subdivision`      — subdivision level `k` used (`6 × 4^k` cells total).
+- `total_cells`      — `6 × 4^subdivision`.
+"""
+struct SphereBasinData
+    points           :: Vector{NTuple{3,Float64}}
+    basin_indices    :: Vector{Int}
+    fixed_point_list :: Vector{Tuple{Complex{Float64},Complex{Float64}}}
+    cell_area        :: Float64
+    subdivision      :: Int
+    total_cells      :: Int
+end
+
+"""
+    _cubic_sphere_points(subdivision) -> Vector{NTuple{3,Float64}}
+
+Generate cell-centre positions for the cubic subdivision of S² at level
+`subdivision` (`6 × 4^subdivision` cells).
+
+The unit cube faces are subdivided into `n × n` grids with `n = 2^subdivision`;
+each grid-cell centre is projected radially onto S².
+
+The 6 faces (and their parameter directions):
+- Face 1 `(u, v, +1)` — top   (+z)
+- Face 2 `(u, v, −1)` — bottom (−z)
+- Face 3 `(+1, u, v)` — right  (+x)
+- Face 4 `(−1, u, v)` — left   (−x)
+- Face 5 `(u, +1, v)` — front  (+y)
+- Face 6 `(u, −1, v)` — back   (−y)
+"""
+function _cubic_sphere_points(subdivision::Int)::Vector{NTuple{3,Float64}}
+    n      = 2^subdivision          # cells per edge per face
+    step   = 2.0 / n                # cell width in parameter space [-1,1]
+    c0     = -1.0 + step / 2.0     # centre of first cell
+
+    # 6 face parametrisations: (u,v) ∈ [-1,1]² → cube point
+    face_maps = (
+        (u, v) -> ( u,  v,  1.0),  # +z top
+        (u, v) -> ( u,  v, -1.0),  # -z bottom
+        (u, v) -> ( 1.0,  u,  v),  # +x right
+        (u, v) -> (-1.0,  u,  v),  # -x left
+        (u, v) -> ( u,  1.0,  v),  # +y front
+        (u, v) -> ( u, -1.0,  v),  # -y back
+    )
+
+    total  = 6 * n * n
+    points = Vector{NTuple{3,Float64}}(undef, total)
+    idx    = 0
+
+    for face_map in face_maps
+        for j in 0:(n-1), i in 0:(n-1)
+            u = c0 + i * step
+            v = c0 + j * step
+            x, y, z = face_map(u, v)
+            r = sqrt(x*x + y*y + z*z)
+            idx += 1
+            points[idx] = (x/r, y/r, z/r)
+        end
+    end
+    return points
+end
+
+"""
+    _sphere_to_homogeneous(pt) -> Tuple{ComplexF64, ComplexF64}
+
+Convert a unit-sphere point `pt = (x₁, x₂, x₃)` to homogeneous coordinates
+`[z : t]` via the inverse stereographic projection from the north pole.
+
+Convention (consistent with `sphere_bijection`):
+- North pole (0, 0, +1) → `∞` = `[1 : 0]`
+- South pole (0, 0, −1) → `0` = `[0 : 1]`
+- Generic point         → `z = (x₁ + i x₂)/(1 − x₃)`, `t = 1`
+"""
+function _sphere_to_homogeneous(
+        pt::NTuple{3,Float64})::Tuple{Complex{Float64},Complex{Float64}}
+
+    x1, x2, x3 = pt
+    if x3 >= 1.0 - 1e-10          # north pole / near ∞
+        return (complex(1.0), complex(0.0))
+    else
+        z = complex(x1, x2) / (1.0 - x3)
+        return (z, complex(1.0))
+    end
+end
+
+"""
+    basin_sphere_data(coefficientlistnum, coefficientlistden;
+                      subdivision=5, aproxprecision=8, iterprecision=8, iter=200)
+                      -> SphereBasinData
+
+Compute basin membership for the cubic subdivision of the Riemann sphere S².
+
+For each of the `6 × 4^subdivision` cells the orbit of the cell-centre
+representative is iterated until it converges to an attractor or the iteration
+limit `iter` is reached (algorithm of Gutiérrez, Hernández, Magreñán, Rivas 2016).
+
+**Subdivision levels and cell counts:**
+| `subdivision` | cells    | approx. cell area (°) |
+|:---:|----------|:---:|
+|  4  | 1 536    | 8.2 msr  |
+|  5  | 6 144    | 2.0 msr  |
+|  6  | 24 576   | 0.51 msr |
+|  7  | 98 304   | 0.13 msr |
+
+# Arguments
+- `coefficientlistnum`, `coefficientlistden` — numerator / denominator
+  coefficients, **constant term first** (Polynomials.jl convention).
+- `subdivision::Int` — subdivision level (default `5`; gives 6 144 cells).
+- `aproxprecision::Int` — decimal digits for attractor identification
+  (tolerance `c₂ = 10^{-aproxprecision}`, default `8`).
+- `iterprecision::Int` — decimal digits for Cauchy convergence test
+  (tolerance `c₁ = 10^{-iterprecision}`, default `8`).
+- `iter::Int` — maximum orbit steps per cell (default `200`).
+
+# Returns
+A [`SphereBasinData`](@ref) struct.
+
+# Example
+```julia
+using RiemannBasins
+# Newton's method for z³ − 1:  f(z) = (2z³+1)/(3z²)
+num = complex([1.0, 0.0, 0.0, 2.0])
+den = complex([0.0, 0.0, 3.0, 0.0])
+data = basin_sphere_data(num, den; subdivision=5)
+areas = basin_measure(data)        # Dict: attractor index → area (steradians)
+```
+"""
+function basin_sphere_data(
+        coefficientlistnum::Vector{T},
+        coefficientlistden::Vector{T};
+        subdivision   ::Int = 5,
+        aproxprecision::Int = 8,
+        iterprecision ::Int = 8,
+        iter          ::Int = 200) where {T<:Number}
+
+    cnum = ComplexF64.(coefficientlistnum)
+    cden = ComplexF64.(coefficientlistden)
+
+    # 1. Build rational function and find attractors
+    hpair = _pair_of_functions(cnum, cden)
+    _, _, finitelist = fixed_points(cnum, cden, aproxprecision)
+    fp_list = Vector{Tuple{Complex{Float64},Complex{Float64}}}(finitelist)
+    push!(fp_list, (complex(1.0), complex(0.0)))   # ∞ always last
+
+    # 2. Generate cubic subdivision of S²
+    pts   = _cubic_sphere_points(subdivision)
+    total = length(pts)
+
+    # 3. Classify each cell
+    basin_idx = Vector{Int}(undef, total)
+    for k in eachindex(pts)
+        pt_hom = _sphere_to_homogeneous(pts[k])
+        pos, _, _ = _position_iteration(
+            fp_list, aproxprecision, iterprecision, pt_hom, hpair, iter)
+        basin_idx[k] = max(0, pos)   # -1 (super-zero) → 0
+    end
+
+    cell_area = 4π / total
+    return SphereBasinData(pts, basin_idx, fp_list, cell_area, subdivision, total)
+end
+
+"""
+    basin_measure(data::SphereBasinData) -> Dict{Int,Float64}
+
+Estimate the spherical area of each basin from a [`SphereBasinData`](@ref) result.
+
+Returns a `Dict` mapping attractor index → estimated area (steradians).
+Key `0` collects non-converged / Julia-set cells.
+
+The estimate uses `cell_area × count` for each basin, where
+`cell_area = 4π / total_cells` is uniform (the cubic projection is not
+perfectly equal-area; the estimate converges to the true value as
+`subdivision → ∞`).
+
+**Initial efficiency** (Gutiérrez et al. 2016, Definition 2.14):
+the probability that a uniformly-random point on S² converges to a
+*finite* attracting fixed point equals `(sum of finite-basin areas) / 4π`.
+"""
+function basin_measure(data::SphereBasinData)::Dict{Int,Float64}
+    counts = Dict{Int,Int}()
+    for idx in data.basin_indices
+        counts[idx] = get(counts, idx, 0) + 1
+    end
+    areas = Dict{Int,Float64}()
+    for (k, v) in counts
+        areas[k] = v * data.cell_area
+    end
+    return areas
+end
+
+"""
+    basin_measure(coefficientlistnum, coefficientlistden; kwargs...) -> Dict{Int,Float64}
+
+Convenience wrapper: compute [`basin_sphere_data`](@ref) and return basin areas.
+
+All keyword arguments are forwarded to `basin_sphere_data`
+(`subdivision`, `aproxprecision`, `iterprecision`, `iter`).
+
+# Example
+```julia
+num = complex([1.0, 0.0, 0.0, 2.0])   # Newton for z³−1
+den = complex([0.0, 0.0, 3.0, 0.0])
+areas = basin_measure(num, den; subdivision=6)
+# Basin of ∞ has index == length(fp_list)
+```
+"""
+function basin_measure(
+        coefficientlistnum::Vector{T},
+        coefficientlistden::Vector{T};
+        kwargs...) where {T<:Number}
+    data = basin_sphere_data(coefficientlistnum, coefficientlistden; kwargs...)
+    return basin_measure(data)
+end
+
+# ──────────────────────────────────────────────────────────────────────────────
+# §16  GLMakie sphere portrait stub
+# ──────────────────────────────────────────────────────────────────────────────
+
+"""
+    basin_sphere_portrait_3d(coefficientlistnum, coefficientlistden; kwargs...)
+
+Render the basin portrait on the actual Riemann sphere S² with **GLMakie**
+(OpenGL, interactive rotation).
+
+Requires `using GLMakie` before calling — the extension is loaded automatically
+when GLMakie is in scope.
+
+Keyword arguments (forwarded to the extension):
+- `subdivision::Int` — cubic-subdivision level (default `5`; gives 6 144 cells).
+- `aproxprecision`, `iterprecision`, `iter` — same meaning as `basin_sphere_data`.
+- `gseed::RGB{Float64}` — seed colour for the LCHab basin palette.
+- `colorblind::Bool` — use the Okabe-Ito palette (default `false`).
+- `show_plot::Bool` — display window (default `true`).
+- `savepath::String` — save figure to this path (empty = no save).
+"""
+function basin_sphere_portrait_3d(args...; kwargs...)
+    error("""
+basin_sphere_portrait_3d requires GLMakie.
+Add  `using GLMakie`  before calling this function.
+""")
 end
 
 end  # module RiemannBasins
