@@ -40,7 +40,9 @@ export sphere_bijection,
        basin_sphere_data,
        basin_measure,
        basin_sphere_portrait_3d,
-       basin_sphere_portrait_html
+       basin_sphere_portrait_html,
+       basin_sphere_data_pcycle,
+       basin_measure_pcycle
 
 # ──────────────────────────────────────────────────────────────────────────────
 # §1  Homogeneous coordinates and sphere model
@@ -2705,6 +2707,127 @@ function basin_measure(
 end
 
 # ──────────────────────────────────────────────────────────────────────────────
+
+# ──────────────────────────────────────────────────────────────────────────────
+# §15b  Spherical basin data and measure for p-cycles
+# ──────────────────────────────────────────────────────────────────────────────
+
+"""
+    basin_sphere_data_pcycle(cnum, cden, p; kwargs...) -> SphereBasinData
+
+Like [`basin_sphere_data`](@ref) but classifies basins of **attracting
+p-cycles** instead of fixed points.
+
+Uses [`critical_orbit_analysis`](@ref) to locate the cycle points, then
+classifies each cubic-subdivision cell by proximity to the nearest cycle
+point under iteration of `f`.  The `fixed_point_list` field of the returned
+[`SphereBasinData`](@ref) contains the flat list of all cycle points (p per
+cycle) followed by `[1:0]` (∞) as the last entry.
+
+Basin index meaning:
+- `0`  — no convergence (Julia set / indeterminate)
+- `k`  — converged to cycle number `k` (1-indexed among attracting p-cycles)
+- last index — converged to ∞ (always included)
+
+# Arguments
+- `p::Int` — the period of the cycles to measure.
+
+# Keyword arguments
+Same as [`basin_sphere_data`](@ref): `subdivision`, `aproxprecision`,
+`iterprecision`, `iter`.
+"""
+function basin_sphere_data_pcycle(
+        coefficientlistnum::Vector{T},
+        coefficientlistden::Vector{T},
+        p::Int;
+        subdivision   ::Int = 5,
+        aproxprecision::Int = 8,
+        iterprecision ::Int = 8,
+        iter          ::Int = 200) where {T<:Number}
+
+    cnum  = ComplexF64.(coefficientlistnum)
+    cden  = ComplexF64.(coefficientlistden)
+    hpair = _pair_of_functions(cnum, cden)
+    tol_c = 1.0 / 10^aproxprecision
+
+    # ── Step 1: locate attracting p-cycle points ───────────────────────────
+    crit = critical_orbit_analysis(cnum, cden;
+               aproxprecision = aproxprecision,
+               max_iter       = iter)
+
+    # Collect distinct attracting p-cycles
+    # Each entry in `cycle_groups`: Vector of p homogeneous points
+    cycle_groups = Vector{Vector{Tuple{Complex{Float64},Complex{Float64}}}}()
+    for r in crit
+        r.period != p && continue
+        r.label ∉ (:attracting, :superattracting) && continue
+        isempty(r.cycle_points) && continue
+        # Deduplicate: skip if first point already in a known cycle
+        ref = r.cycle_points[1]
+        already = any(cycle_groups) do grp
+            any(grp) do q
+                chordal_metric(ref, q) < tol_c
+            end
+        end
+        already && continue
+        push!(cycle_groups, r.cycle_points)
+    end
+
+    # ── Step 2: build flat fp_list and cycle_map ───────────────────────────
+    # fp_list: all cycle points (cycle 1 first, then cycle 2, …), then ∞
+    # cycle_map[fp_index] = cycle_index (1-based)
+    fp_list  = Vector{Tuple{Complex{Float64},Complex{Float64}}}()
+    cycle_map = Int[]
+
+    for (cidx, grp) in enumerate(cycle_groups)
+        for pt in grp
+            push!(fp_list, pt)
+            push!(cycle_map, cidx)
+        end
+    end
+    # Always include ∞ as last attractor
+    push!(fp_list, (complex(1.0), complex(0.0)))
+    inf_idx = length(cycle_groups) + 1
+    push!(cycle_map, inf_idx)
+
+    # ── Step 3: classify cubic-subdivision cells ───────────────────────────
+    pts   = _cubic_sphere_points(subdivision)
+    total = length(pts)
+    basin_idx = Vector{Int}(undef, total)
+
+    for k in eachindex(pts)
+        pt_hom = _sphere_to_homogeneous(pts[k])
+        pos, _, _ = _position_iteration(
+            fp_list, aproxprecision, iterprecision, pt_hom, hpair, iter)
+        basin_idx[k] = pos > 0 ? cycle_map[pos] : 0
+    end
+
+    cell_area = 4π / total
+    return SphereBasinData(pts, basin_idx, fp_list, cell_area, subdivision, total)
+end
+
+"""
+    basin_measure_pcycle(cnum, cden, p; kwargs...) -> Dict{Int,Float64}
+
+Convenience wrapper: calls [`basin_sphere_data_pcycle`](@ref) and returns
+the area dictionary from [`basin_measure`](@ref).
+
+Keys:
+- `0`   — Julia set / non-converged cells
+- `k>0` — k-th attracting p-cycle (numbered as found by
+           [`critical_orbit_analysis`](@ref))
+- last  — basin of ∞
+"""
+function basin_measure_pcycle(
+        coefficientlistnum::Vector{T},
+        coefficientlistden::Vector{T},
+        p::Int;
+        kwargs...) where {T<:Number}
+    data = basin_sphere_data_pcycle(
+               coefficientlistnum, coefficientlistden, p; kwargs...)
+    return basin_measure(data)
+end
+
 # §16  GLMakie sphere portrait stub
 # ──────────────────────────────────────────────────────────────────────────────
 
