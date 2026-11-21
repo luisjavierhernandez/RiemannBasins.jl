@@ -370,4 +370,27 @@ using Colors
     end
 
 
+    @testset "§17 basin_sphere_portrait_html – creates valid HTML file" begin
+        num = complex([1.0, 0.0, 0.0, 2.0])
+        den = complex([0.0, 0.0, 3.0, 0.0])
+        tmpfile = tempname() * ".html"
+        try
+            result = basin_sphere_portrait_html(num, den;
+                ntheta = 20, nphi = 40,
+                aproxprecision = 5, iterprecision = 5, iter = 50,
+                bands = 4.0, htmlpath = tmpfile)
+            @test result == tmpfile
+            @test isfile(tmpfile)
+            html = read(tmpfile, String)
+            @test occursin("<!DOCTYPE html>", html)
+            @test occursin("THREE.BufferGeometry", html)
+            @test occursin("OrbitControls", html)
+            @test occursin("const NTHETA = 20;", html)
+            @test occursin("const NPHI   = 40;", html)
+        finally
+            isfile(tmpfile) && rm(tmpfile)
+        end
+    end
+
+
 end
