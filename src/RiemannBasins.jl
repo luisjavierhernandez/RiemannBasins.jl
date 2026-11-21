@@ -23,6 +23,7 @@ module RiemannBasins
 using Polynomials          # v3+  — Polynomial(...) API
 using Colors               # RGB, HSV, Lab color types
 using Plots                # plotting backend
+using Base64              # base64 encoding for HTML export
 
 # ── Public API ─────────────────────────────────────────────────────────────────
 export sphere_bijection,
@@ -38,7 +39,8 @@ export sphere_bijection,
        mandelbrot_portrait,
        basin_sphere_data,
        basin_measure,
-       basin_sphere_portrait_3d
+       basin_sphere_portrait_3d,
+       basin_sphere_portrait_html
 
 # ──────────────────────────────────────────────────────────────────────────────
 # §1  Homogeneous coordinates and sphere model
@@ -2729,5 +2731,237 @@ basin_sphere_portrait_3d requires GLMakie.
 Add  `using GLMakie`  before calling this function.
 """)
 end
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# §17  HTML sphere portrait (pure Julia – no GLMakie required)
+# ──────────────────────────────────────────────────────────────────────────────
+
+"""
+    basin_sphere_portrait_html(coefficientlistnum, coefficientlistden; kwargs...)
+
+Export the basin portrait on S² as a **self-contained HTML file** that uses
+Three.js and OrbitControls so collaborators can rotate the sphere in any
+modern browser — no Julia or GLMakie required.
+
+## Keyword arguments
+| Keyword          | Default            | Description                                  |
+|------------------|--------------------|----------------------------------------------|
+| `ntheta`         | `150`              | Latitude grid points                         |
+| `nphi`           | `300`              | Longitude grid points (nphi+1 columns used)  |
+| `aproxprecision` | `8`                | Convergence tolerance (10^-p)                |
+| `iterprecision`  | `8`                | Same as `basin_sphere_data`                  |
+| `iter`           | `200`              | Maximum iteration count                      |
+| `bands`          | `6.0`              | Banding frequency (0.0 = no banding)         |
+| `gseed`          | `RGB(0.2,0.6,0.9)` | Seed colour for LCHab basin palette          |
+| `colorblind`     | `false`            | Use Okabe-Ito palette instead                |
+| `htmlpath`       | `"basin_sphere.html"` | Output path for the HTML file             |
+| `title`          | `"Basin portrait on S²"` | Page title shown in the browser        |
+
+Returns the `htmlpath` string.
+"""
+function basin_sphere_portrait_html(
+        coefficientlistnum::Vector{T},
+        coefficientlistden::Vector{T};
+        ntheta        ::Int          = 150,
+        nphi          ::Int          = 300,
+        aproxprecision::Int          = 8,
+        iterprecision ::Int          = 8,
+        iter          ::Int          = 200,
+        bands         ::Float64      = 6.0,
+        gseed         ::RGB{Float64} = RGB{Float64}(0.2, 0.6, 0.9),
+        colorblind    ::Bool         = false,
+        htmlpath      ::String       = "basin_sphere.html",
+        title         ::String       = "Basin portrait on S²") where {T<:Number}
+
+    # ── 1. Build rational-map internals ──────────────────────────────────────
+    cnum  = ComplexF64.(coefficientlistnum)
+    cden  = ComplexF64.(coefficientlistden)
+    hpair = _pair_of_functions(cnum, cden)
+    _, _, finitelist = fixed_points(cnum, cden, aproxprecision)
+    fp_list = Vector{Tuple{Complex{Float64},Complex{Float64}}}(finitelist)
+    push!(fp_list, (complex(1.0), complex(0.0)))
+    nfixed = length(fp_list)
+    cmap   = _build_colormap(nfixed, gseed; colorblind = colorblind)
+
+    # ── 2. Grid ──────────────────────────────────────────────────────────────
+    thetas = range(1e-4, π - 1e-4, length = ntheta)
+    ncols  = nphi + 1
+
+    X = Float64[sin(θ) * cos(φ)
+                for θ in thetas, φ in range(0.0, 2π, length = ncols)]
+    Y = Float64[sin(θ) * sin(φ)
+                for θ in thetas, φ in range(0.0, 2π, length = ncols)]
+    Z = Float64[cos(θ)
+                for θ in thetas, φ in range(0.0, 2π, length = ncols)]
+
+    # ── 3. Classify ──────────────────────────────────────────────────────────
+    basin_idx = Matrix{Int}(undef, ntheta, ncols)
+    iter_mat  = Matrix{Int}(undef, ntheta, ncols)
+    resid_mat = Matrix{Float64}(undef, ntheta, ncols)
+    tol_c     = 1.0 / 10^aproxprecision
+
+    for j in 1:nphi, i in 1:ntheta
+        x3 = Z[i, j]
+        pt_hom = x3 >= 1.0 - 1e-10 ?
+            (complex(1.0), complex(0.0)) :
+            (complex(X[i, j], Y[i, j]) / (1.0 - x3), complex(1.0))
+        pos, n, residual = _position_iteration(
+            fp_list, aproxprecision, iterprecision, pt_hom, hpair, iter)
+        basin_idx[i, j] = max(0, pos)
+        iter_mat[i, j]  = n
+        resid_mat[i, j] = residual
+    end
+    # close the φ-seam (column ncols repeats column 1)
+    basin_idx[:, ncols] = basin_idx[:, 1]
+    iter_mat[:, ncols]  = iter_mat[:, 1]
+    resid_mat[:, ncols] = resid_mat[:, 1]
+
+    # ── 4. Per-vertex RGB bytes ───────────────────────────────────────────────
+    nv        = ntheta * ncols
+    rgb_bytes = Vector{UInt8}(undef, 3 * nv)
+    for i in 1:ntheta, j in 1:ncols
+        v = (i - 1) * ncols + (j - 1)   # 0-indexed vertex in JS
+        k = basin_idx[i, j]
+        c = cmap[k <= 0 ? 1 : min(k + 1, length(cmap))]
+        if k > 0 && bands > 0.0
+            r   = max(resid_mat[i, j], 1e-15)
+            tv  = max(tol_c, 1e-15)
+            lr  = log(log(tv) / log(r)) / log(2.0)
+            ts  = clamp(Float64(iter_mat[i, j]) + lr, 0.0, Float64(iter))
+            c   = _modulate_lab(c, ts, Float64(iter); bands = bands)
+        end
+        rgb_bytes[3v + 1] = round(UInt8, clamp(red(c),   0.0, 1.0) * 255)
+        rgb_bytes[3v + 2] = round(UInt8, clamp(green(c), 0.0, 1.0) * 255)
+        rgb_bytes[3v + 3] = round(UInt8, clamp(blue(c),  0.0, 1.0) * 255)
+    end
+
+    b64data = Base64.base64encode(rgb_bytes)
+
+    # ── 5. Compose HTML ───────────────────────────────────────────────────────
+    html = string(
+        "<!DOCTYPE html>\n",
+        "<html lang=\"en\">\n",
+        "<head>\n",
+        "<meta charset=\"utf-8\">\n",
+        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n",
+        "<title>", title, "</title>\n",
+        "<style>\n",
+        "  * { margin: 0; padding: 0; box-sizing: border-box; }\n",
+        "  body { background: #000; overflow: hidden; }\n",
+        "  canvas { display: block; }\n",
+        "  #info {\n",
+        "    position: absolute; top: 12px; left: 12px;\n",
+        "    color: #ccc; font: 13px/1.5 sans-serif;\n",
+        "    pointer-events: none; user-select: none;\n",
+        "  }\n",
+        "  #info b { color: #fff; font-size: 15px; }\n",
+        "</style>\n",
+        "</head>\n",
+        "<body>\n",
+        "<div id=\"info\"><b>", title, "</b><br>",
+        "Drag · scroll to zoom · right-drag to pan</div>\n",
+        "<script src=\"https://unpkg.com/three@0.128.0/build/three.min.js\"></script>\n",
+        "<script src=\"https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js\"></script>\n",
+        "<script>\n",
+        "// ── data embedded by RiemannBasins.jl ────────────────────────────────────────────────────────────────────────────────\n",
+        "const NTHETA = ", string(ntheta), ";\n",
+        "const NPHI   = ", string(nphi), ";\n",
+        "const B64    = \"", b64data, "\";\n",
+        "\n",
+        "// ── decode Base64 → Uint8Array ──────────────────────────────────────────────────────────────────────────────\n",
+        "function decodeB64(b64) {\n",
+        "  const bin = atob(b64);\n",
+        "  const arr = new Uint8Array(bin.length);\n",
+        "  for (let k = 0; k < bin.length; k++) arr[k] = bin.charCodeAt(k);\n",
+        "  return arr;\n",
+        "}\n",
+        "const colorBytes = decodeB64(B64);\n",
+        "\n",
+        "// ── Three.js scene ──────────────────────────────────────────────────────────────────────────────────────\n",
+        "const scene    = new THREE.Scene();\n",
+        "const W = window.innerWidth, H = window.innerHeight;\n",
+        "const camera   = new THREE.PerspectiveCamera(45, W / H, 0.01, 100);\n",
+        "camera.position.set(0, 0, 2.6);\n",
+        "\n",
+        "const renderer = new THREE.WebGLRenderer({ antialias: true });\n",
+        "renderer.setPixelRatio(window.devicePixelRatio);\n",
+        "renderer.setSize(W, H);\n",
+        "document.body.appendChild(renderer.domElement);\n",
+        "\n",
+        "const controls = new THREE.OrbitControls(camera, renderer.domElement);\n",
+        "controls.enableDamping = true;\n",
+        "controls.dampingFactor = 0.08;\n",
+        "controls.minDistance   = 1.1;\n",
+        "controls.maxDistance   = 8.0;\n",
+        "\n",
+        "// ── build BufferGeometry ───────────────────────────────────────────────────────────────────────────────────\n",
+        "const NCOLS = NPHI + 1;\n",
+        "const NV    = NTHETA * NCOLS;\n",
+        "\n",
+        "const positions = new Float32Array(NV * 3);\n",
+        "const colorsArr = new Float32Array(NV * 3);\n",
+        "\n",
+        "for (let i = 0; i < NTHETA; i++) {\n",
+        "  const theta = 1e-4 + (Math.PI - 2e-4) * i / (NTHETA - 1);\n",
+        "  for (let j = 0; j < NCOLS; j++) {\n",
+        "    const phi = 2 * Math.PI * j / NPHI;\n",
+        "    const v   = i * NCOLS + j;\n",
+        "    positions[v*3]     = Math.sin(theta) * Math.cos(phi);\n",
+        "    positions[v*3 + 1] = Math.sin(theta) * Math.sin(phi);\n",
+        "    positions[v*3 + 2] = Math.cos(theta);\n",
+        "    colorsArr[v*3]     = colorBytes[v*3]     / 255;\n",
+        "    colorsArr[v*3 + 1] = colorBytes[v*3 + 1] / 255;\n",
+        "    colorsArr[v*3 + 2] = colorBytes[v*3 + 2] / 255;\n",
+        "  }\n",
+        "}\n",
+        "\n",
+        "// triangulate the grid (two triangles per cell)\n",
+        "const indices = [];\n",
+        "for (let i = 0; i < NTHETA - 1; i++) {\n",
+        "  for (let j = 0; j < NPHI; j++) {\n",
+        "    const a = i       * NCOLS + j;\n",
+        "    const b = a + 1;\n",
+        "    const c = (i + 1) * NCOLS + j;\n",
+        "    const d = c + 1;\n",
+        "    indices.push(a, c, b,  b, c, d);\n",
+        "  }\n",
+        "}\n",
+        "\n",
+        "const geo = new THREE.BufferGeometry();\n",
+        "geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));\n",
+        "geo.setAttribute('color',    new THREE.BufferAttribute(colorsArr, 3));\n",
+        "geo.setIndex(indices);\n",
+        "\n",
+        "const mat  = new THREE.MeshBasicMaterial({\n",
+        "  vertexColors: true,\n",
+        "  side: THREE.DoubleSide\n",
+        "});\n",
+        "scene.add(new THREE.Mesh(geo, mat));\n",
+        "\n",
+        "// ── resize handler ──────────────────────────────────────────────────────────────────────────────────────────\n",
+        "window.addEventListener('resize', () => {\n",
+        "  camera.aspect = window.innerWidth / window.innerHeight;\n",
+        "  camera.updateProjectionMatrix();\n",
+        "  renderer.setSize(window.innerWidth, window.innerHeight);\n",
+        "});\n",
+        "\n",
+        "// ── render loop ─────────────────────────────────────────────────────────────────────────────────────────────\n",
+        "(function animate() {\n",
+        "  requestAnimationFrame(animate);\n",
+        "  controls.update();\n",
+        "  renderer.render(scene, camera);\n",
+        "})();\n",
+        "</script>\n",
+        "</body>\n",
+        "</html>\n"
+    )
+
+    open(htmlpath, "w") do io
+        write(io, html)
+    end
+    return htmlpath
+end
+
 
 end  # module RiemannBasins
