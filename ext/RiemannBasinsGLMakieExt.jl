@@ -124,7 +124,7 @@ function RiemannBasins.basin_relief_3d_makie(
         shading     = shading,
         interpolate = true)
 
-    show_plot  && display(GLMakie.Screen(), fig)
+    show_plot  && display(fig)
     isempty(savepath) || save(savepath, fig)
     return fig
 end
@@ -204,7 +204,7 @@ function RiemannBasins.basin_sphere_portrait_3d(
         shading     = NoShading,
         interpolate = true)
 
-    show_plot  && display(GLMakie.Screen(), fig)
+    show_plot  && display(fig)
     isempty(savepath) || save(savepath, fig)
     return fig
 end
