@@ -147,7 +147,8 @@ function RiemannBasins.basin_sphere_portrait_3d(
         colorblind    ::Bool         = false,
         background                   = :black,
         show_plot     ::Bool         = true,
-        savepath      ::String       = "") where {T<:Number}
+        savepath      ::String       = "",
+        px_per_unit   ::Int          = 2) where {T<:Number}
 
     # ── 1. Build rational-map internals ─────────────────────────────────────────
     cnum  = ComplexF64.(coefficientlistnum)
@@ -223,7 +224,7 @@ function RiemannBasins.basin_sphere_portrait_3d(
         interpolate = true)
 
     show_plot  && display(fig)
-    isempty(savepath) || save(savepath, fig)
+    isempty(savepath) || save(savepath, fig; px_per_unit = px_per_unit)
     return fig
 end
 
