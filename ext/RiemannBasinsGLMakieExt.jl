@@ -160,7 +160,6 @@ function RiemannBasins.basin_sphere_portrait_3d(
 
     # ── 2. Colour palette ────────────────────────────────────────────────────────
     cmap  = RiemannBasins._build_colormap(nfixed, gseed; colorblind = colorblind)
-    black = RGB{Float64}(0.0, 0.0, 0.0)
 
     # ── 3. Regular (θ,φ) parametric grid on S² ──────────────────────────────────
     # θ ∈ (ε, π−ε)  colatitude from north pole
@@ -191,7 +190,7 @@ function RiemannBasins.basin_sphere_portrait_3d(
     img_mk = Matrix{RGBAf}(undef, ntheta, nphi)
     for j in 1:nphi, i in 1:ntheta
         k = basin_idx[i, j]
-        c = k == 0 ? black : cmap[min(k, length(cmap))]
+        c = cmap[k <= 0 ? 1 : min(k + 1, length(cmap))]
         img_mk[i, j] = RGBAf(Float32(red(c)), Float32(green(c)), Float32(blue(c)), 1.0f0)
     end
 
