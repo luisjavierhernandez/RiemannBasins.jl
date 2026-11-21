@@ -163,16 +163,17 @@ function RiemannBasins.basin_sphere_portrait_3d(
 
     # ── 3. Regular (θ,φ) parametric grid on S² ──────────────────────────────────
     # θ ∈ (ε, π−ε)  colatitude from north pole
-    # φ ∈ [0, 2π)   longitude
+    # φ ∈ [0, 2π]   longitude — nphi+1 columns; last == first to close the seam
     thetas = range(1e-4, π - 1e-4, length = ntheta)
-    phis   = range(0.0,  2π,        length = nphi + 1)[1:end-1]
+    phis   = range(0.0,  2π,        length = nphi + 1)   # closed: φ[end] = 2π = φ[1]
 
-    X = Float64[sin(θ) * cos(φ) for θ in thetas, φ in phis]   # (ntheta × nphi)
+    X = Float64[sin(θ) * cos(φ) for θ in thetas, φ in phis]   # (ntheta × nphi+1)
     Y = Float64[sin(θ) * sin(φ) for θ in thetas, φ in phis]
     Z = Float64[cos(θ)           for θ in thetas, φ in phis]
 
     # ── 4. Classify each grid point ──────────────────────────────────────────
-    basin_idx = Matrix{Int}(undef, ntheta, nphi)
+    # Only compute the nphi unique columns; duplicate the first for the closing column.
+    basin_idx = Matrix{Int}(undef, ntheta, nphi + 1)
     for j in 1:nphi, i in 1:ntheta
         x3 = Z[i, j]
         if x3 >= 1.0 - 1e-10          # north pole / near ∞
@@ -185,10 +186,11 @@ function RiemannBasins.basin_sphere_portrait_3d(
             fp_list, aproxprecision, iterprecision, pt_hom, hpair, iter)
         basin_idx[i, j] = max(0, pos)   # -1 (super-zero) → 0 (non-converged)
     end
+    basin_idx[:, nphi + 1] = basin_idx[:, 1]   # close the φ seam
 
     # ── 5. Build colour matrix for surface! ──────────────────────────────────────
-    img_mk = Matrix{RGBAf}(undef, ntheta, nphi)
-    for j in 1:nphi, i in 1:ntheta
+    img_mk = Matrix{RGBAf}(undef, ntheta, nphi + 1)
+    for j in 1:nphi+1, i in 1:ntheta
         k = basin_idx[i, j]
         c = cmap[k <= 0 ? 1 : min(k + 1, length(cmap))]
         img_mk[i, j] = RGBAf(Float32(red(c)), Float32(green(c)), Float32(blue(c)), 1.0f0)
