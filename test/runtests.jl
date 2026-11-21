@@ -290,4 +290,84 @@ using Colors
         @test res[1].label  == :superattracting
     end
 
+    # ── §15 basin_sphere_data / basin_measure ───────────────────────────────
+    @testset "§15 SphereBasinData struct – subdivision=3" begin
+        # subdivision=3 -> 6*4^3 = 384 cells
+        num = complex([1.0, 0.0, 0.0, 2.0])
+        den = complex([0.0, 0.0, 3.0, 0.0])
+        data = basin_sphere_data(num, den;
+            subdivision    = 3,
+            aproxprecision = 6,
+            iterprecision  = 6,
+            iter           = 100)
+
+        @test data isa SphereBasinData
+        @test data.subdivision  == 3
+        @test data.total_cells  == 6 * 4^3        # 384
+        @test length(data.points)        == data.total_cells
+        @test length(data.basin_indices) == data.total_cells
+        @test data.cell_area ≈ 4π / data.total_cells atol=1e-14
+
+        # every point lies on S^2
+        for pt in data.points
+            @test sum(x^2 for x in pt) ≈ 1.0 atol=1e-12
+        end
+
+        # basin indices are non-negative integers
+        @test all(i >= 0 for i in data.basin_indices)
+    end
+
+    @testset "§15 basin_measure – Newton z^3-1 three equal basins" begin
+        # f(z) = (2z^3+1)/(3z^2); three superattracting fixed points.
+        # Each basin covers one third of the sphere -> area ~ 4pi/3 each.
+        num = complex([1.0, 0.0, 0.0, 2.0])
+        den = complex([0.0, 0.0, 3.0, 0.0])
+        data = basin_sphere_data(num, den;
+            subdivision    = 4,
+            aproxprecision = 6,
+            iterprecision  = 6,
+            iter           = 100)
+        areas = basin_measure(data)
+
+        # three finite basins expected (keys 1, 2, 3)
+        finite_basins = filter(kv -> kv[1] > 0, areas)
+        @test length(finite_basins) == 3
+
+        # infinity basin may be absent or very small on a fine grid
+        inf_area = get(areas, length(data.fixed_point_list), 0.0)
+        @test inf_area < 0.1    # much less than 4pi/3 ~ 4.19
+
+        # each finite basin covers roughly one third of the sphere
+        expected = 4π / 3
+        for (k, a) in finite_basins
+            @test isapprox(a, expected; atol=0.3)   # ~7% relative tolerance
+        end
+
+        # total area of all basins == 4pi (exact, by construction)
+        total = sum(values(areas))
+        @test total ≈ 4π atol=1e-12
+    end
+
+    @testset "§15 basin_measure convenience wrapper" begin
+        # basin_measure(num, den; kw...) == basin_measure(basin_sphere_data(...))
+        num = complex([1.0, 0.0, 0.0, 2.0])
+        den = complex([0.0, 0.0, 3.0, 0.0])
+        kw  = (subdivision=3, aproxprecision=5, iterprecision=5, iter=80)
+        data   = basin_sphere_data(num, den; kw...)
+        areas1 = basin_measure(data)
+        areas2 = basin_measure(num, den; kw...)
+        @test sort(collect(keys(areas1))) == sort(collect(keys(areas2)))
+        for k in keys(areas1)
+            @test areas1[k] ≈ areas2[k] atol=1e-14
+        end
+    end
+
+    @testset "§15 basin_sphere_portrait_3d – stub error without GLMakie" begin
+        # Without `using GLMakie` the function must throw a clear ErrorException.
+        num = complex([1.0, 0.0, 0.0, 2.0])
+        den = complex([0.0, 0.0, 3.0, 0.0])
+        @test_throws ErrorException basin_sphere_portrait_3d(num, den)
+    end
+
+
 end
