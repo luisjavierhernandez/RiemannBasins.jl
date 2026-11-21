@@ -21,7 +21,7 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{threeparttable}
+\newcommand{\tnote}[1]{\textsuperscript{\textit{#1}}}
 
 %% ---- Theorem environments ------------------------------------------------
 \newtheorem{theorem}{Theorem}[section]
@@ -1609,7 +1609,6 @@ is no critical point available to stabilize a fixed point).
 \subsection{Summary table}
 
 \begin{center}
-\begin{threeparttable}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
@@ -1637,24 +1636,24 @@ $(z^2-1)/(z^2+1)$  & 2 & 2  & 2 & 1 superattr.\ $2$-cycle (proper rational)
     & $12.57$\tnote{d} & $0.00$ \\
 \bottomrule
 \end{tabular}}% end \resizebox
-\begin{tablenotes}[flushleft]\small
-  \item[a] Estimated spherical area of the attracting $P$-cycle basin(s),
-    by Algorithm~\ref{alg:measure} with subdivision $n=5$
-    ($M=6{,}144$ cells, cell area $\approx\!2.05\times10^{-3}$\,sr).
-    Total sphere $4\pi\approx12.566$\,sr.
-    `$--$'~= not applicable (no critical point).
-    Values marked $\dagger$ are exact.
-  \item[b] Spherical area of the basin of~$\infty$; estimated as note~(a).
-  \item[c] Sum of three basins (individual estimates: $4.08,\,4.41,\,4.08$\,sr).
-    The map $H(z)=z(z^3+2)/(2z^3+1)$ satisfies $H(\omega z)=\omega H(z)$
-    ($\omega=e^{2\pi i/3}$), so all three basins have equal true area
-    $4\pi/3\approx4.19$\,sr; the asymmetry is a cubic-grid artefact.
-  \item[d] $\infty\in\Bf(\{0,-1\})$: orbit $\infty\to1\to0\to\{0,-1\}$
-    enters the $2$-cycle basin, so the entire sphere is covered and
-    $\mu_\infty=0$.
-\end{tablenotes}
-\end{threeparttable}
 \end{center}
+\begingroup\footnotesize\flushleft\smallskip
+\noindent\textit{(a)}~Estimated spherical area of the attracting $P$-cycle basin(s),
+  by Algorithm~\ref{alg:measure} with subdivision $n=5$
+  ($M=6{,}144$ cells, cell area $\approx\!2.05\times10^{-3}$\,sr).
+  Total sphere $4\pi\approx12.566$\,sr.
+  `$--$'~= not applicable (no critical point).
+  Values marked $\dagger$ are exact.\par\smallskip
+\noindent\textit{(b)}~Spherical area of the basin of~$\infty$; estimated as note~(a).\par\smallskip
+\noindent\textit{(c)}~Sum of three basins (individual estimates:
+  $4.08,\,4.41,\,4.08$\,sr).
+  The map $H(z)=z(z^3+2)/(2z^3+1)$ satisfies $H(\omega z)=\omega H(z)$
+  ($\omega=e^{2\pi i/3}$), so all three basins have equal true area
+  $4\pi/3\approx4.19$\,sr; the asymmetry is a cubic-grid artefact.\par\smallskip
+\noindent\textit{(d)}~$\infty\in\Bf(\{0,-1\})$: orbit $\infty\to1\to0\to\{0,-1\}$
+  enters the $2$-cycle basin, so the entire sphere is covered and
+  $\mu_\infty=0$.\par
+\endgroup
 
 %% ===========================================================================
 \section{Discussion and open problems}
