@@ -334,12 +334,69 @@ captures the derivative in the second chart.  An implementation must
 therefore branch on the chart; see Section~\ref{sec:algorithms} and
 the note in \texttt{RiemannBasins.jl} \S14.
 
-An alternative that avoids the branching altogether is the
-bihomogeneous formulation of~\cite{AlvarezAparicio2023}, where
-$\fsh([z:t]) = |U(z,t)/V(z,t)|$ with $U, V$ continuous on
-$\C^2\setminus\{0\}$ and $V$ nowhere zero; this representation is
-well defined at every point of $\Pone$, including $[1:0]$, without
-any chart test.
+\end{remark}
+
+\begin{remark}[Bihomogeneous formulation of~\protect\cite{AlvarezAparicio2023}]
+\label{rem:bihomsph}
+An alternative single-formula approach, developed in~\cite{AlvarezAparicio2023},
+avoids the chart branching entirely.  Let $e^{*}=\deg(A'B-AB')$ denote the
+true degree of the affine Wronskian $W(u)=A'(u)B(u)-A(u)B'(u)$, and let
+\[
+  \widetilde{W}(z,t) \;=\; \sum_{k=0}^{e^{*}}\mathrm{coef}_{k}\,z^{k}t^{e^{*}-k}
+\]
+be its degree-$e^{*}$ homogenisation (not to be confused with $W_{z}$, which
+has degree $2d-1$).  The two are related by
+\begin{equation}\label{eq:Wztilde}
+  W_{z}(z,t) = t^{\,2d-1-e^{*}}\,\widetilde{W}(z,t),
+\end{equation}
+since $W_{z}(z,t)=t^{2d-1}W(z/t)$.
+Substituting~\eqref{eq:Wztilde} into the first case of~\eqref{eq:sphderiv_hom}
+gives, for $t\neq 0$,
+\[
+  \fsh([z:t])
+  = |t|^{\,2d-2-e^{*}}\cdot
+    \frac{|\widetilde{W}(z,t)|\,(|z|^{2}+|t|^{2})}{|F(z,t)|^{2}+|G(z,t)|^{2}}.
+\]
+By Lemma~4 of~\cite{AlvarezAparicio2023} one has $e^{*}\leq 2d-2$, so the
+exponent $2d-2-e^{*}\geq 0$ and the right-hand side extends continuously
+to $t=0$.  Using~\eqref{eq:Wrel} one verifies that the second chart gives
+the same expression (with $z$ replacing $t$), so
+\begin{equation}\label{eq:sphderiv_bihom}
+  \fsh([z:t])
+  = |t|^{\,2d-2-e^{*}}\cdot
+    \frac{|\widetilde{W}(z,t)|\,(|z|^{2}+|t|^{2})}{|F(z,t)|^{2}+|G(z,t)|^{2}},
+  \qquad (z,t)\in\C^{2}\setminus\{(0,0)\},
+\end{equation}
+defines a continuous function on all of $\Pone$ without any chart test.
+Setting $U(z,t):=|t|^{2d-2-e^{*}}\,\widetilde{W}(z,t)\,(|z|^{2}+|t|^{2})$
+and $V(z,t):=|F(z,t)|^{2}+|G(z,t)|^{2}$ recovers the \emph{spherical
+homogeneous pair} of~\cite[Def.~16, Prop.~3]{AlvarezAparicio2023}.
+The denominator $V$ is strictly positive on $\C^{2}\setminus\{(0,0)\}$
+because $(F,G)$ is an irreducible pair (ibid., Prop.~3(ii)).
+
+\smallskip\noindent\textit{Generic case.}\enspace
+When $\deg A=\deg B=d$ one has $e^{*}=2d-2$, the exponent vanishes, and
+\eqref{eq:sphderiv_bihom} simplifies to
+\begin{equation}\label{eq:sphderiv_bihom_generic}
+  \fsh([z:t])
+  = \frac{|\widetilde{W}(z,t)|\,(|z|^{2}+|t|^{2})}{|F(z,t)|^{2}+|G(z,t)|^{2}}.
+\end{equation}
+All nine examples in Section~\ref{sec:examples} fall into this generic case.
+
+\smallskip\noindent\textit{Computational comparison.}\enspace
+Both formulations evaluate $|F|^{2}+|G|^{2}$ and a Wronskian-type
+polynomial, so their asymptotic cost is the same.  The two-chart
+formula~\eqref{eq:sphderiv_hom} uses $W_{z}$ (degree $2d-1$), which is
+directly available as a partial derivative of $F$ and $G$, and requires
+one real comparison to select the chart.  The bihomogeneous
+formula~\eqref{eq:sphderiv_bihom} uses $\widetilde{W}$ (degree $e^{*}$),
+which must be formed by homogenising the \emph{affine} Wronskian at its
+true degree; it avoids the branch but requires knowing $e^{*}$ in advance.
+In the generic case the difference reduces to a single factor of~$|t|^{0}=1$.
+We therefore retain the two-chart implementation in
+\texttt{RiemannBasins.jl}---where it is already correct and well
+tested---and regard~\eqref{eq:sphderiv_bihom} as the theoretical bridge
+between the two presentations.
 \end{remark}
 
 %% ===========================================================================
