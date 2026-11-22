@@ -84,7 +84,7 @@ treated on equal footing with finite points.  A central tool is the
 orbit gives the \emph{Lyapunov constant} $c$; a cycle is attracting when
 $c<1$ and superattracting when $c=0$.
 
-Our main contributions are threefold.  First, we provide a self-contained
+Our main contributions are fourfold.  First, we provide a self-contained
 algorithmic framework for locating and classifying all attracting $p$-cycles
 (periodic orbits of minimal period~$p$) and their basins in $\Pone$, based
 on the homogeneous model and the chordal metric.  Second, we prove and exploit
@@ -94,7 +94,10 @@ computable upper bound~$P$ on the maximal attracting period.  Third, we
 implement these algorithms in the Julia package \texttt{RiemannBasins.jl}
 and illustrate them on several families of rational maps, including the
 quadratic family $z^2+c$, Newton's method for polynomials, and Halley's
-method.
+method.  Fourth, we render basin portraits directly on the Riemann sphere
+$S^2$ via a parametric grid and stereographic projection, and introduce a
+normalised Shannon entropy $H_{\mathrm{norm}}\in[0,1]$ as a quantitative
+measure of the spherical balance of the portrait.
 
 The homogeneous model also yields a clean two-chart formula for the spherical
 derivative $\fsh$ in terms of the Wronskian of $(F,G)$, together with a
@@ -204,8 +207,11 @@ The third computes the probability that a uniformly random point on the
 Riemann sphere belongs to each attracting basin---a quantitative
 complement to the fractal dimension of the Julia set that is more
 directly interpretable and algorithmically less demanding to compute.
-Section~\ref{sec:examples} illustrates the algorithms on four families of
-maps.
+Section~\ref{sec:examples} illustrates the algorithms on nine examples
+drawn from four families of rational maps (the quadratic family $z^2+c$,
+Newton's and Halley's methods for $z^3-1$, and a proper rational map of
+degree~$2$), closing with three-dimensional sphere portraits
+(Section~\ref{sec:sphere_portraits}) and a summary table.
 Section~\ref{sec:discussion} discusses open problems and extensions.
 
 %% ===========================================================================
@@ -1958,9 +1964,17 @@ metric.  The key contributions are:
         $S^2$, providing a quantitative complement to the fractal dimension
         of the Julia set.
 
-  \item A suite of 94 automated tests in \texttt{RiemannBasins.jl}
+  \item A suite of $91$ automated tests in \texttt{RiemannBasins.jl}
         validating the algorithms on the quadratic family, Newton's method,
         and M\"obius transformations.
+
+  \item Three-dimensional rendering of basin portraits on $S^2$
+        (\texttt{basin\_sphere\_portrait\_3d}, GLMakie extension), together
+        with a normalised Shannon entropy $H_{\mathrm{norm}}\in[0,1]$
+        measuring the spherical balance of the portrait.  For the polynomial
+        family the basin of~$\infty$ dominates the sphere
+        ($H_{\mathrm{norm}}\leq 0.76$ in all examples), while Newton's and
+        Halley's methods for $z^3-1$ achieve $H_{\mathrm{norm}}\approx 1.00$.
 \end{enumerate}
 
 The three algorithms form a natural pipeline: run Algorithm~\ref{alg:critical}
