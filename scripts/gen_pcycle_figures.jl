@@ -210,19 +210,18 @@ two_chart_portrait(
 println("  → pcycle_halley_z3.png")
 
 println("\n=== Figura 10: Función racional (z²−1)/(z²+1) con 2-ciclo ===")
-basin_portrait_pcycle(
-    complex([-1.0, 0.0, 1.0]),    # z^2 - 1
-    complex([ 1.0, 0.0, 1.0]),    # z^2 + 1
-    2;
+# f²(z) = -2z²/(z⁴+1)  [second iterate of f(z)=(z²-1)/(z²+1)]
+# fixed points of f² = {0,-1} (the 2-cycle) + fixed points of f
+two_chart_portrait(
+    complex([ 0.0,  0.0, -2.0]),      # -2z²
+    complex([ 1.0,  0.0,  0.0, 0.0, 1.0]);  # z⁴+1
     xinterval     = (-2.0, 2.0),
     yinterval     = (-2.0, 2.0),
     iter          = 500,
-    colorstrategy       = "pcycle_lch",
-    hue_band            = 180.0,
-    show_plot           = false,
-    expprecision        = 11,
+    show_plot     = false,
+    expprecision  = 11,
     figsize       = (1200, 1200),
-    savepath            = joinpath(outdir, "pcycle_rational_2cycle.png"))
+    savepath      = joinpath(outdir, "pcycle_rational_2cycle.png"))
 println("  → pcycle_rational_2cycle.png")
 
 println("\nTodas las figuras generadas en docs/figures/")
