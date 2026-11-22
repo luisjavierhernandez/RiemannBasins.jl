@@ -10,7 +10,7 @@
 
 using RiemannBasins, Colors
 
-outdir = joinpath(@__DIR__, "..", "docs", "figures")
+outdir = joinpath(@__DIR__, "..", "docs", "articles", "01_pcycle_basins", "figures")
 mkpath(outdir)
 
 println("=== Figura 1: basílica z²−1  (cuencas del 2-ciclo) ===")
