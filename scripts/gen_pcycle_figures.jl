@@ -26,6 +26,7 @@ basin_portrait_pcycle(
     colorstrategy = "positionplusiteration",
     show_plot     = false,
     expprecision  = 10,
+    figsize       = (1200, 1200),
     savepath      = joinpath(outdir, "pcycle_basilica_2cycle.png"))
 println("  → pcycle_basilica_2cycle.png")
 
@@ -40,6 +41,7 @@ basin_portrait_pcycle(
     show_cyclic_palette = true,
     show_plot           = false,
     expprecision        = 10,
+    figsize       = (1200, 1200),
     savepath            = joinpath(outdir, "pcycle_basilica_2cycle_lch.png"))
 println("  → pcycle_basilica_2cycle_lch.png")
 
@@ -55,6 +57,7 @@ two_chart_portrait(
     iter      = 300,
     show_plot = false,
     expprecision  = 11,
+    figsize       = (1200, 1200),
     savepath  = joinpath(outdir, "pcycle_newton_z3.png"))
 println("  → pcycle_newton_z3.png")
 
@@ -70,6 +73,7 @@ basin_portrait(
     iter      = 300,
     expprecision = 10,
     show_plot = false,
+    figsize       = (1200, 1200),
     savepath  = joinpath(outdir, "pcycle_z2_fixed.png"))
 println("  → pcycle_z2_fixed.png")
 
@@ -92,6 +96,7 @@ basin_portrait_pcycle(
     colorstrategy = "positionplusiteration",
     show_plot     = false,
     expprecision  = 10,
+    figsize       = (1200, 1200),
     savepath      = joinpath(outdir, "pcycle_airplane_3cycle.png"))
 println("  → pcycle_airplane_3cycle.png")
 
@@ -108,6 +113,7 @@ basin_portrait_pcycle(
     show_cyclic_palette = true,
     show_plot           = false,
     expprecision        = 10,
+    figsize       = (1200, 1200),
     savepath            = joinpath(outdir, "pcycle_airplane_3cycle_lch.png"))
 println("  → pcycle_airplane_3cycle_lch.png")
 
@@ -139,6 +145,7 @@ basin_portrait_pcycle(
     show_cyclic_palette = true,
     show_plot           = false,
     expprecision  = 10,
+    figsize       = (1200, 1200),
     savepath            = joinpath(outdir, "pcycle_period5_lch.png"))
 println("  → pcycle_period5_lch.png")
 
@@ -166,6 +173,7 @@ basin_portrait_pcycle(
     show_cyclic_palette = true,
     show_plot           = false,
     expprecision  = 10,
+    figsize       = (1200, 1200),
     savepath            = joinpath(outdir, "pcycle_rabbit_3cycle_lch.png"))
 println("  → pcycle_rabbit_3cycle_lch.png")
 
@@ -185,6 +193,7 @@ mandelbrot_portrait(
     ],
     title     = "Mandelbrot set  –  z² + c",
     show_plot = false,
+    figsize       = (1200, 1200),
     savepath  = joinpath(outdir, "mandelbrot_portrait.png"))
 println("  → mandelbrot_portrait.png")
 
@@ -200,6 +209,7 @@ basin_portrait_pcycle(
     hue_band            = 120.0,
     show_plot           = false,
     expprecision  = 11,
+    figsize       = (1200, 1200),
     savepath            = joinpath(outdir, "pcycle_halley_z3.png"))
 println("  → pcycle_halley_z3.png")
 
@@ -215,6 +225,7 @@ basin_portrait_pcycle(
     hue_band            = 180.0,
     show_plot           = false,
     expprecision        = 11,
+    figsize       = (1200, 1200),
     savepath            = joinpath(outdir, "pcycle_rational_2cycle.png"))
 println("  → pcycle_rational_2cycle.png")
 

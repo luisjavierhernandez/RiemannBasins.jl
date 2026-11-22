@@ -540,7 +540,8 @@ function _render_basin_image(
         colorblind::Bool = false,
         residualMatrix::Union{Matrix{Float64},Nothing} = nothing,
         aproxprecision::Int64 = 8,
-        bands::Float64 = 6.0)
+        bands::Float64 = 6.0,
+        figsize::Tuple{Int,Int} = (1200, 1200))
 
     nrows, ncols = size(positionMatrix)
 
@@ -572,7 +573,7 @@ function _render_basin_image(
         ylabel = "Im(z)",
         title  = title,
         legend = false,
-        size   = (600, 600)
+        size   = figsize
     )
     return plt
 end
@@ -802,6 +803,7 @@ function basin_portrait(
         hue_band::Float64           = 25.0,
         show_plot::Bool             = true,
         colorblind::Bool            = false,
+        figsize::Tuple{Int,Int}     = (1200, 1200),
         savepath::String            = "") where {T<:Number}
 
     fixedPointList, positionMatrix, iterationMatrix, residualMatrix =
@@ -820,7 +822,8 @@ function basin_portrait(
         colorblind=colorblind,
         bands=bands,
         residualMatrix=residualMatrix,
-        aproxprecision=aproxprecision)
+        aproxprecision=aproxprecision,
+        figsize=figsize)
 
     show_plot && display(plt)
     isempty(savepath) || savefig(plt, savepath)
@@ -863,6 +866,7 @@ function two_chart_portrait(
         colorstrategy::String       = "positionplusiteration",
         colorblind::Bool            = false,
         show_plot::Bool             = true,
+        figsize::Tuple{Int,Int}     = (1200, 1200),
         savepath::String            = "") where {T<:Number}
 
     hpair = _pair_of_functions(coefficientlistnum, coefficientlistden)
@@ -884,7 +888,8 @@ function two_chart_portrait(
         fixedPointList, pos1, itr1,
         xinterval, yinterval, cmap, colorstrategy,
         "Chart 1  (nbhd of 0)";
-        colorblind=colorblind, bands=bands, residualMatrix=res1, aproxprecision=aproxprecision)
+        colorblind=colorblind, bands=bands, residualMatrix=res1, aproxprecision=aproxprecision,
+        figsize=figsize)
 
     # Chart 2
     grid2 = _rectangle_chart2(xinterval, yinterval, expprecision)
@@ -895,9 +900,10 @@ function two_chart_portrait(
         fixedPointList, pos2, itr2,
         xinterval, yinterval, cmap, colorstrategy,
         "Chart 2  (nbhd of ∞)";
-        colorblind=colorblind, bands=bands, residualMatrix=res2, aproxprecision=aproxprecision)
+        colorblind=colorblind, bands=bands, residualMatrix=res2, aproxprecision=aproxprecision,
+        figsize=figsize)
 
-    plt = plot(p1, p2; layout=(1,2), size=(1200, 600))
+    plt = plot(p1, p2; layout=(1,2), size=(2*figsize[1], figsize[2]))
     show_plot && display(plt)
     isempty(savepath) || savefig(plt, savepath)
 
@@ -1481,7 +1487,8 @@ function _render_basin_image_lch(
         yinterval          ::Tuple{Real,Real},
         title              ::String;
         hue_band           ::Float64 = 25.0,
-        show_cyclic_palette::Bool    = false)
+        show_cyclic_palette::Bool    = false,
+        figsize            ::Tuple{Int,Int} = (1200, 1200))
 
     img = _build_basin_image_lch(
         fp_list, pos_raw, itr, group_of, subidx_of, p; hue_band = hue_band)
@@ -1519,7 +1526,7 @@ function _render_basin_image_lch(
         ylabel = "Im(z)",
         title  = title,
         legend = false,
-        size   = (600, 600))
+        size   = figsize)
 end
 
 """
@@ -1589,6 +1596,7 @@ function basin_portrait_pcycle(
         show_cyclic_palette::Bool   = false,
         show_plot::Bool             = true,
         colorblind::Bool            = false,
+        figsize::Tuple{Int,Int}     = (1200, 1200),
         savepath::String            = "") where {T<:Number}
 
     p >= 1 || throw(ArgumentError("p must be ≥ 1"))
@@ -1634,7 +1642,8 @@ function basin_portrait_pcycle(
             group_of, subidx_of, p,
             xinterval, yinterval, title;
             hue_band            = hue_band,
-            show_cyclic_palette = show_cyclic_palette)
+            show_cyclic_palette = show_cyclic_palette,
+            figsize             = figsize)
     else
         # ── Option A: original strategy (one colour per orbit group) ──────
         # 6. Remap pixel labels: fixed-point index → orbit group index
@@ -1659,7 +1668,8 @@ function basin_portrait_pcycle(
             colorblind     = colorblind,
             bands          = bands,
             residualMatrix = res,
-            aproxprecision = aproxprecision)
+            aproxprecision = aproxprecision,
+            figsize        = figsize)
     end
 
     show_plot && display(plt)
