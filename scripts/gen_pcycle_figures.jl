@@ -25,6 +25,7 @@ basin_portrait_pcycle(
     iter          = 300,
     colorstrategy = "positionplusiteration",
     show_plot     = false,
+    expprecision  = 10,
     savepath      = joinpath(outdir, "pcycle_basilica_2cycle.png"))
 println("  → pcycle_basilica_2cycle.png")
 
@@ -38,6 +39,7 @@ basin_portrait_pcycle(
     hue_band            = 120.0,
     show_cyclic_palette = true,
     show_plot           = false,
+    expprecision        = 10,
     savepath            = joinpath(outdir, "pcycle_basilica_2cycle_lch.png"))
 println("  → pcycle_basilica_2cycle_lch.png")
 
@@ -52,6 +54,7 @@ two_chart_portrait(
     yinterval = (-1.8, 1.8),
     iter      = 300,
     show_plot = false,
+    expprecision  = 11,
     savepath  = joinpath(outdir, "pcycle_newton_z3.png"))
 println("  → pcycle_newton_z3.png")
 
@@ -65,6 +68,7 @@ basin_portrait(
     xinterval = (-1.5, 1.5),
     yinterval = (-1.5, 1.5),
     iter      = 300,
+    expprecision = 10,
     show_plot = false,
     savepath  = joinpath(outdir, "pcycle_z2_fixed.png"))
 println("  → pcycle_z2_fixed.png")
@@ -87,6 +91,7 @@ basin_portrait_pcycle(
     iter          = 400,
     colorstrategy = "positionplusiteration",
     show_plot     = false,
+    expprecision  = 10,
     savepath      = joinpath(outdir, "pcycle_airplane_3cycle.png"))
 println("  → pcycle_airplane_3cycle.png")
 
@@ -102,6 +107,7 @@ basin_portrait_pcycle(
     hue_band            = 120.0,
     show_cyclic_palette = true,
     show_plot           = false,
+    expprecision        = 10,
     savepath            = joinpath(outdir, "pcycle_airplane_3cycle_lch.png"))
 println("  → pcycle_airplane_3cycle_lch.png")
 
@@ -132,6 +138,7 @@ basin_portrait_pcycle(
     hue_band            = 150.0,
     show_cyclic_palette = true,
     show_plot           = false,
+    expprecision  = 10,
     savepath            = joinpath(outdir, "pcycle_period5_lch.png"))
 println("  → pcycle_period5_lch.png")
 
@@ -158,6 +165,7 @@ basin_portrait_pcycle(
     hue_band            = 120.0,
     show_cyclic_palette = true,
     show_plot           = false,
+    expprecision  = 10,
     savepath            = joinpath(outdir, "pcycle_rabbit_3cycle_lch.png"))
 println("  → pcycle_rabbit_3cycle_lch.png")
 
@@ -165,10 +173,10 @@ println("\n=== Figura 8: Conjunto de Mandelbrot con 4 centros marcados ===")
 mandelbrot_portrait(
     re_range   = (-2.5,  1.0),
     im_range   = (-1.25, 1.25),
-    n_re       = 1200,
-    n_im       = 900,
+    n_re       = 2100,
+    n_im       = 1575,
     maxiter    = 512,
-    dpi        = 150,
+    dpi        = 300,
     marked_cs  = [
         (-1.0 + 0.0im,            "Basílica"),
         (-1.7549 + 0.0im,         "Airplane"),
@@ -191,6 +199,7 @@ basin_portrait_pcycle(
     colorstrategy       = "pcycle_lch",
     hue_band            = 120.0,
     show_plot           = false,
+    expprecision  = 11,
     savepath            = joinpath(outdir, "pcycle_halley_z3.png"))
 println("  → pcycle_halley_z3.png")
 
@@ -205,6 +214,7 @@ basin_portrait_pcycle(
     colorstrategy       = "pcycle_lch",
     hue_band            = 180.0,
     show_plot           = false,
+    expprecision        = 11,
     savepath            = joinpath(outdir, "pcycle_rational_2cycle.png"))
 println("  → pcycle_rational_2cycle.png")
 
