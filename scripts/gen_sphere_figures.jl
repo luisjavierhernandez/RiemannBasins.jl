@@ -38,7 +38,7 @@ fig_new = basin_sphere_portrait_3d(num_new, den_new;
     bands        = BANDS,
     show_plot    = false,
     px_per_unit  = PX,
-    camera_angle = (30.0, 25.0),   # az=30°, el=25°: simetría 3-fold visible
+    camera_angle = (0.0, 72.0),    # az=0°, el=72°: vista desde polo norte (z=∞), simetría Z/3 visible
     savepath     = joinpath(outdir, "sphere_newton_z3.png"))
 println("  → sphere_newton_z3.png")
 
@@ -60,7 +60,7 @@ fig_rat = basin_sphere_portrait_3d(num_rat2, den_rat2;
     bands        = BANDS,
     show_plot    = false,
     px_per_unit  = PX,
-    camera_angle = (45.0, -70.0),  # az=45°, el=−70°: polo sur (z=0) bien visible
+    camera_angle = (45.0, -55.0),  # az=45°, el=−55°: polo sur (z=0) centrado; más frontera fractal
     savepath     = joinpath(outdir, "sphere_rational_2cycle.png"))
 println("  → sphere_rational_2cycle.png")
 
