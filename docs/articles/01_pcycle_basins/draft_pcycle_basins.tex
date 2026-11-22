@@ -1830,15 +1830,22 @@ metric.  The key contributions are:
         producing colour-coded basin portraits for any user-specified period
         $p$, with full support for the two-chart global portrait on $\Pone$.
 
+  \item Algorithm~\ref{alg:measure} (\texttt{basin\_sphere\_data\_pcycle},
+        \texttt{basin\_measure\_pcycle}) estimating the spherical area
+        (in steradians) of each attracting basin via uniform subdivision of
+        $S^2$, providing a quantitative complement to the fractal dimension
+        of the Julia set.
+
   \item A suite of 94 automated tests in \texttt{RiemannBasins.jl}
         validating the algorithms on the quadratic family, Newton's method,
         and M\"obius transformations.
 \end{enumerate}
 
-The combination of Algorithms~\ref{alg:critical} and~\ref{alg:basin} gives a
-principled workflow: run Algorithm~\ref{alg:critical} first to determine $P$,
-then run Algorithm~\ref{alg:basin} only for $p\leq P$, avoiding unnecessary
-computation.
+The three algorithms form a natural pipeline: run Algorithm~\ref{alg:critical}
+first to determine $P$ and all attracting cycles; run Algorithm~\ref{alg:basin}
+only for $p\leq P$ to produce the colour-coded basin portraits; then run
+Algorithm~\ref{alg:measure} to quantify the spherical area of each basin,
+avoiding unnecessary computation at every stage.
 
 \bigskip
 \noindent\textbf{Acknowledgements.}
