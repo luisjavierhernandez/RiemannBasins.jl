@@ -1731,10 +1731,13 @@ Newton's and Halley's methods for $z^3-1$, by contrast,
 have three basins each near $4\pi/3\approx4.19$\,sr,
 giving $H_{\mathrm{norm}}\approx1.00$: the portrait is maximally balanced.
 
-Figures~\ref{fig:sphere_newton} and~\ref{fig:sphere_halley} show the sphere
-portraits of Newton and Halley for $z^3-1$, rendered at $400\times800$ grid
-resolution via \texttt{basin\_sphere\_portrait\_3d}.
-Both use the same LCHab colour palette as the flat charts.
+Figure~\ref{fig:sphere_newton} shows the sphere portrait of Newton's method
+for $z^3-1$; Figure~\ref{fig:sphere_rational} shows the portrait of
+$f^2(z)=-2z^2/(z^4+1)$, the second iterate of the rational map
+$f(z)=(z^2-1)/(z^2+1)$.
+Both are rendered at $400\times800$ grid resolution via
+\texttt{basin\_sphere\_portrait\_3d} and use the same LCHab colour palette
+as the flat charts.
 
 \begin{figure}[htbp]
   \centering
@@ -1751,15 +1754,18 @@ Both use the same LCHab colour palette as the flat charts.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.60\textwidth]{figures/sphere_halley_z3.png}
-  \caption{Riemann-sphere portrait of Halley's method
-           $H(z)=z(z^3+2)/(2z^3+1)$ for $z^3-1$.
-           Like Newton, three basins share the sphere almost equally
-           ($32.5\%$, $32.5\%$, $35.1\%$; $H_{\mathrm{norm}}=0.999$).
-           Halley converges faster than Newton (order~$3$ vs.\ order~$2$),
-           so the basins are slightly more regular and their boundary
-           is a thinner fractal set.}
-  \label{fig:sphere_halley}
+  \includegraphics[width=0.60\textwidth]{figures/sphere_rational_2cycle.png}
+  \caption{Riemann-sphere portrait of $f^2(z)=-2z^2/(z^4+1)$, the second
+           iterate of $f(z)=(z^2-1)/(z^2+1)$.
+           The two basins $B(0)$ and $B(-1)$ tile the entire sphere
+           (the Julia set has Lebesgue measure zero), giving
+           $H_{\mathrm{norm}}=1.00$.
+           Because $f^2(1/z)=f^2(z)$, every basin is invariant under the
+           M\"{o}bius involution $z\mapsto 1/z$, so the north pole
+           ($z=\infty$) and the south pole ($z=0$) share the same colour.
+           Camera placed near the south pole to show the pole and its
+           surrounding basin at centre.}
+  \label{fig:sphere_rational}
 \end{figure}
 
 \subsection{Summary table}

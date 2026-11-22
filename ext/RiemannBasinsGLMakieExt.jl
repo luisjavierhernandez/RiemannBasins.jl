@@ -148,7 +148,14 @@ function RiemannBasins.basin_sphere_portrait_3d(
         background                   = :black,
         show_plot     ::Bool         = true,
         savepath      ::String       = "",
-        px_per_unit   ::Int          = 2) where {T<:Number}
+        px_per_unit   ::Int          = 2,
+        camera_angle  ::Tuple{Real,Real} = (30.0, 20.0)) where {T<:Number}
+    # camera_angle = (azimuth_deg, elevation_deg)
+    # azimuth  : angle in the XY-plane from the +X axis (degrees)
+    # elevation: angle above (+) or below (−) the equatorial plane (degrees)
+    #   elevation =  90 → camera above north pole (z=∞)
+    #   elevation =   0 → equatorial view
+    #   elevation = −90 → camera below south pole (z=0)
 
     # ── 1. Build rational-map internals ─────────────────────────────────────────
     cnum  = ComplexF64.(coefficientlistnum)
@@ -222,6 +229,16 @@ function RiemannBasins.basin_sphere_portrait_3d(
         color       = img_mk,
         shading     = NoShading,
         interpolate = true)
+
+    # ── 7. Set camera position from camera_angle ─────────────────────────────
+    az = deg2rad(Float64(camera_angle[1]))
+    el = deg2rad(Float64(camera_angle[2]))
+    cam_dist = 3.0
+    cam_x = cam_dist * cos(el) * cos(az)
+    cam_y = cam_dist * cos(el) * sin(az)
+    cam_z = cam_dist * sin(el)
+    Makie.update_cam!(ax.scene, Makie.Vec3f(cam_x, cam_y, cam_z),
+                      Makie.Vec3f(0, 0, 0), Makie.Vec3f(0, 0, 1))
 
     show_plot  && display(fig)
     isempty(savepath) || save(savepath, fig; px_per_unit = px_per_unit)
