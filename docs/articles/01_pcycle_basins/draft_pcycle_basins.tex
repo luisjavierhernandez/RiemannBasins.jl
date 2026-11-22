@@ -196,8 +196,14 @@ Section~\ref{sec:periodic} defines $p$-cycles, their Lyapunov stability, and
 the classification into attracting/superattracting/indeterminate orbits.
 Section~\ref{sec:fatou} summarises the relevant theory of Fatou components and
 states Fatou's critical-orbit theorem.
-Section~\ref{sec:algorithms} presents the two main algorithms in full
-pseudocode.
+Section~\ref{sec:algorithms} presents the three algorithms in full
+pseudocode: critical orbit analysis (Algorithm~\ref{alg:critical}),
+basin portrait for $p$-cycles (Algorithm~\ref{alg:basin}), and
+spherical basin measure (Algorithm~\ref{alg:measure}).
+The third computes the probability that a uniformly random point on the
+Riemann sphere belongs to each attracting basin---a quantitative
+complement to the fractal dimension of the Julia set that is more
+directly interpretable and algorithmically less demanding to compute.
 Section~\ref{sec:examples} illustrates the algorithms on four families of
 maps.
 Section~\ref{sec:discussion} discusses open problems and extensions.
@@ -714,9 +720,11 @@ directly measures the $\phi$-coordinate distance to the attractor.
 \label{sec:algorithms}
 %% ===========================================================================
 
-We now describe the two main algorithms implemented in
-\texttt{RiemannBasins.jl}: critical orbit analysis and basin portrait
-for $p$-cycles.
+We now describe the three algorithms implemented in
+\texttt{RiemannBasins.jl}: critical orbit analysis
+(Algorithm~\ref{alg:critical}), basin portrait for $p$-cycles
+(Algorithm~\ref{alg:basin}), and spherical basin measure for $p$-cycles
+(Algorithm~\ref{alg:measure}).
 
 \subsection{Homogeneous iteration and normalisation}
 
