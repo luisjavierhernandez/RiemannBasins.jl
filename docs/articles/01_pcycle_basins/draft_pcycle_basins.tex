@@ -943,8 +943,8 @@ is below $0.01\,\mathrm{sr}$ for the examples in Section~\ref{sec:examples}.
 \end{remark}
 
 \begin{remark}[Implementation]
-Algorithm~\ref{alg:measure} is implemented as \texttt{basin\_sphere\_data\_pcycle}
-and \texttt{basin\_measure\_pcycle} in \texttt{RiemannBasins.jl}.
+Algorithm~\ref{alg:measure} is implemented in \texttt{RiemannBasins.jl}
+as \texttt{basin\_sphere\_data\_pcycle} and \texttt{basin\_measure\_pcycle}.
 The cycle-finding step uses \texttt{critical\_orbit\_analysis}
 (Algorithm~\ref{alg:critical}) rather than a fixed-point solver for $f^p$,
 which correctly handles maps where the attracting $p$-cycle does not coincide
