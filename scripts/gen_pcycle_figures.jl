@@ -181,8 +181,8 @@ println("\n=== Figura 8: Conjunto de Mandelbrot con 4 centros marcados ===")
 mandelbrot_portrait(
     re_range   = (-2.5,  1.0),
     im_range   = (-1.25, 1.25),
-    n_re       = 2100,
-    n_im       = 1575,
+    n_re       = 700,
+    n_im       = 525,
     maxiter    = 512,
     dpi        = 300,
     marked_cs  = [
@@ -193,7 +193,6 @@ mandelbrot_portrait(
     ],
     title     = "Mandelbrot set  –  z² + c",
     show_plot = false,
-    figsize       = (1200, 1200),
     savepath  = joinpath(outdir, "mandelbrot_portrait.png"))
 println("  → mandelbrot_portrait.png")
 
