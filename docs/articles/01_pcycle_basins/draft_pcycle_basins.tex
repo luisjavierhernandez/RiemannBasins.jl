@@ -423,9 +423,23 @@ Denote by $[F_p:G_p]$ the homogeneous pair representing the iterate
 $f^p$, obtained by composing $(F,G)$ with itself $p$~times.
 The number of fixed points of $f^p$ in $\Pone$ is $d^p+1$ (counted with
 multiplicity, by B\'ezout's theorem applied to the homogeneous system
-$F_p(z,t)=\lambda\,z$, $G_p(z,t)=\lambda\,t$).  By M\"obius inversion, the
-number of periodic points of exact minimal period $p$ is
-$\sum_{k|p}\mu(p/k)(d^k+1)$, where $\mu$ is the M\"obius function.
+$F_p(z,t)=\lambda\,z$, $G_p(z,t)=\lambda\,t$).  The fixed points of $f^k$ are a subset of those of $f^p$ whenever $k\mid p$,
+so the count of exact-period-$p$ points follows by inclusion-exclusion
+over the divisors of $p$, which is precisely M\"obius inversion on the
+divisor lattice.  The number of periodic points of exact minimal period
+$p$ is
+\begin{equation}\label{eq:count_pcycles}
+  \sum_{k\mid p}\mu(p/k)\,(d^k+1),
+\end{equation}
+where $\mu$ is the number-theoretic M\"obius function
+($\mu(1)=1$; $\mu(n)=0$ if $n$ has a repeated prime factor;
+$\mu(p_1\cdots p_r)=(-1)^r$ for distinct primes $p_i$);
+see~\cite[Thm.~6.2]{Milnor2006}.
+Dividing by $p$ gives the number of distinct $p$-cycles (the
+sum~\eqref{eq:count_pcycles} is always divisible by $p$).  For instance,
+for $d=2$ the formula yields $3$ fixed points, $2$ points of period~$2$
+(forming $1$ two-cycle), and $6$ points of period~$3$ (forming $2$
+three-cycles).
 \end{remark}
 
 \subsection{Stability and the Lyapunov constant}
