@@ -96,7 +96,7 @@ basin_portrait_pcycle(
     colorstrategy = "positionplusiteration",
     show_plot     = false,
     expprecision  = 10,
-    figsize       = (1200, 1200),
+    figsize       = (1600, 600),
     savepath      = joinpath(outdir, "pcycle_airplane_3cycle.png"))
 println("  → pcycle_airplane_3cycle.png")
 
@@ -113,7 +113,7 @@ basin_portrait_pcycle(
     show_cyclic_palette = true,
     show_plot           = false,
     expprecision        = 10,
-    figsize       = (1200, 1200),
+    figsize       = (1600, 600),
     savepath            = joinpath(outdir, "pcycle_airplane_3cycle_lch.png"))
 println("  → pcycle_airplane_3cycle_lch.png")
 
@@ -197,19 +197,16 @@ mandelbrot_portrait(
 println("  → mandelbrot_portrait.png")
 
 println("\n=== Figura 9: Halley para z³−1 ===")
-basin_portrait_pcycle(
-    complex([0.0, 2.0, 0.0, 0.0, 1.0]),   # z^4 + 2z
-    complex([1.0, 0.0, 0.0, 2.0]),          # 2z^3 + 1
-    1;
-    xinterval     = (-1.5, 1.5),
-    yinterval     = (-1.5, 1.5),
-    iter          = 400,
-    colorstrategy       = "pcycle_lch",
-    hue_band            = 120.0,
-    show_plot           = false,
-    expprecision  = 11,
-    figsize       = (1200, 1200),
-    savepath            = joinpath(outdir, "pcycle_halley_z3.png"))
+two_chart_portrait(
+    complex([0.0, 2.0, 0.0, 0.0, 1.0]),   # z^4 + 2z  (Halley para z³−1)
+    complex([1.0, 0.0, 0.0, 2.0]);          # 2z^3 + 1
+    xinterval = (-1.5, 1.5),
+    yinterval = (-1.5, 1.5),
+    iter      = 400,
+    show_plot = false,
+    expprecision = 11,
+    figsize   = (1200, 1200),
+    savepath  = joinpath(outdir, "pcycle_halley_z3.png"))
 println("  → pcycle_halley_z3.png")
 
 println("\n=== Figura 10: Función racional (z²−1)/(z²+1) con 2-ciclo ===")
