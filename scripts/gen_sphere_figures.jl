@@ -20,7 +20,7 @@ mkpath(outdir)
 NTHETA = 400
 NPHI   = 800
 ITER   = 400
-BANDS  = 6.0
+BANDS  = 12.0
 PX     = 4
 
 # ─── Figura 1: Newton para z³−1 ─────────────────────────────────────────────
