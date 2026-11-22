@@ -1264,7 +1264,9 @@ the bas'ilica Julia set, a dendrite-like connected curve
 \begin{example}[Bas\'ilica computation]\label{ex:basilica}
 \begin{verbatim}
   using RiemannBasins
-  num = complex([-1.0, 0.0, 1.0]);  den = complex([1.0])
+  num = complex([-1.0, 0.0, 1.0])  # z^2 - 1  (degree 2)
+  den = complex([1.0])              # constant 1; _pair_of_functions
+                                   #  homogenises to t^2 (degree 2)
   print_critical_orbit_summary(num, den)
   # → P = 2 (superattracting 2-cycle, c = 0.0)
   basin_portrait_pcycle(num, den, 2; iter=400, show_plot=true)
@@ -1829,7 +1831,8 @@ Map & $d$ & $\#$ crit.\ pts & $P$ & Dominant labels
     & $\mu_P$\,[sr]\tnote{a}
     & $\mu_\infty$\,[sr]\tnote{b} \\
 \midrule
-M\"obius (degree 1)  & 1 & 0  & 0 & ---
+M\"obius (degree 1)  & 1 & 0  & 0 &
+    no attracting cycles ($2d{-}2=0$ crit.\ pts)
     & $--$ & $--$ \\
 $f(z)=z^2$         & 2 & 1  & 1 & superattr.\ ($p=1$)
     & $6.28^\dagger\,(2\pi)$ & $6.28^\dagger\,(2\pi)$ \\
