@@ -1697,6 +1697,71 @@ is no critical point available to stabilize a fixed point).
   \label{fig:rational_2cycle}
 \end{figure}
 
+\subsection{Basin portraits on the Riemann sphere $S^2$}
+\label{sec:sphere_portraits}
+
+The natural domain of a rational map is the Riemann sphere
+$\Pone \cong S^2$, so the basin portrait can be rendered directly on~$S^2$
+rather than on a chosen chart of~$\mathbb{C}$.
+This eliminates the arbitrariness of the chart: every attractor, including
+the one at~$\infty$, is visible simultaneously.
+
+\paragraph{Spherical balance and Shannon entropy.}
+Let $f$ have $N$ attracting basins with spherical areas
+$A_1,\ldots,A_N$\,(sr).
+Write $p_i = A_i/4\pi$ and define the
+\emph{normalised Shannon entropy} of the portrait:
+\begin{equation}\label{eq:entropy}
+  H_{\mathrm{norm}}(f)
+  \;=\;
+  \frac{-\displaystyle\sum_{i=1}^{N} p_i\log p_i}{\log N}
+  \;\in\;[0,1].
+\end{equation}
+$H_{\mathrm{norm}}=1$ when all basins cover equal spherical area;
+$H_{\mathrm{norm}}=0$ when a single basin covers the whole sphere.
+High entropy signals a portrait in which no basin dominates visually.
+
+For the polynomial family $f_c(z)=z^2+c$ the point at infinity is a
+superattracting \emph{fixed point} of $f$ for every $c$, so its basin
+dominates the sphere regardless of~$c$: for the airplane parameter the
+$3$-cycle basin covers only $0.7\%$ of~$S^2$ ($H_{\mathrm{norm}}=0.06$),
+while for the Douady rabbit and the period-$5$ centre
+it reaches roughly $22\%$ ($H_{\mathrm{norm}}\approx0.76$).
+Newton's and Halley's methods for $z^3-1$, by contrast,
+have three basins each near $4\pi/3\approx4.19$\,sr,
+giving $H_{\mathrm{norm}}\approx1.00$: the portrait is maximally balanced.
+
+Figures~\ref{fig:sphere_newton} and~\ref{fig:sphere_halley} show the sphere
+portraits of Newton and Halley for $z^3-1$, rendered at $400\times800$ grid
+resolution via \texttt{basin\_sphere\_portrait\_3d}.
+Both use the same LCHab colour palette as the flat charts.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.60\textwidth]{figures/sphere_newton_z3.png}
+  \caption{Riemann-sphere portrait of Newton's method
+           $N(z)=(2z^3+1)/(3z^2)$ for $z^3-1$.
+           Three basins (one per cube root of unity) cover nearly equal
+           spherical areas ($\approx4.19$\,sr each; $H_{\mathrm{norm}}=1.00$),
+           confirming the $3$-fold rotational symmetry
+           $N(\omega z)=\omega N(z)$, $\omega=e^{2\pi i/3}$.
+           The fractal Julia set separates all three basins simultaneously.}
+  \label{fig:sphere_newton}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.60\textwidth]{figures/sphere_halley_z3.png}
+  \caption{Riemann-sphere portrait of Halley's method
+           $H(z)=z(z^3+2)/(2z^3+1)$ for $z^3-1$.
+           Like Newton, three basins share the sphere almost equally
+           ($32.5\%$, $32.5\%$, $35.1\%$; $H_{\mathrm{norm}}=0.999$).
+           Halley converges faster than Newton (order~$3$ vs.\ order~$2$),
+           so the basins are slightly more regular and their boundary
+           is a thinner fractal set.}
+  \label{fig:sphere_halley}
+\end{figure}
+
 \subsection{Summary table}
 
 \begin{center}
