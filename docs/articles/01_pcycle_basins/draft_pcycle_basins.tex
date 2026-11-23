@@ -1711,13 +1711,13 @@ is no critical point available to stabilize a fixed point).
 
 \paragraph{All points are equal: the homogeneous model.}
 A rational map $f$ of degree~$d$ is most naturally defined on the
-projective line $\Pone(\mathbb{C})$, not on the affine line~$\mathbb{C}$.
-In homogeneous coordinates $[z_1:z_2]\in\Pone(\mathbb{C})$,
+projective line $\Pone$, not on the affine line~$\mathbb{C}$.
+In homogeneous coordinates $[z_1:z_2]\in\Pone$,
 \[
   f([z_1:z_2]) = [P(z_1,z_2) : Q(z_1,z_2)],
 \]
 where $P,Q$ are coprime homogeneous polynomials of degree~$d$.
-Every point of~$\Pone(\mathbb{C})$---including $0=[0:1]$,
+Every point of~$\Pone$---including $0=[0:1]$,
 $\infty=[1:0]$, and all finite values $[z:1]$---is treated
 on equal footing: there is no special role for~$\infty$.
 \textsc{RiemannBasins} uses this model throughout.
@@ -1732,7 +1732,7 @@ and the two-chart portrait (Section~\ref{sec:two_chart}) is merely a
 visualisation convention, not a computational necessity.
 
 \paragraph{Three-dimensional rendering on $S^2$.}
-Since $\Pone(\mathbb{C})\cong S^2$, basin portraits can be drawn
+Since $\Pone\cong S^2$, basin portraits can be drawn
 directly on the unit sphere.
 The function \texttt{basin\_sphere\_portrait\_3d}
 (GLMakie extension) proceeds as follows:
@@ -1745,7 +1745,7 @@ The function \texttt{basin\_sphere\_portrait\_3d}
   \item Each grid point $(\theta,\varphi)$ is mapped to
         $z = \sin\theta\,e^{i\varphi}/(1-\cos\theta)\in\mathbb{C}$
         via stereographic projection from the north pole, then
-        lifted to $[z:1]\in\Pone(\mathbb{C})$.
+        lifted to $[z:1]\in\Pone$.
   \item The homogeneous orbit is iterated until convergence or
         \texttt{iter} steps; the basin index~$k$ and residual are
         recorded.
