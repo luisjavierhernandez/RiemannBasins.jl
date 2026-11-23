@@ -84,7 +84,7 @@ treated on equal footing with finite points.  A central tool is the
 orbit gives the \emph{Lyapunov constant} $c$; a cycle is attracting when
 $c<1$ and superattracting when $c=0$.
 
-Our main contributions are threefold.  First, we provide a self-contained
+Our main contributions are fourfold.  First, we provide a self-contained
 algorithmic framework for locating and classifying all attracting $p$-cycles
 (periodic orbits of minimal period~$p$) and their basins in $\Pone$, based
 on the homogeneous model and the chordal metric.  Second, we prove and exploit
@@ -94,12 +94,15 @@ computable upper bound~$P$ on the maximal attracting period.  Third, we
 implement these algorithms in the Julia package \texttt{RiemannBasins.jl}
 and illustrate them on several families of rational maps, including the
 quadratic family $z^2+c$, Newton's method for polynomials, and Halley's
-method.
+method.  Fourth, we render basin portraits directly on the Riemann sphere
+$S^2$ via a parametric grid and stereographic projection, and introduce a
+normalised Shannon entropy $H_{\mathrm{norm}}\in[0,1]$ as a quantitative
+measure of the spherical balance of the portrait.
 
-The connection between the Wronskian of the homogeneous pair $(F,G)$ and the
-correct two-chart formula for $\fsh$ is discussed in detail; a subtle sign
-issue with the standard single-chart formula near $\infty$ is identified and
-corrected.
+The homogeneous model also yields a clean two-chart formula for the spherical
+derivative $\fsh$ in terms of the Wronskian of $(F,G)$, together with a
+bihomogeneous reformulation~\cite{AlvarezAparicio2023} that is globally defined
+on $\Pone$ without chart branching (\S\ref{subsec:sphderiv}).
 \end{abstract}
 
 \tableofcontents
@@ -1546,6 +1549,128 @@ is no critical point available to stabilize a fixed point).
            Chart~2 (right): the neighbourhood of $\infty$, which lies in
            $B^0_0$ since $\infty\to 1\to 0$.}
   \label{fig:rational_2cycle}
+\end{figure}
+
+\subsection{Basin portraits on the Riemann sphere $S^2$}
+\label{sec:sphere_portraits}
+
+The Riemann sphere admits two complementary descriptions used in this
+section: the projective line $\Pone$ (the computational model, with
+homogeneous coordinates $[z_1:z_2]$) and the geometric sphere $S^2$
+(the visualisation model); the canonical isomorphism $\Pone\cong S^2$
+is recalled in the second paragraph below.
+
+\paragraph{All points are equal: the projective model.}
+A rational map $f$ of degree~$d$ is most naturally defined on the
+projective line $\Pone$, not on the affine line~$\mathbb{C}$.
+In homogeneous coordinates $[z_1:z_2]\in\Pone$,
+\[
+  f([z_1:z_2]) = [P(z_1,z_2) : Q(z_1,z_2)],
+\]
+where $P,Q$ are coprime homogeneous polynomials of degree~$d$.
+Every point of~$\Pone$---including $0=[0:1]$,
+$\infty=[1:0]$, and all finite values $[z:1]$---is treated
+on equal footing: there is no special role for~$\infty$.
+\textsc{RiemannBasins} uses this model throughout.
+The function \texttt{\_pair\_of\_functions} builds the pair $(P,Q)$
+from the coefficient lists of numerator and denominator, and all
+iteration is performed in homogeneous coordinates with periodic
+normalisation $[z_1:z_2]\mapsto[z_1/\|{\cdot}\|:z_2/\|{\cdot}\|]$
+to prevent overflow.
+As a consequence the basin-finding routine \texttt{\_position\_iteration}
+recovers attractors at~$\infty$ with the same precision as finite ones,
+and the two-chart portrait (Section~\ref{rem:two_chart}) is merely a
+visualisation convention, not a computational necessity.
+
+\paragraph{Three-dimensional rendering on $S^2$.}
+Since $\Pone\cong S^2$, basin portraits can be drawn
+directly on the unit sphere.
+The function \texttt{basin\_sphere\_portrait\_3d}
+(GLMakie extension) proceeds as follows:
+\begin{enumerate}[label=(\roman*)]
+  \item A regular $(\theta,\varphi)$ grid is built:
+        $\theta\in(0,\pi)$ is the colatitude from the north pole
+        ($z=\infty$) and $\varphi\in[0,2\pi]$ is the longitude,
+        giving a $n_\theta\times(n_\varphi+1)$ array of Cartesian
+        coordinates $(X,Y,Z)$ on~$S^2$.
+  \item Each grid point $(\theta,\varphi)$ is mapped to
+        $z = \sin\theta\,e^{i\varphi}/(1-\cos\theta)\in\mathbb{C}$
+        via stereographic projection from the north pole, then
+        lifted to $[z:1]\in\Pone$.
+  \item The homogeneous orbit is iterated until convergence or
+        \texttt{iter} steps; the basin index~$k$ and residual are
+        recorded.
+  \item An RGB colour matrix is assembled using the same LCHab
+        palette as the flat charts, with iteration-count banding
+        (parameter \texttt{bands}) to reveal the fractal boundary.
+  \item The coloured sphere is rendered with \texttt{surface!} in
+        an \texttt{LScene} (no axes); the camera is positioned via
+        \texttt{Makie.update\_cam!} with user-specified azimuth and
+        elevation angles.
+\end{enumerate}
+The seam $\varphi=0=2\pi$ is closed exactly by copying the first column
+into the last, so no colour discontinuity appears.
+
+\paragraph{Spherical balance and Shannon entropy.}
+The function \texttt{basin\_measure\_pcycle} integrates the
+indicator of each basin over~$S^2$ (using the same parametric grid)
+and returns spherical areas $A_1,\ldots,A_K$ in steradians.
+Writing $p_i = A_i/4\pi$, we define the
+\emph{normalised Shannon entropy} of the portrait:
+\begin{equation}\label{eq:entropy}
+  H_{\mathrm{norm}}(f)
+  \;=\;
+  \frac{-\displaystyle\sum_{i=1}^{K} p_i\log p_i}{\log K}
+  \;\in\;[0,1].
+\end{equation}
+$H_{\mathrm{norm}}=1$ iff all basins cover equal spherical area
+(maximally balanced portrait);
+$H_{\mathrm{norm}}=0$ iff a single basin fills the whole sphere.
+High entropy signals a visually rich portrait where no basin dominates.
+
+For the polynomial family $f_c(z)=z^2+c$, the point~$\infty$ is a
+superattracting \emph{fixed point} for every~$c$, so its basin always
+dominates the sphere: the airplane parameter gives $H_{\mathrm{norm}}=0.06$
+(the 3-cycle basin covers barely $0.7\%$ of~$S^2$), and even the Douady
+rabbit and the period-$5$ centre reach only $H_{\mathrm{norm}}\approx0.76$.
+Newton's and Halley's methods for $z^3-1$, by contrast, have three basins
+each of area $\approx 4\pi/3\approx4.19$\,sr, giving
+$H_{\mathrm{norm}}\approx1.00$: the portrait is maximally balanced.
+
+Figure~\ref{fig:sphere_newton} shows the sphere portrait of Newton's method
+for $z^3-1$; Figure~\ref{fig:sphere_rational} shows the portrait of
+$f^2(z)=-2z^2/(z^4+1)$, the second iterate of the rational map
+$f(z)=(z^2-1)/(z^2+1)$.
+Both are rendered at a $400\times800$ grid via
+\texttt{basin\_sphere\_portrait\_3d} with \texttt{bands}$=12$.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.60\textwidth]{figures/sphere_newton_z3.png}
+  \caption{Riemann-sphere portrait of Newton's method
+           $N(z)=(2z^3+1)/(3z^2)$ for $z^3-1$.
+           Three basins (one per cube root of unity) cover nearly equal
+           spherical areas ($\approx4.19$\,sr each; $H_{\mathrm{norm}}=1.00$),
+           confirming the $3$-fold rotational symmetry
+           $N(\omega z)=\omega N(z)$, $\omega=e^{2\pi i/3}$.
+           The fractal Julia set separates all three basins simultaneously.}
+  \label{fig:sphere_newton}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.60\textwidth]{figures/sphere_rational_2cycle.png}
+  \caption{Riemann-sphere portrait of $f^2(z)=-2z^2/(z^4+1)$, the second
+           iterate of $f(z)=(z^2-1)/(z^2+1)$.
+           The two basins $B(0)$ and $B(-1)$ tile the entire sphere
+           (the Julia set has Lebesgue measure zero), giving
+           $H_{\mathrm{norm}}=1.00$.
+           Because $f^2(1/z)=f^2(z)$, every basin is invariant under the
+           M\"{o}bius involution $z\mapsto 1/z$, so the north pole
+           ($z=\infty$) and the south pole ($z=0$) share the same colour.
+           Camera placed near the south pole to show the pole and its
+           surrounding basin at centre.}
+  \label{fig:sphere_rational}
 \end{figure}
 
 \subsection{Summary table}
