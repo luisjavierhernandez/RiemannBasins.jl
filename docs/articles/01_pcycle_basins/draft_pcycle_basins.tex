@@ -1769,13 +1769,15 @@ into the last, so no colour discontinuity appears.
 \paragraph{Spherical balance and Shannon entropy.}
 The function \texttt{basin\_measure\_pcycle} integrates the
 indicator of each basin over~$S^2$ (using the same parametric grid)
-and returns spherical areas $A_1,\ldots,A_N$ in steradians.
+and returns spherical areas $A_1,\ldots,A_K$ in steradians,
+where $K$ is the number of basins (attracting cycle basins plus the
+basin of~$\infty$).
 Writing $p_i = A_i/4\pi$, we define the
 \emph{normalised Shannon entropy} of the portrait:
 \begin{equation}\label{eq:entropy}
   H_{\mathrm{norm}}(f)
   \;=\;
-  \frac{-\displaystyle\sum_{i=1}^{N} p_i\log p_i}{\log N}
+  \frac{-\displaystyle\sum_{i=1}^{K} p_i\log p_i}{\log K}
   \;\in\;[0,1].
 \end{equation}
 $H_{\mathrm{norm}}=1$ iff all basins cover equal spherical area
