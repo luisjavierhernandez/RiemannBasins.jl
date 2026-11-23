@@ -162,6 +162,16 @@ framework of \cite{AlvarezAparicio2023} and was first prototyped in
 \texttt{LCD.jl}~\cite{LCD2022}; a further application to the dynamical study
 of Chebyshev's method on polynomials appears in~\cite{AlvarezAparicio2023MMEHB}.
 
+The topological structure of the Julia set $\Jf$ provides an independent
+perspective on the fractal geometry underlying the basin boundaries studied
+here.  For an expanding rational map, the shape of $\Jf$---in the sense of
+Marde\v{s}i\'c--Segal shape theory---is captured by an inverse system of
+cubic complexes built from the global (spherical) multiplier; the resulting
+shape invariants and the $d$-fold self-overlay structure of the restriction
+$f|_{\Jf}\colon\Jf\to\Jf$, together with its symmetries encoded via the
+fundamental pro-groupoid in the symmetric group $\Sigma_d$, are studied
+in~\cite{Extremiana2018Shape,Extremiana2018SelfOverlays}.
+
 Several Julia packages for complex dynamics visualisation already exist,
 most notably \texttt{Fatou.jl} \cite{FatouJl}, which accepts arbitrary
 complex maps (including transcendental ones) and produces richly coloured
@@ -189,12 +199,19 @@ Section~\ref{sec:periodic} defines $p$-cycles, their Lyapunov stability, and
 the classification into attracting/superattracting/indeterminate orbits.
 Section~\ref{sec:fatou} summarises the relevant theory of Fatou components and
 states Fatou's critical-orbit theorem.
-Section~\ref{sec:algorithms} presents three algorithms in full pseudocode:
-critical orbit analysis (Algorithm~\ref{alg:critical}), basin portrait
-for $p$-cycles (Algorithm~\ref{alg:basin}), and spherical basin measure
-(Algorithm~\ref{alg:measure}).
-Section~\ref{sec:examples} illustrates the algorithms on four families of
-maps.
+Section~\ref{sec:algorithms} presents the three algorithms in full
+pseudocode: critical orbit analysis (Algorithm~\ref{alg:critical}),
+basin portrait for $p$-cycles (Algorithm~\ref{alg:basin}), and
+spherical basin measure (Algorithm~\ref{alg:measure}).
+The third computes the probability that a uniformly random point on the
+Riemann sphere belongs to each attracting basin---a quantitative
+complement to the fractal dimension of the Julia set that is more
+directly interpretable and algorithmically less demanding to compute.
+Section~\ref{sec:examples} illustrates the algorithms on nine examples
+drawn from four families of rational maps (the quadratic family $z^2+c$,
+Newton's and Halley's methods for $z^3-1$, and a proper rational map of
+degree~$2$), closing with three-dimensional sphere portraits
+(Section~\ref{sec:sphere_portraits}) and a summary table.
 Section~\ref{sec:discussion} discusses open problems and extensions.
 
 %% ===========================================================================
@@ -1802,20 +1819,30 @@ metric.  The key contributions are:
         producing colour-coded basin portraits for any user-specified period
         $p$, with full support for the two-chart global portrait on $\Pone$.
 
-  \item Algorithm~\ref{alg:measure} (\texttt{basin\_measure\_pcycle})
-        estimating the spherical area (in steradians) of every attracting
-        $p$-cycle basin via a uniform cubic subdivision of $S^2$, providing
-        a quantitative complement to the fractal basin portraits.
+  \item Algorithm~\ref{alg:measure} (\texttt{basin\_sphere\_data\_pcycle},
+        \texttt{basin\_measure\_pcycle}) estimating the spherical area
+        (in steradians) of each attracting basin via uniform subdivision of
+        $S^2$, providing a quantitative complement to the fractal dimension
+        of the Julia set.
 
-  \item A suite of 94 automated tests in \texttt{RiemannBasins.jl}
+  \item A suite of $94$ automated tests in \texttt{RiemannBasins.jl}
+
+  \item Three-dimensional rendering of basin portraits on $S^2$
+        (\texttt{basin\_sphere\_portrait\_3d}, GLMakie extension), together
+        with a normalised Shannon entropy $H_{\mathrm{norm}}\in[0,1]$
+        measuring the spherical balance of the portrait.  For the polynomial
+        family the basin of~$\infty$ dominates the sphere
+        ($H_{\mathrm{norm}}\leq 0.76$ in all examples), while Newton's and
+        Halley's methods for $z^3-1$ achieve $H_{\mathrm{norm}}\approx 1.00$.
         validating the algorithms on the quadratic family, Newton's method,
         and M\"obius transformations.
 \end{enumerate}
 
-The combination of Algorithms~\ref{alg:critical} and~\ref{alg:basin} gives a
-principled workflow: run Algorithm~\ref{alg:critical} first to determine $P$,
-then run Algorithm~\ref{alg:basin} only for $p\leq P$, avoiding unnecessary
-computation.
+The three algorithms form a natural pipeline: run Algorithm~\ref{alg:critical}
+first to determine $P$ and all attracting cycles; run Algorithm~\ref{alg:basin}
+only for $p\leq P$ to produce the colour-coded basin portraits; then run
+Algorithm~\ref{alg:measure} to quantify the spherical area of each basin,
+avoiding unnecessary computation at every stage.
 
 \bigskip
 \noindent\textbf{Acknowledgements.}
