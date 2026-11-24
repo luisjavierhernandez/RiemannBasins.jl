@@ -30,6 +30,7 @@ export sphere_bijection,
        chordal_metric,
        fixed_points,
        okabe_ito_colors,
+       grayscale_palette,
        basin_portrait,
        two_chart_portrait,
        animate_basins,
@@ -426,18 +427,54 @@ function okabe_ito_colors()::Vector{RGB{Float64}}
     ]
 end
 
-function _build_colormap(nfixed::Int64, gseed::RGB{Float64};
-                         colorblind::Bool = false)
-    colors = Vector{RGB{Float64}}(undef, nfixed + 2)
-    colors[1] = RGB{Float64}(0.0, 0.0, 0.0)   # class 0 → black
 
-    if colorblind
+"""
+    grayscale_palette(n; L_min=25.0, L_max=80.0)
+
+Return `n` pure-gray `RGB{Float64}` colours with CIE L* values evenly spaced
+in `[L_min, L_max]` (C*=0, H*=0).  Intended as the base palette for the
+`:grayscale` rendering mode, where basins must be distinguished without hue.
+
+The black entry used for the Julia set is **not** included; `_build_colormap`
+prepends it at index 1.
+"""
+function grayscale_palette(n::Int;
+                           L_min::Float64 = 25.0,
+                           L_max::Float64 = 80.0)::Vector{RGB{Float64}}
+    @assert n >= 1 "grayscale_palette requires n ≥ 1"
+    levels = n == 1 ? [0.5*(L_min + L_max)] :
+                      range(L_min, L_max; length = n)
+    return [begin
+                rgb = convert(RGB{Float64}, Lab{Float64}(l, 0.0, 0.0))
+                RGB{Float64}(clamp(red(rgb),   0.0, 1.0),
+                             clamp(green(rgb), 0.0, 1.0),
+                             clamp(blue(rgb),  0.0, 1.0))
+            end for l in levels]
+end
+
+function _build_colormap(nfixed::Int64, gseed::RGB{Float64};
+                         colorblind::Bool  = false,
+                         palette::Symbol   = :lchab)
+    # Resolve effective palette (colorblind kwarg kept for backward compat)
+    eff_palette = colorblind ? :okabe : palette
+
+    colors = Vector{RGB{Float64}}(undef, nfixed + 2)
+    colors[1] = RGB{Float64}(0.0, 0.0, 0.0)   # class 0 → black (Julia set)
+
+    if eff_palette == :okabe
         oi = okabe_ito_colors()
         for k in 1:nfixed+1
             idx = mod1(k + 1, length(oi))
             colors[k+1] = oi[idx]
         end
-    else
+
+    elseif eff_palette == :grayscale
+        grays = grayscale_palette(nfixed + 1)
+        for k in 1:nfixed+1
+            colors[k+1] = grays[k]
+        end
+
+    else  # :lchab (default)
         # Perceptually-uniform arc in LCHab space:
         # keep Lightness and Chroma from the seed; rotate Hue uniformly.
         # LCHab is the cylindrical form of CIE L*a*b*, so equal hue steps
@@ -470,6 +507,26 @@ function _modulate_lab(color::RGB{Float64}, t_smooth::Float64,
         clamp(blue(rgb),  0.0, 1.0))
 end
 
+
+# Additive L* banding for grayscale mode.
+# Each basin already has a different base L*; here we add a small sinusoidal
+# ripple (±delta_l) to show convergence speed without altering which gray tone
+# identifies the basin.
+function _modulate_gray(color::RGB{Float64}, t_smooth::Float64,
+                        maxiter::Float64;
+                        bands::Float64   = 6.0,
+                        delta_l::Float64 = 8.0)::RGB{Float64}
+    lab      = convert(Lab{Float64}, color)
+    phase    = 2π * bands * t_smooth / maxiter
+    delta    = delta_l * cos(phase)
+    L_new    = clamp(lab.l + delta, 5.0, 100.0)
+    rgb      = convert(RGB{Float64}, Lab{Float64}(L_new, 0.0, 0.0))
+    return RGB{Float64}(
+        clamp(red(rgb),   0.0, 1.0),
+        clamp(green(rgb), 0.0, 1.0),
+        clamp(blue(rgb),  0.0, 1.0))
+end
+
 # ──────────────────────────────────────────────────────────────────────────────
 # §10  Rendering
 # ──────────────────────────────────────────────────────────────────────────────
@@ -482,10 +539,13 @@ function _build_basin_image_matrix(
         iterationMatrix::Matrix{Int64},
         cmap::Vector{RGB{Float64}},
         colorstrategy::String;
-        colorblind::Bool = false,
+        colorblind::Bool  = false,
+        palette::Symbol   = :lchab,
         residualMatrix::Union{Matrix{Float64},Nothing} = nothing,
         aproxprecision::Int64 = 8,
         bands::Float64 = 6.0)::Matrix{RGB{Float64}}
+
+    eff_palette = colorblind ? :okabe : palette
 
     nrows, ncols = size(positionMatrix)
     maxiter = max(1, maximum(iterationMatrix))
@@ -519,10 +579,16 @@ function _build_basin_image_matrix(
                 t_smooth = Float64(nit)
             end
 
-            # Both modes use L* modulation in CIE L*a*b* space:
-            # hue and chroma (a*, b*) stay fixed; only brightness varies.
-            img[i,j] = _modulate_lab(base, t_smooth, Float64(maxiter);
-                                     bands=bands)
+            if eff_palette == :grayscale
+                # Additive L* ripple: each basin keeps its own gray level;
+                # the ripple encodes convergence speed without shifting identity.
+                img[i,j] = _modulate_gray(base, t_smooth, Float64(maxiter);
+                                          bands=bands)
+            else
+                # LCHab / Okabe: multiplicative L* modulation keeps hue & chroma.
+                img[i,j] = _modulate_lab(base, t_smooth, Float64(maxiter);
+                                         bands=bands)
+            end
         end
     end
     return img
@@ -538,6 +604,7 @@ function _render_basin_image(
         colorstrategy::String,
         title::String;
         colorblind::Bool = false,
+        palette::Symbol  = :lchab,
         residualMatrix::Union{Matrix{Float64},Nothing} = nothing,
         aproxprecision::Int64 = 8,
         bands::Float64 = 6.0,
@@ -549,6 +616,7 @@ function _render_basin_image(
         fixedPointList, positionMatrix, iterationMatrix,
         cmap, colorstrategy;
         colorblind     = colorblind,
+        palette        = palette,
         residualMatrix = residualMatrix,
         aproxprecision = aproxprecision,
         bands          = bands)
@@ -612,7 +680,9 @@ in Polynomials.jl): `[a₀, a₁, …, aₙ]` represents `a₀ + a₁z + … + a
     and convergence speed via smooth colouring and cyclic banding.
   - `"positionfixedpoints"`: flat colour per attractor.
   - `"iteration"`: greyscale proportional to iteration count.
-- `colorblind::Bool` — use the Okabe-Ito palette and CIE L*a*b* banding (default `false`).
+- `colorblind::Bool` — use the Okabe-Ito palette (default `false`; kept for backward compat).
+- `palette::Symbol` — colour mode: `:lchab` (default, perceptually-uniform hue arc), `:okabe`
+  (Okabe-Ito, colorblind-safe), `:grayscale` (spaced gray levels, B&W-printable).
 - `show_plot::Bool` — call `display` on the result (default `true`).
 - `savepath::String` — if non-empty, save the plot to this file.
 
@@ -865,6 +935,7 @@ function two_chart_portrait(
         gseed::RGB{Float64}         = RGB{Float64}(0.2, 0.6, 0.9),
         colorstrategy::String       = "positionplusiteration",
         colorblind::Bool            = false,
+        palette::Symbol            = :lchab,
         show_plot::Bool             = true,
         figsize::Tuple{Int,Int}     = (1200, 1200),
         savepath::String            = "") where {T<:Number}
@@ -877,7 +948,7 @@ function two_chart_portrait(
     push!(fixedPointList, (complex(1.0), complex(0.0)))   # ∞
 
     nfixed = length(fixedPointList)
-    cmap   = _build_colormap(nfixed, gseed; colorblind=colorblind)
+    cmap   = _build_colormap(nfixed, gseed; colorblind=colorblind, palette=palette)
 
     # Chart 1
     grid1 = _rectangle(xinterval, yinterval, expprecision)
@@ -888,7 +959,7 @@ function two_chart_portrait(
         fixedPointList, pos1, itr1,
         xinterval, yinterval, cmap, colorstrategy,
         "Chart 1  (nbhd of 0)";
-        colorblind=colorblind, bands=bands, residualMatrix=res1, aproxprecision=aproxprecision,
+        colorblind=colorblind, palette=palette, bands=bands, residualMatrix=res1, aproxprecision=aproxprecision,
         figsize=figsize)
 
     # Chart 2
@@ -900,7 +971,7 @@ function two_chart_portrait(
         fixedPointList, pos2, itr2,
         xinterval, yinterval, cmap, colorstrategy,
         "Chart 2  (nbhd of ∞)";
-        colorblind=colorblind, bands=bands, residualMatrix=res2, aproxprecision=aproxprecision,
+        colorblind=colorblind, palette=palette, bands=bands, residualMatrix=res2, aproxprecision=aproxprecision,
         figsize=figsize)
 
     plt = plot(p1, p2; layout=(1,2), size=(2*figsize[1], figsize[2]))
@@ -948,6 +1019,7 @@ function animate_basins(
         gseed::RGB{Float64}         = RGB{Float64}(0.2, 0.6, 0.9),
         colorstrategy::String       = "positionplusiteration",
         colorblind::Bool            = false,
+        palette::Symbol            = :lchab,
         fps::Int64                  = 8,
         filename::String            = "basins.gif")
 
@@ -957,12 +1029,13 @@ function animate_basins(
             _basin_matrices(num, den, xinterval, yinterval,
                             aproxprecision, iterprecision, iter, expprecision)
         nfixed = length(fps_list)
-        cmap   = _build_colormap(nfixed, gseed; colorblind=colorblind)
+        cmap   = _build_colormap(nfixed, gseed; colorblind=colorblind, palette=palette)
         _render_basin_image(
             fps_list, posM, itrM,
             xinterval, yinterval, cmap, colorstrategy,
             "p = $(round(real(p), digits=3))";
             colorblind=colorblind,
+            palette=palette,
             residualMatrix=resM,
             aproxprecision=aproxprecision)
     end
@@ -1596,6 +1669,7 @@ function basin_portrait_pcycle(
         show_cyclic_palette::Bool   = false,
         show_plot::Bool             = true,
         colorblind::Bool            = false,
+        palette::Symbol            = :lchab,
         figsize::Tuple{Int,Int}     = (1200, 1200),
         savepath::String            = "") where {T<:Number}
 
@@ -1652,7 +1726,7 @@ function basin_portrait_pcycle(
         end
 
         # 7. Colormap with one colour per orbit group
-        cmap = _build_colormap(n_groups, gseed; colorblind=colorblind)
+        cmap = _build_colormap(n_groups, gseed; colorblind=colorblind, palette=palette)
 
         # Build one representative per group for the render call
         reps = Vector{Tuple{Complex{Float64},Complex{Float64}}}(undef, n_groups)
@@ -1666,6 +1740,7 @@ function basin_portrait_pcycle(
             xinterval, yinterval,
             cmap, colorstrategy, title;
             colorblind     = colorblind,
+            palette        = palette,
             bands          = bands,
             residualMatrix = res,
             aproxprecision = aproxprecision,
@@ -2887,7 +2962,8 @@ modern browser — no Julia or GLMakie required.
 | `iter`           | `200`              | Maximum iteration count                      |
 | `bands`          | `6.0`              | Banding frequency (0.0 = no banding)         |
 | `gseed`          | `RGB(0.2,0.6,0.9)` | Seed colour for LCHab basin palette          |
-| `colorblind`     | `false`            | Use Okabe-Ito palette instead                |
+| `colorblind`     | `false`            | Use Okabe-Ito palette instead (kept for backward compat) |
+| `palette`        | `:lchab`           | Colour mode: `:lchab`, `:okabe`, `:grayscale` |
 | `htmlpath`       | `"basin_sphere.html"` | Output path for the HTML file             |
 | `title`          | `"Basin portrait on S²"` | Page title shown in the browser        |
 
@@ -2904,6 +2980,7 @@ function basin_sphere_portrait_html(
         bands         ::Float64      = 6.0,
         gseed         ::RGB{Float64} = RGB{Float64}(0.2, 0.6, 0.9),
         colorblind    ::Bool         = false,
+        palette       ::Symbol       = :lchab,
         htmlpath      ::String       = "basin_sphere.html",
         title         ::String       = "Basin portrait on S²") where {T<:Number}
 
@@ -2915,7 +2992,7 @@ function basin_sphere_portrait_html(
     fp_list = Vector{Tuple{Complex{Float64},Complex{Float64}}}(finitelist)
     push!(fp_list, (complex(1.0), complex(0.0)))
     nfixed = length(fp_list)
-    cmap   = _build_colormap(nfixed, gseed; colorblind = colorblind)
+    cmap   = _build_colormap(nfixed, gseed; colorblind = colorblind, palette = palette)
 
     # ── 2. Grid ──────────────────────────────────────────────────────────────
     thetas = range(1e-4, π - 1e-4, length = ntheta)
@@ -2962,7 +3039,11 @@ function basin_sphere_portrait_html(
             tv  = max(tol_c, 1e-15)
             lr  = log(log(tv) / log(r)) / log(2.0)
             ts  = clamp(Float64(iter_mat[i, j]) + lr, 0.0, Float64(iter))
-            c   = _modulate_lab(c, ts, Float64(iter); bands = bands)
+            if palette == :grayscale
+                c = _modulate_gray(c, ts, Float64(iter); bands = bands)
+            else
+                c = _modulate_lab(c, ts, Float64(iter); bands = bands)
+            end
         end
         rgb_bytes[3v + 1] = round(UInt8, clamp(red(c),   0.0, 1.0) * 255)
         rgb_bytes[3v + 2] = round(UInt8, clamp(green(c), 0.0, 1.0) * 255)
