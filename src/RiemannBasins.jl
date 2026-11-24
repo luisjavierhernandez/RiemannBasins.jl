@@ -432,15 +432,16 @@ end
     grayscale_palette(n; L_min=25.0, L_max=80.0)
 
 Return `n` pure-gray `RGB{Float64}` colours with CIE L* values evenly spaced
-in `[L_min, L_max]` (C*=0, H*=0).  Intended as the base palette for the
+in `[L_min, L_max]` (C*=0, H*=0), with defaults [40, 85] chosen to leave a
+clear perceptual gap above the black Julia-set entry (L*=0).  Intended as the base palette for the
 `:grayscale` rendering mode, where basins must be distinguished without hue.
 
 The black entry used for the Julia set is **not** included; `_build_colormap`
 prepends it at index 1.
 """
 function grayscale_palette(n::Int;
-                           L_min::Float64 = 25.0,
-                           L_max::Float64 = 80.0)::Vector{RGB{Float64}}
+                           L_min::Float64 = 40.0,
+                           L_max::Float64 = 85.0)::Vector{RGB{Float64}}
     @assert n >= 1 "grayscale_palette requires n ≥ 1"
     levels = n == 1 ? [0.5*(L_min + L_max)] :
                       range(L_min, L_max; length = n)
