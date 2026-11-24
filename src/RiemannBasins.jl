@@ -873,6 +873,7 @@ function basin_portrait(
         hue_band::Float64           = 25.0,
         show_plot::Bool             = true,
         colorblind::Bool            = false,
+        palette::Symbol            = :lchab,
         figsize::Tuple{Int,Int}     = (1200, 1200),
         savepath::String            = "") where {T<:Number}
 
@@ -883,13 +884,14 @@ function basin_portrait(
             aproxprecision, iterprecision, iter, expprecision)
 
     nfixed = length(fixedPointList)
-    cmap   = _build_colormap(nfixed, gseed; colorblind=colorblind)
+    cmap   = _build_colormap(nfixed, gseed; colorblind=colorblind, palette=palette)
 
     plt = _render_basin_image(
         fixedPointList, positionMatrix, iterationMatrix,
         xinterval, yinterval, cmap, colorstrategy,
         "Basins of attraction";
         colorblind=colorblind,
+        palette=palette,
         bands=bands,
         residualMatrix=residualMatrix,
         aproxprecision=aproxprecision,
