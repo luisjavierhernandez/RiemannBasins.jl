@@ -119,28 +119,18 @@ function RiemannBasins.basin_relief_3d_makie(
         zgridcolor      = (:white, 0.15),
         backgroundcolor = (:black, 0.0))
 
+    # ── 6. Surface with shading — FastShading uses a built-in directional light
+    #    Material attributes boost contrast on low-relief surfaces:
+    #      diffuse:   how much the surface scatters incident light
+    #      specular:  specular highlight intensity (subtle gloss on bands)
+    #      shininess: exponent — higher = tighter, more mirror-like highlight
     surface!(ax, xs, ys, z_mk;
         color       = img_mk,
-        shading     = MultiLightShading,
+        shading     = FastShading,
+        diffuse     = 0.9f0,
+        specular    = 0.25f0,
+        shininess   = 24.0f0,
         interpolate = true)
-
-    # ── 6. Explicit scene lights for depth on low-relief surfaces ────────────
-    sc = ax.scene
-    empty!(sc.lights)
-    # Soft ambient: dark-enough to keep Julia-set spikes visible
-    push!(sc.lights, AmbientLight(RGBf(0.30f0, 0.30f0, 0.32f0)))
-    # Key light: lateral-high, slightly warm, reveals contour bands
-    push!(sc.lights, PointLight(
-        Point3f(Float32(xinterval[2]) * 2.5f0,
-                Float32(yinterval[1]) * 1.5f0,
-                Float32(relief_scale) * 40f0),
-        RGBf(1.0f0, 0.96f0, 0.88f0), 10.0f0))
-    # Fill light: opposite side, cool, prevents pure black shadows
-    push!(sc.lights, PointLight(
-        Point3f(Float32(xinterval[1]) * 2.0f0,
-                Float32(yinterval[2]) * 2.0f0,
-                Float32(relief_scale) * 25f0),
-        RGBf(0.55f0, 0.65f0, 0.80f0), 4.0f0))
 
     show_plot  && display(fig)
     isempty(savepath) || save(savepath, fig; px_per_unit = px_per_unit)
