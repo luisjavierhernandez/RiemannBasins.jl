@@ -28,3 +28,6 @@ Manifest.toml
 *.swp
 *~
 .vscode/
+
+# Correspondencia y cartas personales
+Correos_cartas/
