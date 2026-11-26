@@ -126,7 +126,7 @@ function RiemannBasins.basin_relief_3d_makie(
     #      shininess: exponent — higher = tighter, more mirror-like highlight
     surface!(ax, xs, ys, z_mk;
         color       = img_mk,
-        shading     = FastShading,
+        shading     = true,
         diffuse     = 0.9f0,
         specular    = 0.25f0,
         shininess   = 24.0f0,
