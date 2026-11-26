@@ -27,7 +27,7 @@ function RiemannBasins.basin_relief_3d_makie(
         colorstrategy::String          = "positionplusiteration",
         inverted::Bool                 = false,
         background                     = :black,
-        shading::Bool                  = true,
+        px_per_unit::Int               = 1,
         show_plot::Bool                = true,
         savepath::String               = "") where {T<:Number}
 
@@ -121,11 +121,29 @@ function RiemannBasins.basin_relief_3d_makie(
 
     surface!(ax, xs, ys, z_mk;
         color       = img_mk,
-        shading     = shading,
+        shading     = MultiLightShading,
         interpolate = true)
 
+    # ── 6. Explicit scene lights for depth on low-relief surfaces ────────────
+    sc = ax.scene
+    empty!(sc.lights)
+    # Soft ambient: dark-enough to keep Julia-set spikes visible
+    push!(sc.lights, AmbientLight(RGBf(0.30f0, 0.30f0, 0.32f0)))
+    # Key light: lateral-high, slightly warm, reveals contour bands
+    push!(sc.lights, PointLight(
+        Point3f(Float32(xinterval[2]) * 2.5f0,
+                Float32(yinterval[1]) * 1.5f0,
+                Float32(relief_scale) * 40f0),
+        RGBf(1.0f0, 0.96f0, 0.88f0), 10.0f0))
+    # Fill light: opposite side, cool, prevents pure black shadows
+    push!(sc.lights, PointLight(
+        Point3f(Float32(xinterval[1]) * 2.0f0,
+                Float32(yinterval[2]) * 2.0f0,
+                Float32(relief_scale) * 25f0),
+        RGBf(0.55f0, 0.65f0, 0.80f0), 4.0f0))
+
     show_plot  && display(fig)
-    isempty(savepath) || save(savepath, fig)
+    isempty(savepath) || save(savepath, fig; px_per_unit = px_per_unit)
     return fig
 end
 
