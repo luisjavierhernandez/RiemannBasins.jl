@@ -117,19 +117,15 @@ function RiemannBasins.basin_relief_3d_makie(
         xgridcolor      = (:white, 0.15),
         ygridcolor      = (:white, 0.15),
         zgridcolor      = (:white, 0.15),
-        backgroundcolor = (:black, 0.0))
+        backgroundcolor = (:black, 0.0),
+        limits          = (Float64(xinterval[1]), Float64(xinterval[2]),
+                           Float64(yinterval[1]), Float64(yinterval[2]),
+                           0.0, Float64(relief_scale)))
 
-    # ── 6. Surface with shading — FastShading uses a built-in directional light
-    #    Material attributes boost contrast on low-relief surfaces:
-    #      diffuse:   how much the surface scatters incident light
-    #      specular:  specular highlight intensity (subtle gloss on bands)
-    #      shininess: exponent — higher = tighter, more mirror-like highlight
+    # ── 6. Surface with shading ─────────────────────────────────────────────
     surface!(ax, xs, ys, z_mk;
         color       = img_mk,
         shading     = true,
-        diffuse     = 0.9f0,
-        specular    = 0.25f0,
-        shininess   = 24.0f0,
         interpolate = true)
 
     show_plot  && display(fig)
