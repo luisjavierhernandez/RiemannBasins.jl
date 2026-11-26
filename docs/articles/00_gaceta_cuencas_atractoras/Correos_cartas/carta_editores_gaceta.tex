@@ -1,0 +1,132 @@
+% ============================================================
+%  Carta a los Editores y Árbitros de La Gaceta de la RSME
+% ============================================================
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\geometry{top=3cm, bottom=3cm, left=3.5cm, right=3cm}
+\usepackage{parskip}
+\setlength{\parskip}{0.75\baselineskip}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=black}
+
+\pagestyle{plain}
+
+\begin{document}
+
+\begin{flushright}
+  Logroño, noviembre de 2026
+\end{flushright}
+
+\medskip
+\noindent
+Estimado Director,
+
+\medskip
+Tenemos el placer de remitirle el artículo
+
+\begin{center}
+  \textbf{Dinámica de funciones racionales en la esfera de Riemann:\\
+  geometría, cuencas de atracción y visualización}
+\end{center}
+
+\noindent
+para su consideración en \emph{La Gaceta de la Real Sociedad Matemática
+Española}. Aprovechamos esta carta para exponer los aspectos que, a
+nuestro juicio, hacen de él una contribución de interés para los
+lectores de \emph{La Gaceta}.
+
+\medskip
+\noindent\textbf{Contenido matemático y valor divulgativo.}
+El artículo aborda la iteración de funciones racionales en la esfera de
+Riemann~$\mathbb{P}^1(\mathbb{C})$, uno de los objetos centrales de la
+dinámica compleja, con resultados fundacionales debidos a Fatou y Julia
+(teoría de conjuntos de Julia y Fatou), Montel (familias normales),
+Böttcher (coordenadas normales en entornos de puntos superatractores) y
+Sullivan (teorema de no-dominio errante, que completa la clasificación de
+componentes de Fatou). La presentación adopta las coordenadas homogéneas
+$[z:t]\in\mathbb{P}^1(\mathbb{C})$, que permiten tratar el punto del
+infinito en pie de igualdad con los puntos finitos y formular todos los
+algoritmos sin casos especiales. Este enfoque ---habitual en geometría
+algebraica pero poco frecuente en textos divulgativos de dinámica
+compleja--- facilita la comprensión de fenómenos como la permutación de
+cuencas de atracción por simetrías globales de la función iterada o la
+aparición de cuencas en el infinito. A lo largo del texto se ha buscado
+un lenguaje accesible, introduciendo los conceptos mediante expresiones
+intuitivas que permitan seguir el razonamiento sin necesidad de un
+conocimiento previo especializado en dinámica compleja.
+
+\medskip
+\noindent\textbf{Visualización y espacio de color.}
+Una aportación específica del artículo es la discusión detallada del
+diseño de los <<retratos de cuencas>> desde el punto de vista perceptivo.
+Las figuras se generan en el espacio de color CIE~LCHab, derivado del
+estándar CIE~1976, que es perceptualmente uniforme: todos los tonos
+asignados a las distintas cuencas tienen la misma luminosidad y el mismo
+croma, de modo que ninguna cuenca destaca visualmente sobre las demás
+por razones ajenas a la dinámica. Esta elección garantiza que el <<retrato
+de cuencas>> sea una representación fiel y no sesgada de la partición
+dinámica del plano complejo.
+
+\medskip
+\noindent\textbf{Accesibilidad e inclusión visual.}
+El artículo dedica una sección específica al compromiso con la inclusión
+visual en la comunicación matemática. Se discute la paleta Okabe--Ito
+(2008), diseñada para ser distinguible por personas con deuteranopía y
+protanopía, las formas más comunes de daltonismo, y se incluye una figura
+comparativa que ilustra la diferencia entre ambas paletas sobre el mismo
+<<retrato de cuencas>>. El paquete \texttt{RiemannBasins.jl} incorpora esta
+paleta como opción nativa (\texttt{colorblind\,=\,true}), de modo que
+cualquier figura del artículo ---o de trabajos futuros--- puede
+regenerarse con garantías de accesibilidad con un único parámetro.
+Creemos que este aspecto, aún poco presente en las publicaciones
+matemáticas, merece un lugar en un artículo de divulgación.
+
+\medskip
+\noindent\textbf{Paquete de software de acceso público.}
+El artículo está acompañado por el paquete de código abierto
+\texttt{RiemannBasins.jl}, escrito en Julia y disponible en el
+repositorio oficial de paquetes de Julia. Los algoritmos implementados utilizan la métrica cordal en~$S^2$ como
+criterio de convergencia, y se apoyan en resultados matemáticos
+demostrados: la clasificación de las cuencas se basa en el teorema de
+las tres componentes de Fatou, y la detección del conjunto de Julia
+emplea el criterio de Montel. El paquete
+incluye funciones para el <<retrato de cuencas>> en carta afín y sobre la
+esfera completa, animaciones sobre familias paramétricas, retratos
+tridimensionales sobre~$S^2$, y herramientas para el cálculo de medidas
+de las cuencas. Su diseño modular permite extender el análisis a otros
+tipos de componentes de Fatou que aparecen en la clasificación de
+Sullivan, lo que le otorga una proyección más allá del contenido
+específico de este artículo.
+
+\medskip
+\noindent\textbf{Adaptación a la edición impresa.}
+Dado que \emph{La Gaceta} se publica simultáneamente en versión
+impresa ---en blanco y negro--- y en edición digital a color, hemos
+añadido algunas indicaciones para los lectores de la versión impresa:
+una nota breve al final de la introducción y pies de figura en las
+imágenes que dependen del color (Figs.~1, 3, 4, 5, 6, 9 y~10).
+
+\medskip
+Esperamos que el artículo pueda resultar de interés para los lectores de
+\emph{La Gaceta} y quedamos a disposición del equipo editorial para
+cualquier consulta o información adicional que consideren conveniente.
+
+\bigskip
+\noindent
+Atentamente,
+
+\bigskip\bigskip
+\noindent
+Víctor Álvarez Aparicio, Luis Javier Hernández Paricio\\
+y María Teresa Rivas Rodríguez\\[2pt]
+Departamento de Matemáticas y Computación\\
+Universidad de La Rioja, Logroño\\[4pt]
+\href{mailto:victor.alvarez@unirioja.es}{\texttt{victor.alvarez@unirioja.es}}\\
+\href{mailto:luis-javier.hernandez@unirioja.es}{\texttt{luis-javier.hernandez@unirioja.es}}\\
+\href{mailto:maria-teresa.rivas@unirioja.es}{\texttt{maria-teresa.rivas@unirioja.es}}
+
+\end{document}

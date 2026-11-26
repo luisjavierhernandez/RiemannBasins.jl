@@ -48,6 +48,8 @@
   xrightmargin    = 6pt,
 }
 
+\renewcommand{\lstlistingname}{Código}
+
 % --- Tablas ---
 \usepackage{booktabs}
 \usepackage{array}
@@ -90,7 +92,9 @@
         y María Teresa Rivas Rodríguez\\
         {\small Departamento de Matemáticas y Computación,
         Universidad de La Rioja, Logroño}\\
-        {\small \texttt{luis-javier.hernandez@unirioja.es}}}
+        {\small \texttt{victor.alvarez@unirioja.es},
+        \texttt{luis-javier.hernandez@unirioja.es},
+        \texttt{maria-teresa.rivas@unirioja.es}}}
 
 \date{} % La fecha la pone la revista
 
@@ -126,7 +130,7 @@ cuencas de atracción, ciclos periódicos, conjunto de Julia, método de Newton,
 espacio de color LCHab, visualización inclusiva, daltonismo.
 
 \medskip
-\noindent\textbf{MSC 2020:} 37F10, 37F45, 32H50, 68U05.
+\noindent\textbf{MSC 2020:} 37F10, 37F44, 32H50, 68U05.
 
 % ============================================================
 \section{Introducción}
@@ -156,7 +160,8 @@ infinitamente intrincada en su frontera común.
            órbita; los tres tonos tienen luminosidad CIE~$L^*$ idéntica,
            por lo que ninguna cuenca destaca sobre las demás.
            Las bandas concéntricas revelan la velocidad de convergencia
-           mediante modulación del canal de luminosidad.}
+           mediante modulación del canal de luminosidad.
+           (Versi\'on en color en la edici\'on digital.)}
   \label{fig:newton_z3}
 \end{figure}
 
@@ -171,12 +176,12 @@ Verlo requiere extender~$\C$ y trabajar en su compactificación natural: $ \hat 
 
 
 El presente artículo tiene cuatro objetivos.
-El primero es mostrar que  recta proyectiva compleja $\Puno$, lejos de ser una complicación
+El primero es mostrar que la recta proyectiva compleja $\Puno$, lejos de ser una complicación
 abstracta, es el marco más sencillo para estudiar la dinámica de
 funciones racionales: elimina los casos especiales ligados al infinito y
 pone de  manifiesto la simetría global de los sistemas.
 El segundo es ilustrar la teoría con algunos de los ejemplos más iluminadores de la
-literatura, en particular los del libro seminal de Milnor~\cite{Milnor2006},
+literatura, en particular los del libro seminal de Milnor~\cite{Milnor2006} y del tratado clásico de Beardon~\cite{Beardon1991},
 y extenderlos a la visualización de cuencas de ciclos periódicos de
 período~$p\geq 2$.
 El tercero es describir cómo diseñar visualizaciones matemáticamente
@@ -190,13 +195,22 @@ de Okabe e~Ito~\cite{OkabeIto2008}.
 Con ello, este artículo desea sumarse a la creciente demanda de comunicación
 científica accesible para toda la audiencia.
 
+\medskip
+\noindent\textit{Nota para la versi\'on impresa.}
+Este art\'{\i}culo hace un uso esencial del color para representar las cuencas de
+atracci\'on; en la versi\'on impresa en blanco y negro algunas figuras pueden
+resultar de dif\'{\i}cil lectura. Los lectores de la versi\'on impresa pueden
+consultar todas las figuras a color en la edici\'on digital de \emph{La Gaceta}
+disponible en la direcci\'on electr\'onica del art\'{\i}culo.
+
 % ============================================================
 \section{La esfera de Riemann}
 \label{sec:esfera}
 % ============================================================
 
 Una \emph{superficie de Riemann} es una superficie (variedad de dimensión
-real~2) dotada de un atlas cuyas funciones de cambio de carta son
+real~2) dotada de un atlas (es decir, una colección de «mapas», a los que
+llamaremos \emph{cartas}) cuyas funciones de cambio de carta son
 holomorfas~\cite{Jones1987,Miranda1995}.
 Esta condición garantiza que el atlas es internamente consistente en el
 sentido complejo: la noción de «función holomorfa sobre la superficie»
@@ -329,14 +343,14 @@ Con estas dos cartas, $S^2$ tiene estructura de superficie de Riemann.
 \begin{observacion}
 La proyección estereográfica es \emph{conforme}: preserva los ángulos
 entre curvas, aunque no las distancias.
-Una consecuencia notable es que los círcunferencias y rectas del plano se
+Una consecuencia notable es que las circunferencias y rectas del plano se
 corresponden exactamente con las circunferencias de~$S^2$, propiedad fundamental
 en la teoría de las transformaciones de Möbius~\cite{Needham1997}.
 \end{observacion}
 
 \subsection{La recta proyectiva \texorpdfstring{$\Puno$}{P1(C)}}
 
-La segunda realización prescinde de~$\R^3$ y trabaja directamente con
+La segunda realización de la esfera de Riemann prescinde de~$\R^3$ y trabaja directamente con
 pares de números complejos.
 El espacio proyectivo complejo unidimensional~$\Puno$ al que se le suele llamar  \emph{recta proyectiva compleja} es el 
 espacio cociente:
@@ -363,7 +377,7 @@ con cambio de carta $w=1/z$ en $U_0\cap U_1$  (idéntico al obtenido
 con las proyecciones estereográficas), lo que confirma que ambas
 construcciones definen la misma superficie de Riemann: $\Puno\cong\hat{\C} \cong S^2$.
 
-La ventaja de~$\Puno$ frente a~$\hat{\C}$ es de su homogeneidad: ningún punto
+La ventaja de~$\Puno$ frente a~$\hat{\C}$ es su homogeneidad: ningún punto
 ocupa un lugar privilegiado.
 El «punto en el infinito» de la carta~$z$ es simplemente $[1:0]\in U_1$,
 con coordenada $w=0$ en la carta~$w$, y se trata exactamente igual que
@@ -434,7 +448,15 @@ La clasificación por el módulo del multiplicador es la siguiente:
   \item $|\lambda|>1$: punto fijo \emph{repulsor}.
 \end{itemize}
 
-La interpretación geométrica es sencilla: si se toma un disco pequeño
+Un punto $z_0\in\Puno$ es un \emph{punto crítico} de $f$ si
+$f'(z_0)=0$ (en coordenadas afines) o, equivalentemente, si el
+jacobiano de la representación homogénea de $f$ se anula en $z_0$.
+Los puntos críticos son precisamente los superatractores de~$f$
+cuando son también puntos fijos, pero en general no lo son;
+su posición relativa respecto a las cuencas de atracción gobierna
+la complejidad topológica de la dinámica global.
+
+La interpretación geométrica  del multiplicador es sencilla: si se toma un disco pequeño
 $D(\zeta,\varepsilon)$ de radio $\varepsilon$ centrado en el punto fijo~$\zeta$,
 su imagen $f(D(\zeta,\varepsilon))$ es aproximadamente un disco de radio
 $|\lambda|\,\varepsilon$ centrado en~$\zeta$ (pues $f(\zeta)=\zeta$),
@@ -471,14 +493,14 @@ puntos fijos en~$\Puno$, contados con multiplicidad.
 Los puntos fijos son las soluciones de $F([z_0:z_1])=[z_0:z_1]$,
 es decir, $[P(z_0,z_1):Q(z_0,z_1)]=[z_0:z_1]$.
 Esto equivale a $z_1 P(z_0,z_1)-z_0 Q(z_0,z_1)=0$, un polinomio
-homogéneo de grado $d+1$, que por el teorema de Bézout proyectivo
+homogéneo de grado $d+1$ que, por el teorema de Bézout proyectivo, 
 tiene exactamente $d+1$ raíces (con multiplicidad) en~$\Puno$.
 \end{proof}
 
 Para el método de Newton de un polinomio $P$ de grado $n$, la función
 $f$ tiene grado $n$, sus $n$ puntos fijos finitos son exactamente
 las raíces de~$P$ (todas superatractoras, pues $f'(\zeta)=0$ en toda
-raíz simple), y el punto en el infinito es el $n+1$-ésimo punto fijo.
+raíz simple), y el punto del infinito es el $n+1$-ésimo punto fijo.
 
 % ============================================================
 \section{Cuencas de atracción y conjuntos de Julia}
@@ -503,8 +525,8 @@ iniciales es máxima.
 
 \medskip
 \noindent\textbf{¿Qué significa «familia normal»?}
-La idea, antes de la definición precisa, es la siguiente: imagina
-observar $n$ iteraciones sucesivas de $f$ desde un punto $z$.
+La idea, antes de la definición precisa, es la siguiente: imaginemos 
+ $n$ iteraciones sucesivas de $f$ desde un punto $z$.
 Si perturbar ligeramente $z$ cambia poco el resultado final para todo~$n$,
 la dinámica es predecible (estamos en $\mathcal{F}(f)$).
 Si, en cambio, perturbaciones diminutas producen resultados completamente
@@ -522,8 +544,8 @@ $a,b\in\Puno$ para garantizar la normalidad.
 
 \medskip
 \noindent\textbf{Generalización a familias más amplias.}
-En la definición clásica la familia es $\mathcal{G}=\{f^n:n\geq 1\}$,
-los iterados de una sola función.
+En la definición clásica, la familia es $\mathcal{G}=\{f^n:n\geq 1\}$,
+las iteradas de una sola función.
 Pero la misma noción se extiende de forma natural, de menos a más general:
 
 \begin{itemize}
@@ -540,10 +562,10 @@ Pero la misma noción se extiende de forma natural, de menos a más general:
         \emph{semigrupo} $\langle f,g\rangle$ consta de todas las
         composiciones finitas con exponentes no negativos.
         La teoría de Fatou-Julia del semigrupo (iniciada por
-        Hinkkanen y Martin) define $\mathcal{F}(\langle f,g\rangle)$
+        Hinkkanen y Martin, \cite{HinkkanenMartin1996}) define $\mathcal{F}(\langle f,g\rangle)$
         como el mayor abierto donde toda la familia de composiciones
         es normal; su complementario puede ser mucho más complejo
-        que el Julia de cada función por separado.
+        que el conjunto de  Julia de cada función por separado.
   \item \textbf{Grupos kleinianos.}
         Si $f$ y $g$ son transformaciones de Möbius (grado~$1$),
         generan un grupo $\langle f,g\rangle\leq\mathrm{Aut}(\Puno)$.
@@ -553,7 +575,7 @@ Pero la misma noción se extiende de forma natural, de menos a más general:
         del grupo kleiniano, análogo del conjunto de Julia.
 \end{itemize}
 
-Ambas generalizaciones conectan directamente con las perspectivas
+Estas generalizaciones conectan directamente con las perspectivas
 descritas en la sección~\ref{sec:conclusion}.
 
 \begin{proposicion}[Propiedades del conjunto de Julia]
@@ -580,13 +602,13 @@ conjunto de Julia, resulta ser un fractal.
 La \emph{cuenca de atracción inmediata} de un punto fijo atractor
 $\zeta$ es
 \[
-  \mathcal{A}^*(\zeta)=\{z\in\Puno\;:\;f^n(z)\to\zeta,\;
-  f^n(z)\text{ permanece cerca de }\zeta\}.
+  \mathcal{A}^*(\zeta)=\{z\in\Puno\;:\;f^n(z)\to\zeta\;\text{ cuando }n\to + \infty
+\}.
 \]
 La \emph{cuenca de atracción total} $\mathcal{A}(\zeta)$ incluye
 además todas las preimágenes iteradas de $\mathcal{A}^*(\zeta)$.
 Un resultado fundamental de Fatou garantiza que $\mathcal{A}^*(\zeta)$
-es simplemente conexo si el punto crítico de $f$ más cercano cae en~$\mathcal{A}^*(\zeta)$.
+es simplemente conexo si algún punto crítico de $f$ pertenece a~$\mathcal{A}^*(\zeta)$.
 
 La frontera de cada cuenca de atracción es precisamente el conjunto
 de Julia $\mathcal{J}(f)$.
@@ -595,10 +617,10 @@ cuencas de las distintas raíces: su geometría fractal (habitualmente
 de dimensión de Hausdorff estrictamente entre 1 y 2) es la que produce
 las imágenes más llamativas.
 
-\subsection{Clasificación de los componentes de Fatou}
+\subsection{Clasificación de las componentes de Fatou}
 
-Un resultado central de la teoría (el \emph{teorema de clasificación de Fatou--Sullivan}~\cite{Milnor2006}, cuya demostración requiere herramientas profundas de variable compleja que van más allá del alcance de este artículo) establece que todo
-componente periódico del conjunto de Fatou es de uno de estos cinco
+Un resultado central de la teoría (el \emph{teorema de clasificación de Fatou--Sullivan}~\cite{Milnor2006}, cuya demostración requiere herramientas profundas de variable compleja que van más allá del alcance de este artículo) establece que toda
+componente periódica del conjunto de Fatou es de uno de estos cinco
 tipos:
 
 \begin{enumerate}
@@ -606,17 +628,17 @@ tipos:
   \item \textbf{Cuenca de ciclo atractor:} $f^{np}(z)\to\zeta_j$ donde
         $\{\zeta_1,\ldots,\zeta_p\}$ es un ciclo de período $p\geq 2$.
   \item \textbf{Cuenca parabólica:} cada punto del ciclo
-        $\{\zeta_1,\ldots,\zeta_p\}$ está en la \emph{frontera} del
+        $\{\zeta_1,\ldots,\zeta_p\}$ está en la \emph{frontera} de la
         componente ---no en su interior--- con multiplicador
         $(f^p)'(\zeta_1)=e^{2\pi ir}$, $r\in\mathbb{Q}$.
-        Para $p=1$ (punto fijo parabólico, fig.~\textbf{3a}) el componente
+        Para $p=1$ (punto fijo parabólico, fig.~\textbf{3a}) la componente
         tiene forma de pétalo convergente hacia~$\zeta$.
-        Para $p\geq 2$ (fig.~\textbf{3b}) los componentes se intercambian
-        cíclicamente bajo~$f$ y cada uno tiene su punto del ciclo en la
+        Para $p\geq 2$ (fig.~\textbf{3b}) las componentes se intercambian
+        cíclicamente bajo~$f$ y cada una tiene su punto del ciclo en la
         frontera.
-  \item \textbf{Disco de Siegel:} componente simplemente conexo con
+  \item \textbf{Disco de Siegel:} componente simplemente conexa con
         dinámica de rotación irracional.
-  \item \textbf{Anillo de Herman:} componente doblemente conexo (topología de corona)
+  \item \textbf{Anillo de Herman:} componente doblemente conexa (topología de corona)
         con dinámica de rotación irracional.
 \end{enumerate}
 
@@ -758,29 +780,30 @@ tipos:
   \end{scope}
 
 \end{tikzpicture}
-\caption{Esquema de los cinco tipos de componentes peri\'odicos del conjunto de Fatou
+\caption{Esquema de los cinco tipos de componentes peri\'odicas del conjunto de Fatou
 (teorema de Fatou--Sullivan).
 Azul: componente del conjunto de Fatou; gris: complemento
-(conjunto de Julia y otros componentes).
+(conjunto de Julia y otras componentes).
 Los trazos rojos ilustran la din\'amica interna:
-curvas de nivel convergentes al atractor (casos~1 y~2),
-flechas de intercambio entre componentes (casos~2 y~3b),
-p\'etalo convergente hacia la frontera (casos~3a y~3b) y
-curvas invariantes bajo rotaci\'on irracional (casos~4 y~5).
+curvas de nivel convergentes al atractor (casos~\textbf{1} y~\textbf{2}),
+flechas de intercambio entre componentes (casos~\textbf{2} y~\textbf{3b}),
+p\'etalo convergente hacia la frontera (casos~\textbf{3a} y~\textbf{3b}) y
+curvas invariantes bajo rotaci\'on irracional (casos~\textbf{4} y~\textbf{5}).
 El caso parab\'olico aparece en dos variantes:
-\textbf{3a}~(punto fijo, $p=1$), con un \'unico componente en forma de p\'etalo, y
+\textbf{3a}~(punto fijo, $p=1$), con una \'unica componente en forma de p\'etalo, y
 \textbf{3b}~(2-ciclo, $p=2$), con dos componentes que se intercambian bajo~$f$;
 en ambas variantes el punto del ciclo~$\zeta_j$ est\'a en la
-\emph{frontera} del componente.
-En los casos~1 y~4 el punto fijo~$\zeta$ est\'a en el interior.}
+\emph{frontera} de la componente.
+En los casos~\textbf{1} y~\textbf{4} el punto fijo~$\zeta$ est\'a en el interior.
+(Versi\'on en color en la edici\'on digital.)}
 \label{fig:fatou-tipos}
 \end{figure}
 
 
 Para el método de Newton de un polinomio, solo aparecen cuencas del
-tipo~(i) —las raíces son superatractoras— y eventualmente del tipo~(iii)
+tipo~\textbf{1} —las raíces son superatractoras— y eventualmente del tipo~\textbf{3}
 para polinomios con raíces múltiples.
-Los tipos~(iv) y~(v) requieren funciones racionales con propiedades
+Los tipos~\textbf{4} y~\textbf{5} requieren funciones racionales con propiedades
 aritméticas muy especiales en los multiplicadores.
 
 % ============================================================
@@ -788,7 +811,7 @@ aritméticas muy especiales en los multiplicadores.
 \label{sec:ejemplos}
 % ============================================================
 
-\subsection{Newton para \texorpdfstring{$z^3-1$}{z3-1}: el ejemplo fundamental}
+\subsection{Newton para \texorpdfstring{$z^3-1$}{z3-1}: un ejemplo básico}
 
 Como ya vimos, $f(z)=(2z^3+1)/(3z^2)$ tiene grado 3 y cuatro puntos
 fijos en~$\Puno$: las tres raíces cúbicas de la unidad (superatractoras)
@@ -806,10 +829,13 @@ todo punto de la frontera de una cuenca se acumulan puntos de las otras
 dos cuencas}.
 Esto implica que los tres colores aparecen simultáneamente en cualquier
 ampliación arbitraria de la frontera.
+Un análisis elemental y muy accesible de este ejemplo puede encontrarse en~\cite{CarlsonEtAl1994}.
 La figura~\ref{fig:newton_z3_doble} muestra el retrato de cuencas en las dos cartas estereográficas de~$\Puno$.
 
 \begin{figure}[ht]
   \centering
+  % Comando: two_chart_portrait([1,0,0,2],[0,0,3,0]; expprecision=9, bands=8.0, savepath="figures/newton_two_charts.png")
+  % (Script: Examples/newton_two_charts.jl)
   \includegraphics[width=0.90\textwidth]{figures/newton_two_charts.png}
   \caption{Newton para $z^3-1$ en las dos cartas de $\Puno$.
            La carta afín estándar (izquierda) muestra las tres cuencas
@@ -817,33 +843,35 @@ La figura~\ref{fig:newton_z3_doble} muestra el retrato de cuencas en las dos car
            La segunda carta estereográfica (derecha) revela que el punto
            en el infinito es repulsor y queda en la frontera de las tres
            cuencas, oculto en la representación plana habitual.
-           Generado con \pkg{RiemannBasins.jl}.}
+           Generado con \pkg{RiemannBasins.jl}.
+           (Versi\'on en color en la edici\'on digital.)}
   \label{fig:newton_z3_doble}
 \end{figure}
 
 \subsection{Newton para \texorpdfstring{$z^4-1$}{z4-1}: el infinito como cuenca}
 
-Para $P(z)=z^4-1$, el método de Newton da
+Para $P(z)=z^4-1$, el método de Newton viene dado por
 \[
   f(z)=\frac{3z^4+1}{4z^3},\quad d=4,
 \]
 con cinco puntos fijos en $\Puno$: las cuatro raíces cuartas de la
-unidad ($1,i,-1,-i$, todas superatractoras) y el infinito.
+unidad ($1,i,-1,-i$, todas superatractoras) y el punto del  infinito.
 
 Ahora la imagen de $f$ en la segunda carta $w=1/z$ es
 $\tilde{f}(w)=4w/(3+w^4)$,
 con $\tilde{f}(0)=0$ y $\tilde{f}'(0)=4/3$.
-El punto en el infinito es de nuevo repulsor (multiplicador~$4/3$).
+El punto del infinito es de nuevo repulsor (multiplicador~$4/3$).
 
 \begin{figure}[ht]
   \centering
   % Comando: two_chart_portrait([1,0,0,0,3],[0,0,0,4,0]; bands=8.0, savepath="figures/newton_z4_two_charts.png")
   \includegraphics[width=0.90\textwidth]{figures/newton_z4_two_charts.png}
   \caption{Newton para $z^4-1$ en las dos cartas de $\Puno$ (carta~1 a la izquierda, carta~2 a la derecha).
-           En la segunda carta se aprecia la cuenca que rodea el punto en
-           el infinito (repulsor), oculta en la representaci\'{o}n plana
+           En la segunda carta se aprecia la cuenca que rodea el punto 
+           del infinito (repulsor), oculta en la representaci\'{o}n plana
            habitual.
-           Generado con el paquete \pkg{RiemannBasins.jl}.}
+           Generado con el paquete \pkg{RiemannBasins.jl}.
+           (Versi\'on en color en la edici\'on digital.)}
   \label{fig:newton_z4}
 \end{figure}
 
@@ -855,12 +883,11 @@ Esta imagen es imposible de obtener si se trabaja únicamente en~$\C$.
 
 \subsection{El método de Halley}
 
-El \emph{método de Halley} para el polinomio $P$ es el esquema de orden
-cúbico
+El \emph{método de Halley} aplicado a un   polinomio $P$ produce, a partir de un punto $z_0$, la sucesión de iterados:
 \[
    z_{n+1} = z_n - \frac{2P(z_n)P'(z_n)}{2[P'(z_n)]^2-P(z_n)P''(z_n)}.
 \]
-Aplicado a $P(z)=z^3-1$, produce una función racional de grado~5 cuyos
+Para el polinomio $P(z)=z^3-1$ se obtiene una función racional asociada de grado~4 cuyos
 puntos fijos finitos son también las raíces de~$P$, pero las cuencas
 de atracción son más «anchas» y la frontera fractal, aunque sigue siendo
 el conjunto de Julia, tiene una geometría diferente a la del método de
@@ -868,11 +895,13 @@ Newton.
 
 \begin{figure}[ht]
   \centering
-  % Comando: two_chart_portrait(halley_num, halley_den; bands=8.0)
+  % Comando: two_chart_portrait(halley_num, halley_den; expprecision=9, bands=8.0)
+  % (Script: Examples/halley_two_charts.jl)
   \includegraphics[width=0.75\textwidth]{figures/halley_z3_two_charts.png}
   \caption{Método de Halley para $z^3-1$ en las dos cartas de $\Puno$.
            Las cuencas son más regulares que en Newton y la frontera
-           fractal es más suave.}
+           fractal es más suave.
+           (Versi\'on en color en la edici\'on digital.)}
   \label{fig:halley}
 \end{figure}
 
@@ -885,18 +914,18 @@ cuencas de atracción finales.
 \subsection{Una familia de Milnor: \texorpdfstring{$z^2+c$}{z2+c}}
 
 Las funciones $f_c(z)=z^2+c$ con $c\in\C$ son el ejemplo prototípico
-de la teoría de polinomios de Milnor.
+de la teoría de polinomios de Milnor~\cite{Milnor2006}.
 Para ciertos valores de~$c$, la órbita del punto crítico $z=0$ converge
 a un ciclo atractor de período~$p$, dando lugar a cuencas de una
 complejidad topológica creciente.
 
 \begin{itemize}
-  \item $c=0$: $f_0(z)=z^2$, cuenca de atracción de $0$ es el disco
-        unitario; cuenca de atracción de $\infty$ es el exterior.
+  \item $c=0$: $f_0(z)=z^2$. La cuenca de atracción de $0$ es la bola
+        unitaria. La cuenca de atracción de $\infty$ es el exterior.
   \item $c=-1$: existe un ciclo atractor $\{0,-1\}$ de período~2.
-        La cuenca tiene una estructura de «conejo de Douady».
-  \item $c=-2$: $f_{-2}$ tiene un punto de Julia real ($[-2,2]$);
-        cuencas de $\pm\infty$ son todo el complementario.
+        La cuenca tiene una estructura conocida como «basílica de Douady» (ver la figura~\ref{fig:basins_z2m1}): dos componentes simétricas unidas en el punto de período~2. El nombre, acuñado por Douady y Hubbard en los años 80, evoca la fachada de una basílica; otros parámetros de la misma familia reciben nombres igualmente visuales, como el «conejo» (período~3) o el «avión».
+  \item $c=-2$: $f_{-2}$ tiene un conjunto de Julia real ($[-2,2]$). La cuenca del punto  
+      $\infty$ es todo el complementario.
 \end{itemize}
 
 En todos los casos, $\infty$ es un punto fijo superatractor de la
@@ -909,15 +938,15 @@ central del repulsor en~$0$.
 
 La función $f(z)=z^2-1$ es el caso $c=-1$ de la familia de Milnor.
 Tiene un 2-ciclo \emph{superatractor}: la órbita $0\mapsto -1\mapsto 0\mapsto\cdots$
-converge a sí misma bajo la iteración de~$f^2$, con multiplicador $\lambda=0$.
+converge a sí misma bajo la iteración de~$f$, con multiplicador $\lambda=0$.
 En $\Puno$, la dinámica global reparte el plano complejo entre la
-\emph{cuenca del 2-ciclo} $\{0,-1\}$ y la cuenca del punto fijo en el infinito.
+\emph{cuenca del 2-ciclo} $\{0,-1\}$ y la cuenca del punto fijo del infinito.
 
 Si aplicamos \fn{basin\_portrait}, que solo detecta convergencia a \emph{puntos fijos},
 obtenemos la figura~\ref{fig:basins_z2m1}: una única región coloreada (cuenca del
-infinito) rodeada por una extensa zona negra.
+infinito) completada por una zona negra.
 El negro \emph{no} indica divergencia: señala que esos puntos no convergen a ningún
-punto fijo, pero su órbita sí tiene destino --- el 2-ciclo $\{0,-1\}$.
+punto fijo, pero su órbita sí tiene destino: el 2-ciclo $\{0,-1\}$.
 
 \begin{figure}[ht]
   \centering
@@ -935,7 +964,7 @@ punto fijo, pero su órbita sí tiene destino --- el 2-ciclo $\{0,-1\}$.
 Para revelar esa zona negra se usa \fn{basin\_portrait\_pcycle}, que detecta
 convergencia a ciclos de periodo~$p$.
 Fijando $p=2$, cada punto se clasifica según el elemento del 2-ciclo al que
-su órbita se acerca primero, y los dos componentes del ciclo reciben un único
+su órbita se acerca primero, y las dos componentes del ciclo reciben un único
 color de grupo (figura~\ref{fig:pcycle_z2}).
 
 \begin{lstlisting}[caption={Cuencas del 2-ciclo de $f(z)=z^2-1$.}]
@@ -951,9 +980,9 @@ basin_portrait(num, den; bands = 8.0)
 basin_portrait_pcycle(num, den, 2; bands = 8.0)
 \end{lstlisting}
 
-La función $f^2(z)=(z^2-1)^2-1$ tiene seis puntos fijos en $\Puno$
+Notemos que la función $f^2(z)=(z^2-1)^2-1$ tiene cinco puntos fijos en $\Puno$
 (cuatro finitos más $\infty$, siendo $\infty$ ya punto fijo de~$f$).
-\fn{basin\_portrait\_pcycle} agrupa los dos componentes de Fatou del 2-ciclo
+\fn{basin\_portrait\_pcycle} agrupa las dos componentes de Fatou del 2-ciclo
 en un único color, independientemente de cuál de los dos elementos alcanza
 primero la órbita.
 
@@ -977,15 +1006,16 @@ primero la órbita.
 
 \subsection{El problema de la elección de colores}
 
-La asignación de colores a las cuencas de atracción parece una decisión
+La asignación de colores a las cuencas de atracción parece una mera decisión
 estética, pero tiene implicaciones matemáticas y de comunicación
 científica nada triviales.
 Un conjunto de colores mal elegido puede hacer que dos cuencas parezcan
 más similares de lo que son, o que la velocidad de convergencia sea
 imposible de distinguir.
-Más importante aún: un tercio de la población masculina presenta alguna
-forma de daltonismo, y una visualización que dependa del rojo-verde (la
-más habitual) resulta ilegible para esas personas.
+Más importante aún: se estima que entre el 8\,\% y el 10\,\% de la
+población masculina, y alrededor de un 0{,}5\,\% de la femenina,
+presenta alguna forma de daltonismo, y una visualización que dependa
+del rojo-verde (la más habitual) resulta ilegible para esas personas.\footnote{En la edici\'{o}n digital de \emph{La Gaceta} todas las figuras aparecen a color. El paquete \pkg{RiemannBasins.jl} incorpora adem\'{a}s la opci\'{o}n \texttt{palette\,=\,:grayscale}, que asigna niveles de luminosidad~$L^*$ distintos ---entre 40 y~85--- a cada cuenca de atracci\'{o}n, reservando $L^*=0$ para el conjunto de Julia, de modo que los retratos resulten legibles en impresi\'{o}n monocroma manteniendo la correspondencia biunívoca entre tono y cuenca.}
 
 El negro tiene un papel reservado: se asigna a los píxeles cuya órbita
 no ha convergido a ningún atractor en el número máximo de iteraciones
@@ -999,7 +1029,7 @@ delimita visualmente la región de comportamiento caótico.
 
 \subsection{El espacio de color LCHab}
 
-En el espacio RGB, que usa el monitor, diferencias iguales en los
+En el espacio RGB (red, green, blue), que usa el monitor, diferencias iguales en los
 valores $(R,G,B)$ no corresponden a diferencias iguales en la percepción:
 el amarillo puro $(255,255,0)$ es perceptualmente mucho más brillante
 que el azul puro $(0,0,255)$, aunque ambos tienen la misma saturación
@@ -1029,13 +1059,15 @@ semilla $(L_0^*, C_0^*, H_0^*)$ y distribuimos los tonos uniformemente:
 \[
   H_k^* = H_0^* + k\,\frac{360^\circ}{N+1}, \qquad k=1,\ldots,N,
 \]
-manteniendo fijos $L_0^*$ y $C_0^*=\max(C_{\text{semilla}},40)$.
+manteniendo fijos $L_0^*$ y la croma $C_0^*$; en la implementación se impone $C_0^*\geq 40$ para garantizar una saturación mínima visible.
 Al conservar la luminosidad y la croma, todos los colores resultantes
 son perceptualmente equivalentes en brillo y saturación, independientemente
 del ángulo de tono.
 Esto garantiza que ninguna cuenca destaque artificialmente sobre las
 demás por un efecto de contraste luminoso.
 La paleta LCHab estándar y su variante accesible para daltónicos (paleta Okabe--Ito~\cite{OkabeIto2008}) se comparan en la figura~\ref{fig:paletas}.
+
+En la versi\'{o}n impresa en blanco y negro, ambas paletas de la figura~\ref{fig:paletas} producen tonos de gris pr\'{a}cticamente id\'{e}nticos ---precisamente porque ambas conservan luminosidades $L^*$ equivalentes entre cuencas---; la diferencia entre ellas es visible \'{u}nicamente en la edici\'{o}n digital a color.
 
 \begin{figure}[ht]
   \centering
@@ -1059,22 +1091,23 @@ La paleta LCHab estándar y su variante accesible para daltónicos (paleta Okabe
            La paleta Okabe--Ito~\cite{OkabeIto2008} (derecha) está
            diseñada para ser distinguible por personas con deuteranopía
            o protanopía, independientemente de los colores que aparezcan.
-           Ambas conservan luminosidades equivalentes entre cuencas.}
+           Ambas conservan luminosidades equivalentes entre cuencas.
+           (Versi\'on en color en la edici\'on digital.)}
   \label{fig:paletas}
 \end{figure}
 
-\subsection{Bandas de convergencia y conteo de iteraciones suavizado}
+\subsection{Bandas de convergencia y recuento suavizado de iteraciones}
 
-La velocidad con que una órbita se aproxima al atractor contiene
-información geométrica rica.
-Para visualizarla, usamos el \emph{conteo de iteraciones suavizado}.
-Si la órbita de $z$ alcanza el atractor $\zeta$ tras $n$ iteraciones
+La velocidad con la que una órbita se aproxima al atractor contiene
+información geométrica valiosa.
+Para visualizarla, usamos el \emph{recuento suavizado de iteraciones}.
+Si la órbita de $z$ alcanza al atractor $\zeta$ tras $n$ iteraciones
 con $|f^n(z)-\zeta|<\varepsilon$, definimos
 \[
    \mu(z) = n - \frac{\log\log(|f^n(z)-\zeta|/\varepsilon)}{\log 2}
    \;\in\;\R_{\geq 0},
 \]
-que extiende el conteo entero a un valor real continuo y elimina la
+que extiende el recuento entero a un valor real continuo y elimina la
 discontinuidad que aparecería entre los niveles $n$ y $n+1$.
 Modulamos entonces la luminosidad $L^*$ de cada píxel mediante:
 \[
@@ -1102,7 +1135,8 @@ se aprietan precisamente donde la dinámica se vuelve más compleja.
            La modulación de la luminosidad $L^*$ crea anillos concéntricos
            que revelan la velocidad de convergencia hacia cada atractor.
            Parámetro $b=8$ bandas.
-           Generado con \pkg{RiemannBasins.jl}.}
+           Generado con \pkg{RiemannBasins.jl}.
+           (Versi\'on en color en la edici\'on digital.)}
   \label{fig:bandas}
 \end{figure}
 
@@ -1147,7 +1181,7 @@ Hemos mostrado que el espacio proyectivo $\Puno$ es el dominio natural
 para la dinámica de iteración de funciones racionales.
 Trabajar en coordenadas homogéneas, en lugar de en $\C$ con el infinito
 tratado como caso especial, tiene consecuencias concretas: el
-Teorema~\ref{teo:puntosfijos} da exactamente $d+1$ puntos fijos, la
+Teorema~\ref{teo:puntosfijos} proporciona exactamente $d+1$ puntos fijos, la
 segunda carta estereográfica hace visible la cuenca del infinito, y la
 simetría global del sistema queda de manifiesto.
 
@@ -1163,21 +1197,21 @@ quede codificada en una señal visual continua.
 Los cinco tipos de componentes periódicas del teorema de
 Fatou--Sullivan (figura~\ref{fig:fatou-tipos}) no aparecen todos en
 los ejemplos anteriores.
-Los tipos~(i) y~(ii) —cuencas de atractores fijos y de ciclos— están
+Los tipos~\textbf{1} y~\textbf{2} —cuencas de atractores fijos y de ciclos— están
 bien representados.
-Las \emph{cuencas parabólicas} (tipo~iii) aparecen cuando el
+Las \emph{cuencas parabólicas} (tipo~\textbf{3}) aparecen cuando el
 multiplicador es una raíz de la unidad; el ejemplo más sencillo es
 $f(z)=z^2+\tfrac{1}{4}$, cuyo punto fijo $z=\tfrac{1}{2}$ tiene
 multiplicador~$\lambda=1$.
 Los \emph{discos de Siegel} y los \emph{anillos de Herman}
-(tipos~iv y~v) exigen que el multiplicador sea $e^{2\pi i\alpha}$ con
+(tipos~\textbf{4} y~\textbf{5}) exigen que el multiplicador sea $e^{2\pi i\alpha}$ con
 $\alpha$ irracional sujeto a condiciones aritméticas muy finas
 (los denominados \emph{números de Brjuno}): son los tipos más raros,
 pero visualmente los más sorprendentes, pues la dinámica rota sin
-converger y sin divergir.
+converger y sin diverger.
 Visualizar estos tres tipos adicionales —para lo cual habría que
 adaptar el algoritmo de convergencia a cada caso— queda como una
-línea de desarrollo pendiente del paquete y como invitación al lector
+línea pendiente de desarrollo  del paquete y como invitación al lector
 a buscar ejemplos en la literatura.
 
 Una extensión inmediata del paquete es la detección automática del
@@ -1194,27 +1228,26 @@ conjunto de Fatou y su propio conjunto de Julia, cuya teoría fue
 iniciada por Hinkkanen y Martin~\cite{HinkkanenMartin1996}.
 Visualizar las cuencas de este semigrupo en $\Puno$ —¿qué regiones
 convergen bajo qué composiciones?— abriría una ventana a la dinámica
-comparada de métodos numéricos: ¿qué ocurre en el plano complejo
-cuando se alterna Newton y Halley sobre el mismo polinomio?
+comparada de métodos numéricos: ¿qué ocurre en~$\Puno$
+cuando se alternan Newton y Halley sobre el mismo polinomio?
 
 % ============================================================
-\section*{Agradecimientos}
+\section*{Observaciones}
 % ============================================================
 
-V.~Álvarez Aparicio y M.~T.~Rivas Rodríguez han contribuido a la
-redacción del texto, a la revisión estilística, a la búsqueda y
-verificación de referencias bibliográficas, y a la mejora general
-de la exposición.
-El paquete \pkg{RiemannBasins.jl} y el presente artículo se
+
+El paquete \pkg{RiemannBasins.jl} consiste en una actualización y posterior extensión del paquete 
+PBURF.jl (ver \cite{PBURF2019}).
+El presente artículo y la actualización del mencionado paquete   se
 desarrollaron con asistencia del modelo de lenguaje Claude
-(Anthropic), que colaboró en la discusión de enfoques,
+(Anthropic), que ayudó en la discusión de enfoques,
 la estructuración de contenidos y la elaboración de las figuras
 TikZ.
 
 Los tres autores son miembros del Grupo de Investigación
-\emph{Geometría, Topología e Historia de las Matemáticas},
+\emph{Geometría, Topología e Historia de las Matemáticas} de la Universidad de La Rioja,
 que cuenta con el apoyo de la ayuda REGI25/61.
-El presente artículo no ha contado con financiación específica.
+
 
 % ============================================================
 \begin{thebibliography}{9}
@@ -1262,6 +1295,14 @@ Wiley, Hoboken, 2007.
 M.~D.~Fairchild,
 \textit{Color Appearance Models},
 3.ª~ed., Wiley, 2013.
+
+\bibitem{PBURF2019}
+L.~J.~Hernández~Paricio,
+\textit{PBURF.jl},
+Universidad de La Rioja, 2019.
+Disponible en: \url{https://github.com/luisjavierhernandez/PBURF.jl}
+
+
 
 \bibitem{RiemannBasins2026}
 L.~J.~Hernández~Paricio,
