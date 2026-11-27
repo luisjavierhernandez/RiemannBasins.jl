@@ -771,7 +771,7 @@ function mandelbrot_portrait(;
     #          = NaN if inside M
     nit = fill(NaN, n_im, n_re)
 
-    for j in 1:n_re
+    Threads.@threads for j in 1:n_re
         c = complex(re_vals[j], 0.0)   # will add im part per row
         for i in 1:n_im
             c_pix = complex(re_vals[j], im_vals[n_im + 1 - i])
@@ -3018,16 +3018,18 @@ function basin_sphere_portrait_html(
     resid_mat = Matrix{Float64}(undef, ntheta, ncols)
     tol_c     = 1.0 / 10^aproxprecision
 
-    for j in 1:nphi, i in 1:ntheta
-        x3 = Z[i, j]
-        pt_hom = x3 >= 1.0 - 1e-10 ?
-            (complex(1.0), complex(0.0)) :
-            (complex(X[i, j], Y[i, j]) / (1.0 - x3), complex(1.0))
-        pos, n, residual = _position_iteration(
-            fp_list, aproxprecision, iterprecision, pt_hom, hpair, iter)
-        basin_idx[i, j] = max(0, pos)
-        iter_mat[i, j]  = n
-        resid_mat[i, j] = residual
+    Threads.@threads for j in 1:nphi
+        for i in 1:ntheta
+            x3 = Z[i, j]
+            pt_hom = x3 >= 1.0 - 1e-10 ?
+                (complex(1.0), complex(0.0)) :
+                (complex(X[i, j], Y[i, j]) / (1.0 - x3), complex(1.0))
+            pos, n, residual = _position_iteration(
+                fp_list, aproxprecision, iterprecision, pt_hom, hpair, iter)
+            basin_idx[i, j] = max(0, pos)
+            iter_mat[i, j]  = n
+            resid_mat[i, j] = residual
+        end
     end
     # close the φ-seam (column ncols repeats column 1)
     basin_idx[:, ncols] = basin_idx[:, 1]
