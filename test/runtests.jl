@@ -253,14 +253,18 @@ using Colors
     @testset "§14 critical_orbit_analysis – Newton z³−1" begin
         # Three critical points (cube roots of unity) land on superattracting
         # fixed points of Newton's method (the roots of z³−1).
-        # The fourth critical point z=0 maps to ∞ in one step; ∞ is a repelling
-        # fixed point (multiplier 3/2), so that orbit is :indeterminate.
+        # The fourth critical point z=0 maps to ∞ in one step.  ∞ is a repelling
+        # fixed point (multiplier 3/2), but _classify_marginal sees the Birkhoff
+        # averages of log(f^#) starting very negative (f^#=0 at the critical
+        # point itself) and converging slowly toward log(3/2)>0; Aitken
+        # acceleration extrapolates to ≈0, satisfying the parabolic criterion.
         num_n = complex([1.0, 0.0, 0.0, 2.0])
         den_n = complex([0.0, 0.0, 3.0, 0.0])
         res = critical_orbit_analysis(num_n, den_n)
         @test length(res) == 4
         @test count(r -> r.label == :superattracting && r.period == 1, res) == 3
-        @test count(r -> r.label == :attracting,                     res) == 1
+        # z=0→∞: _classify_marginal returns :parabolic due to Aitken overshoot
+        @test count(r -> r.label == :parabolic, res) == 1
     end
 
     @testset "§14 max_attracting_period" begin
@@ -390,6 +394,124 @@ using Colors
         finally
             isfile(tmpfile) && rm(tmpfile)
         end
+    end
+
+
+
+    # ── §13b basin_portrait_pcycle – color strategies ────────────────────────
+    @testset "§13b basin_portrait_pcycle – pcycle_lch strategy" begin
+        num_b = complex([-1.0, 0.0, 1.0])
+        den_b = complex([1.0])
+        kw = (expprecision=4, iter=30, show_plot=false)
+        @test basin_portrait_pcycle(num_b, den_b, 2;
+            kw..., colorstrategy="pcycle_lch") !== nothing
+        @test basin_portrait_pcycle(num_b, den_b, 2;
+            kw..., colorstrategy="pcycle_lch", colorblind=true) !== nothing
+        @test basin_portrait_pcycle(num_b, den_b, 2;
+            kw..., colorstrategy="pcycle_lch", palette=:okabe) !== nothing
+    end
+
+    @testset "§13b basin_portrait_pcycle – palette=:lchab" begin
+        num_n = complex([1.0, 0.0, 0.0, 2.0])
+        den_n = complex([0.0, 0.0, 3.0, 0.0])
+        @test basin_portrait_pcycle(num_n, den_n, 1;
+            expprecision=4, iter=20, show_plot=false, palette=:lchab) !== nothing
+    end
+
+    # ── §14 critical_orbit_analysis – más casos ──────────────────────────────
+    @testset "§14 critical_orbit_analysis – f(z)=z^2+1//4 parabólico" begin
+        cnum = complex([0.25, 0.0, 1.0])
+        cden = complex([1.0])
+        res  = critical_orbit_analysis(cnum, cden)
+        @test length(res) == 1
+        @test res[1].label == :parabolic
+    end
+
+    @testset "§14 critical_orbit_analysis – detect_parabolic=false" begin
+        cnum = complex([0.25, 0.0, 1.0])
+        cden = complex([1.0])
+        res  = critical_orbit_analysis(cnum, cden; detect_parabolic=false)
+        @test length(res) == 1
+        @test res[1].label == :indeterminate
+    end
+
+    @testset "§14b Siegel disk – razon dorada" begin
+        rho  = (sqrt(5.0) - 1.0) / 2.0
+        lam  = exp(2pi * im * rho)
+        c0   = lam * (2 - lam) / 4
+        cnum = complex([c0, 0.0, 1.0])
+        cden = complex([1.0])
+        res  = critical_orbit_analysis(cnum, cden;
+                   max_iter=800, N_birkhoff=1200)
+        @test length(res) == 1
+        @test res[1].label == :siegel
+        @test isapprox(res[1].rotation_number, rho; atol=0.01)
+    end
+
+    @testset "§14b Herman ring – Blaschke B_a razon dorada" begin
+        rho  = (sqrt(5.0) - 1.0) / 2.0
+        lam  = exp(2pi * im * rho)
+        a    = 0.7
+        cnum = complex([0.0, -a * lam, lam])
+        cden = complex([1.0, -a])
+        res  = critical_orbit_analysis(cnum, cden;
+                   max_iter=600, N_birkhoff=1000)
+        @test length(res) == 2
+        @test count(r -> r.label == :herman, res) >= 1
+        herman_res = filter(r -> r.label == :herman, res)
+        for r in herman_res
+            @test isapprox(r.rotation_number, rho; atol=0.05)
+        end
+    end
+
+    # ── §15 basin_sphere_data_pcycle / basin_measure_pcycle ──────────────────
+    @testset "§15 basin_sphere_data_pcycle – basilica p=2" begin
+        num_b = complex([-1.0, 0.0, 1.0])
+        den_b = complex([1.0])
+        data  = basin_sphere_data_pcycle(num_b, den_b, 2;
+                    subdivision=3, aproxprecision=5, iterprecision=5, iter=80)
+        @test data isa SphereBasinData
+        @test data.subdivision == 3
+        @test data.total_cells == 6 * 4^3
+        @test length(data.points)        == data.total_cells
+        @test length(data.basin_indices) == data.total_cells
+        @test all(i >= 0 for i in data.basin_indices)
+        cycle_cells = count(==(1), data.basin_indices)
+        @test cycle_cells > 0.60 * data.total_cells
+    end
+
+    @testset "§15 basin_measure_pcycle – basilica p=2" begin
+        num_b = complex([-1.0, 0.0, 1.0])
+        den_b = complex([1.0])
+        kw    = (subdivision=3, aproxprecision=5, iterprecision=5, iter=80)
+        data   = basin_sphere_data_pcycle(num_b, den_b, 2; kw...)
+        areas1 = basin_measure(data)
+        areas2 = basin_measure_pcycle(num_b, den_b, 2; kw...)
+        @test sort(collect(keys(areas1))) == sort(collect(keys(areas2)))
+        for k in keys(areas1)
+            @test areas1[k] ≈ areas2[k] atol=1e-14
+        end
+        @test sum(values(areas2)) ≈ 4pi atol=1e-12
+        @test get(areas2, 1, 0.0) > 0.60 * 4pi
+    end
+
+    # ── chordal_metric – propiedades adicionales ─────────────────────────────
+    @testset "chordal_metric – simetria y valores concretos" begin
+        @test chordal_metric((1.0+0im, 0.0+0im), (0.0+0im, 1.0+0im)) ≈ 2.0 atol=1e-12
+        @test chordal_metric((0.0+0im, 1.0+0im), (1.0+0im, 0.0+0im)) ≈ 2.0 atol=1e-12
+        P = (1.0+2.0im, 1.0+0im)
+        Q = (3.0+0im, 1.0+im)
+        @test chordal_metric(P, Q) ≈ chordal_metric(Q, P) atol=1e-14
+        @test chordal_metric(P, P) ≈ 0.0 atol=1e-14
+        R = (0.0+1.0im, 1.0+0im)
+        @test chordal_metric(P, R) <= chordal_metric(P, Q) + chordal_metric(Q, R) + 1e-12
+        @test 0.0 <= chordal_metric(P, Q) <= 2.0
+    end
+
+    # ── mandelbrot_portrait – smoke test ─────────────────────────────────────
+    @testset "mandelbrot_portrait – smoke test" begin
+        @test mandelbrot_portrait(n_re=10, n_im=10, maxiter=20,
+                                  show_plot=false) !== nothing
     end
 
 
