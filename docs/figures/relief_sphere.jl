@@ -3,7 +3,7 @@
 # Genera docs/figures/relief_sphere.png
 # Relieve 3D sobre la esfera de Riemann para Newton z³ − 1
 #
-# Uso:  julia --project relief_sphere.jl
+# Uso:  julia --project -t auto relief_sphere.jl
 # ─────────────────────────────────────────────────────────────────────────────
 
 using RiemannBasins

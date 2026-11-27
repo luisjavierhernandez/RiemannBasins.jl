@@ -210,19 +210,21 @@ function RiemannBasins.basin_sphere_portrait_3d(
     basin_idx = Matrix{Int}(undef, ntheta, nphi + 1)
     iter_mat  = Matrix{Int}(undef, ntheta, nphi + 1)
     resid_mat = Matrix{Float64}(undef, ntheta, nphi + 1)
-    for j in 1:nphi, i in 1:ntheta
-        x3 = Z[i, j]
-        if x3 >= 1.0 - 1e-10
-            pt_hom = (complex(1.0), complex(0.0))
-        else
-            x1, x2 = X[i, j], Y[i, j]
-            pt_hom = (complex(x1, x2) / (1.0 - x3), complex(1.0))
+    Threads.@threads for j in 1:nphi
+        for i in 1:ntheta
+            x3 = Z[i, j]
+            if x3 >= 1.0 - 1e-10
+                pt_hom = (complex(1.0), complex(0.0))
+            else
+                x1, x2 = X[i, j], Y[i, j]
+                pt_hom = (complex(x1, x2) / (1.0 - x3), complex(1.0))
+            end
+            pos, n, residual = RiemannBasins._position_iteration(
+                fp_list, aproxprecision, iterprecision, pt_hom, hpair, iter)
+            basin_idx[i, j] = max(0, pos)
+            iter_mat[i, j]  = n
+            resid_mat[i, j] = residual
         end
-        pos, n, residual = RiemannBasins._position_iteration(
-            fp_list, aproxprecision, iterprecision, pt_hom, hpair, iter)
-        basin_idx[i, j] = max(0, pos)
-        iter_mat[i, j]  = n
-        resid_mat[i, j] = residual
     end
     basin_idx[:, nphi + 1] = basin_idx[:, 1]
     iter_mat[:, nphi + 1]  = iter_mat[:, 1]

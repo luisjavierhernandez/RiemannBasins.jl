@@ -3,7 +3,7 @@
 # Genera docs/figures/relief_plane.png
 # Relieve 3D sobre el plano para Newton z³ − 1  (cuencas en [-1.5,1.5]²)
 #
-# Uso:  julia --project relief_plane.jl
+# Uso:  julia --project -t auto relief_plane.jl
 # ─────────────────────────────────────────────────────────────────────────────
 
 using RiemannBasins

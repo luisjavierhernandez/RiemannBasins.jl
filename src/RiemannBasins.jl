@@ -362,13 +362,15 @@ function _basin_matrices(
     iterationMatrix = zeros(Int64, nrows, ncols)
     residualMatrix  = zeros(Float64, nrows, ncols)
 
-    for j in 1:ncols, i in 1:nrows
-        pos, n, res = _position_iteration(
-            fixedPointList, aproxprecision, iterprecision,
-            grid[i,j], hpair, iter)
-        positionMatrix[i,j]  = pos
-        iterationMatrix[i,j] = n
-        residualMatrix[i,j]  = res
+    Threads.@threads for j in 1:ncols
+        for i in 1:nrows
+            pos, n, res = _position_iteration(
+                fixedPointList, aproxprecision, iterprecision,
+                grid[i,j], hpair, iter)
+            positionMatrix[i,j]  = pos
+            iterationMatrix[i,j] = n
+            residualMatrix[i,j]  = res
+        end
     end
 
     return fixedPointList, positionMatrix, iterationMatrix, residualMatrix
@@ -388,13 +390,15 @@ function _basin_matrices_from_grid(
     iterationMatrix = zeros(Int64, nrows, ncols)
     residualMatrix  = zeros(Float64, nrows, ncols)
 
-    for j in 1:ncols, i in 1:nrows
-        pos, n, res = _position_iteration(
-            fixedPointList, aproxprecision, iterprecision,
-            grid[i,j], hpair, iter)
-        positionMatrix[i,j]  = pos
-        iterationMatrix[i,j] = n
-        residualMatrix[i,j]  = res
+    Threads.@threads for j in 1:ncols
+        for i in 1:nrows
+            pos, n, res = _position_iteration(
+                fixedPointList, aproxprecision, iterprecision,
+                grid[i,j], hpair, iter)
+            positionMatrix[i,j]  = pos
+            iterationMatrix[i,j] = n
+            residualMatrix[i,j]  = res
+        end
     end
     return positionMatrix, iterationMatrix, residualMatrix
 end
