@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2022.2.25)  10 NOV 2026 11:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2022.2.25)  15 NOV 2026 12:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -327,35 +327,6 @@ Package microtype Info: Loading configuration file microtype.cfg.
 (/usr/local/texlive/2021/texmf-dist/tex/latex/microtype/microtype.cfg
 File: microtype.cfg 2021/03/14 v2.8c microtype main configuration file (RS)
 ))
-\c@theorem=\count286
-
-(/usr/local/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
-File: l3backend-pdftex.def 2021-03-18 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count287
-\l__pdf_internal_box=\box51
-)
-(./draft_fatou_hopf.aux)
-\openout1 = `draft_fatou_hopf.aux'.
-
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-
 (/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
 
@@ -372,33 +343,39 @@ Package graphics Info: Driver file: pdftex.def on input line 105.
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-def/pdftex.def
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
-
-(/usr/local/texlive/2021/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count288
-\scratchdimen=\dimen172
-\scratchbox=\box52
-\nofMPsegments=\count289
-\nofMParguments=\count290
-\everyMPshowfont=\toks30
-\MPscratchCnt=\count291
-\MPscratchDim=\dimen173
-\MPnumerator=\count292
-\makeMPintoPDFobject=\count293
-\everyMPtoPDFconversion=\toks31
-)))
-(/usr/local/texlive/2021/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
-Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-85.
-
-(/usr/local/texlive/2021/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
 ))
-\Gin@req@height=\dimen174
-\Gin@req@width=\dimen175
+\Gin@req@height=\dimen172
+\Gin@req@width=\dimen173
 )
+\c@theorem=\count286
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2021-03-18 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count287
+\l__pdf_internal_box=\box51
+)
+(./draft_fatou_hopf.aux)
+\openout1 = `draft_fatou_hopf.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -433,7 +410,7 @@ e
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 65.
+Package hyperref Info: Link coloring OFF on input line 66.
 (/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
 
@@ -444,23 +421,23 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count294
+\c@section@level=\count288
 )
-LaTeX Info: Redefining \ref on input line 65.
-LaTeX Info: Redefining \pageref on input line 65.
-LaTeX Info: Redefining \nameref on input line 65.
+LaTeX Info: Redefining \ref on input line 66.
+LaTeX Info: Redefining \pageref on input line 66.
+LaTeX Info: Redefining \nameref on input line 66.
  (./draft_fatou_hopf.out) (./draft_fatou_hopf.out)
 \@outlinefile=\write3
 \openout3 = `draft_fatou_hopf.out'.
 
-LaTeX Info: Redefining \microtypecontext on input line 65.
+LaTeX Info: Redefining \microtypecontext on input line 66.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 65.
+LaTeX Info: Redefining \showhyphens on input line 66.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -469,7 +446,29 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 68.
+(/usr/local/texlive/2021/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count289
+\scratchdimen=\dimen174
+\scratchbox=\box52
+\nofMPsegments=\count290
+\nofMParguments=\count291
+\everyMPshowfont=\toks30
+\MPscratchCnt=\count292
+\MPscratchDim=\dimen175
+\MPnumerator=\count293
+\makeMPintoPDFobject=\count294
+\everyMPtoPDFconversion=\toks31
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+LaTeX Font Info:    Trying to load font information for U+msa on input line 69.
 
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -478,7 +477,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/local/texlive/2021/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 68.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 69.
 
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -498,97 +497,113 @@ Package microtype Info: Loading generic protrusion settings for font family
 \tf@toc=\write4
 \openout4 = `draft_fatou_hopf.toc'.
 
- [2] [3] [4]
-Overfull \hbox (2.03625pt too wide) in paragraph at lines 310--310
+ [2] [3]
+Overfull \hbox (15.58656pt too wide) in paragraph at lines 267--274
+[]\OT1/cmr/bx/n/12 (-20) Remark 2.1 \OT1/cmr/m/n/12 (-20) (Birkhoff av-er-ages)
+\OT1/cmr/bx/n/12 (-20) . \OT1/cmr/m/n/12 (-20) Tak-ing log-a-rithms, $[] \OML/c
+mm/m/it/12 L[]\OT1/cmr/m/n/12 (-20) (\OML/cmm/m/it/12 ^^^\OT1/cmr/m/n/12 (-20) 
+)(\OML/cmm/m/it/12 x\OT1/cmr/m/n/12 (-20) ) = [] [][] [] \OML/cmm/m/it/12 ^^^\O
+T1/cmr/m/n/12 (-20) (\OML/cmm/m/it/12 g[]\OT1/cmr/m/n/12 (-20) (\OML/cmm/m/it/1
+2 x\OT1/cmr/m/n/12 (-20) ))$
+ []
+
+[4]
+Overfull \hbox (2.03625pt too wide) in paragraph at lines 319--319
 []\OT1/cmr/bx/n/17.28 (-20) Lyapunov-based cri-te-ria for at-tract-ing and para
 bolic
  []
 
 [5] [6] [7]
-Overfull \hbox (15.76707pt too wide) in paragraph at lines 549--552
+Overfull \hbox (2.64636pt too wide) in paragraph at lines 567--570
 []\OT1/cmr/m/n/12 (-20) Each at-tract-ing basin $\OML/cmm/m/it/12 B[]\OT1/cmr/m
-/n/12 (-20) (\OML/cmm/m/it/12 C[]\OT1/cmr/m/n/12 (-20) )$: a dis-tinct colour, 
-graded by the band in-dex $\OMS/cmsy/m/n/12 b[][] \OML/cmm/m/it/12 L[]\OT1/cmr/
-m/n/12 (-20) (\OML/cmm/m/it/12 ^^^[]\OT1/cmr/m/n/12 (-20) )\OMS/cmsy/m/n/12 c$
+/n/12 (-20) (\OML/cmm/m/it/12 C[]\OT1/cmr/m/n/12 (-20) )$: a dis-tinct hue, gra
+ded by the band in-dex $\OMS/cmsy/m/n/12 b[][] \OML/cmm/m/it/12 L[]\OT1/cmr/m/n
+/12 (-20) (\OML/cmm/m/it/12 ^^^[]\OT1/cmr/m/n/12 (-20) )\OMS/cmsy/m/n/12 c$
  []
 
-[8]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 575.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `superscript' on input line 575.
+(hyperref)                removing `math shift' on input line 591.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 575.
+(hyperref)                removing `superscript' on input line 591.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@tempa' on input line 575.
+(hyperref)                removing `\<def>-command' on input line 591.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 575.
+(hyperref)                removing `\@tempa' on input line 591.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@tempb' on input line 575.
+(hyperref)                removing `\<def>-command' on input line 591.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 575.
+(hyperref)                removing `\@tempb' on input line 591.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 628.
+(hyperref)                removing `math shift' on input line 591.
 
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 628.
-
-[9]
-LaTeX Font Info:    Trying to load font information for OMS+cmtt on input line 
-677.
-LaTeX Font Info:    No file OMScmtt.fd. on input line 677.
-
-
-LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
-(Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbraceleft' on input line 677.
-
-
-Overfull \hbox (26.73563pt too wide) in paragraph at lines 674--678
-\OT1/cmr/m/n/12 (-20) from \OMS/cmtt/m/n/12 f\OT1/cmtt/m/n/12 :attracting, :sup
-erattracting, :parabolic, :siegel, :herman, :julia\OMS/cmtt/m/n/12 g\OT1/cmr/m/
-n/12 (-20) . 
- []
-
-[10]
-
-LaTeX Warning: Citation `HinkkaneMartin' on page 11 undefined on input line 738
+[8] [9]
+<figures/cycle_parabolic_p2.png, id=285, 602.25pt x 602.25pt>
+File: figures/cycle_parabolic_p2.png Graphic file (type png)
+<use figures/cycle_parabolic_p2.png>
+Package pdftex.def Info: figures/cycle_parabolic_p2.png  used on input line 700
 .
+(pdftex.def)             Requested size: 364.19667pt x 364.21074pt.
+<figures/cycle_parabolic_p4.png, id=290, 602.25pt x 602.25pt>
+File: figures/cycle_parabolic_p4.png Graphic file (type png)
+<use figures/cycle_parabolic_p4.png>
+Package pdftex.def Info: figures/cycle_parabolic_p4.png  used on input line 743
+.
+(pdftex.def)             Requested size: 364.19667pt x 364.21074pt.
+ [10] [11 <./figures/cycle_parabolic_p2.png>] [12 <./figures/cycle_parabolic_p4
+.png>]
+<figures/cycle_attract_basilica.png, id=313, 602.25pt x 602.25pt>
+File: figures/cycle_attract_basilica.png Graphic file (type png)
+<use figures/cycle_attract_basilica.png>
+Package pdftex.def Info: figures/cycle_attract_basilica.png  used on input line
+ 779.
+(pdftex.def)             Requested size: 364.19667pt x 364.21074pt.
+ [13 <./figures/cycle_attract_basilica.png>]
+<figures/cycle_birkhoff_comparison.png, id=327, 823.075pt x 501.875pt>
+File: figures/cycle_birkhoff_comparison.png Graphic file (type png)
+<use figures/cycle_birkhoff_comparison.png>
+Package pdftex.def Info: figures/cycle_birkhoff_comparison.png  used on input l
+ine 820.
+(pdftex.def)             Requested size: 364.19667pt x 222.07393pt.
 
-(./draft_fatou_hopf.bbl [11]) [12] (./draft_fatou_hopf.aux)
 
-LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 856.
 
 
-LaTeX Warning: There were undefined references.
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 856.
 
+[14 <./figures/cycle_birkhoff_comparison.png>] [15]
+Overfull \hbox (2.97067pt too wide) in paragraph at lines 984--996
+\OT1/cmr/m/n/12 (-20) close to the parabolic boundary. Classical summability me
+thods for Birkhoff averages---
+ []
+
+[16] (./draft_fatou_hopf.bbl [17]) [18] (./draft_fatou_hopf.aux)
 Package rerunfilecheck Info: File `draft_fatou_hopf.out' has not changed.
-(rerunfilecheck)             Checksum: 8B197252374212A85B58AE7FAB65FF9C;6201.
+(rerunfilecheck)             Checksum: 2393E4DB130911FC2C305E7677E902B2;6109.
  ) 
 Here is how much of TeX's memory you used:
- 12413 strings out of 478994
- 185404 string characters out of 5858184
- 531098 words of memory out of 5000000
- 29360 multiletter control sequences out of 15000+600000
- 427973 words of font info for 216 fonts, out of 8000000 for 9000
+ 12456 strings out of 478994
+ 186639 string characters out of 5858184
+ 538522 words of memory out of 5000000
+ 29390 multiletter control sequences out of 15000+600000
+ 427564 words of font info for 214 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 71i,12n,77p,504b,572s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 71i,13n,74p,1080b,471s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 </usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><
@@ -608,14 +623,15 @@ e/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
 21/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/202
 1/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2021
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2021/
-texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2
-021/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/local/texlive/202
-1/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2021/
-texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on draft_fatou_hopf.pdf (12 pages, 312236 bytes).
+texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2
+021/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texli
+ve/2021/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/local/texlive
+/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2
+021/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
+Output written on draft_fatou_hopf.pdf (18 pages, 465476 bytes).
 PDF statistics:
- 429 PDF objects out of 1000 (max. 8388607)
- 389 compressed objects within 4 object streams
- 103 named destinations out of 1000 (max. 500000)
- 58553 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 504 PDF objects out of 1000 (max. 8388607)
+ 448 compressed objects within 5 object streams
+ 114 named destinations out of 1000 (max. 500000)
+ 56517 words of extra memory for PDF output out of 61914 (max. 10000000)
 

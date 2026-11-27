@@ -1,7 +1,7 @@
 \begin{thebibliography}{10}
 
 \bibitem{LCD2022}
-V.~'Alvarez-Aparicio.
+V.~\'Alvarez-Aparicio.
 \newblock {LCD.jl}: {L}yapunov {C}ycle {D}etector.
 \newblock Julia package, 2022.
 
@@ -30,10 +30,24 @@ V.~\'Alvarez-Aparicio, J.~M. Guti\'errez-Jim\'enez, L.~J. Hern\'andez-Paricio,
 \newblock XXV Edition of the Mathematical Modelling Conference Series,
   Val\`encia, July 11--14, 2023.
 
+\bibitem{BeardontEx1991}
+Alan~F. Beardon.
+\newblock {\em Iteration of Rational Functions}, volume 132 of {\em Graduate
+  Texts in Mathematics}.
+\newblock Springer-Verlag, New York, 1991.
+
 \bibitem{Julia2017}
 Jeff Bezanson, Alan Edelman, Stefan Karpinski, and Viral~B. Shah.
 \newblock Julia: A fresh approach to numerical computing.
 \newblock {\em SIAM Review}, 59(1):65--98, 2017.
+
+\bibitem{Bottcher1904}
+Lucjan~Emil B{\"o}ttcher.
+\newblock The principal laws of convergence of iterates and their application
+  to analysis.
+\newblock {\em Izvestiya Kazanskogo Fiziko-Matematicheskogo Obshchestva},
+  14:155--234, 1904.
+\newblock In Russian.
 
 \bibitem{DouadyHubbard1985}
 Adrien Douady and John~H. Hubbard.
@@ -89,10 +103,24 @@ J.~M. Guti\'errez-Jim\'enez, L.~J. Hern\'andez-Paricio, \'A.~A. Magre\~n\'an,
   Methods for Nonlinear Equations}, volume~10 of {\em SEMA SIMAI Springer
   Series}, pages 211--246. Springer International Publishing, Cham, 2016.
 
+\bibitem{Herman1979}
+Michael~R. Herman.
+\newblock Sur la conjugaison diff\'erentiable des diff\'eomorphismes du cercle
+  \`a des rotations.
+\newblock {\em Publications Math\'ematiques de l'IH\'ES}, 49:5--233, 1979.
+
 \bibitem{ColorsJl}
 {JuliaGraphics contributors}.
 \newblock {Colors.jl}: Color manipulation and conversions for {J}ulia.
 \newblock \url{https://github.com/JuliaGraphics/Colors.jl}, 2023.
+
+\bibitem{Koenigs1884}
+Gabriel K{\oe}nigs.
+\newblock Recherches sur les int\'egrales de certaines \'equations
+  fonctionnelles.
+\newblock {\em Annales Scientifiques de l'\'{E}cole Normale Sup\'erieure},
+  1:3--41, 1884.
+\newblock Suppl\'ement.
 
 \bibitem{Milnor2006}
 John Milnor.
@@ -118,6 +146,17 @@ Michael Reed.
 \newblock \url{https://github.com/chakravala/Fatou.jl}, 2017.
 \newblock Julia package for complex dynamics visualisation; GPU-accelerated
   escape-time and orbit-trap portraits.
+
+\bibitem{Shishikura1987}
+Mitsuhiro Shishikura.
+\newblock On the quasiconformal surgery of rational functions.
+\newblock {\em Annales Scientifiques de l'{\'E}cole Normale Sup\'erieure},
+  20(1):1--29, 1987.
+
+\bibitem{Siegel1942}
+Carl~Ludwig Siegel.
+\newblock Iteration of analytic functions.
+\newblock {\em Annals of Mathematics}, 43(4):607--612, 1942.
 
 \bibitem{Sullivan1985}
 Dennis Sullivan.

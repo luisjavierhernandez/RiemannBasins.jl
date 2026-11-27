@@ -194,7 +194,7 @@ $\lambda = (f^r)'(z_1) = \prod_{j=1}^r f'(z_j)$.
 Sullivan's classification \cite{Sullivan1983} gives:
 \begin{itemize}
   \item $|\lambda| < 1$: attracting basin (superattracting if $\lambda=0$).
-  \item $\lambda = e^{2\pi i p/r'}$ (root of unity): parabolic basin.
+  \item $\lambda = e^{2\pi i\rot}$ with $\rot\in\QQ$: parabolic basin.
   \item $\lambda = e^{2\pi i\rot}$ with $\rot\in(0,1)\setminus\QQ$:
         either a Siegel disk or a Herman ring.
 \end{itemize}
@@ -245,8 +245,10 @@ Condition~\eqref{eq:brjuno} is \emph{sufficient} for linearization \cite{Brjuno1
 \emph{necessary} for quadratic polynomials \cite{Yoccoz1988}.
 Yoccoz \cite{Yoccoz1995} proved the full equivalence
 $\text{Siegel disk exists} \Leftrightarrow \mathcal{B}(\rot)<\infty$
-for quadratic polynomials; for general rational maps the problem is open
-\cite{PerezMarco1997}.
+for quadratic polynomials. The necessary direction fails in general
+for rational maps with critical points away from the fixed point
+\cite{PerezMarco1997}: such maps can possess a Siegel disk even when
+$\mathcal{B}(\rot)=\infty$.
 
 Non-linearizable irrationally indifferent fixed points are surrounded by
 \emph{hedgehogs} \cite{PerezMarco1992,PerezMarco1997}: compact totally

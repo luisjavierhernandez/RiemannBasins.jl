@@ -32,6 +32,32 @@ J.~Bezanson, A.~Edelman, S.~Karpinski, and B.~Shah, V.\.
 \newblock Julia: A fresh approach to numerical computing.
 \newblock {\em SIAM Review}, 59(1):65--98, 2017.
 
+\bibitem{Birkhoff1931}
+George~D. Birkhoff.
+\newblock Proof of the ergodic theorem.
+\newblock {\em Proceedings of the National Academy of Sciences},
+  17(12):656--660, 1931.
+
+\bibitem{Datseris2022}
+George Datseris and Alexandre Wagemakers.
+\newblock Effortless initialization of julia's {DynamicalSystems.jl}.
+\newblock {\em Journal of Open Source Software}, 7(77):4432, 2022.
+
+\bibitem{Devaney2003}
+Robert~L. Devaney.
+\newblock {\em An Introduction to Chaotic Dynamical Systems}.
+\newblock Westview Press, Boulder, {CO}, 2nd edition, 2003.
+\newblock First edition 1989; reissued by Westview Press 2003.
+
+\bibitem{DouadyHubbard1985}
+Adrien Douady and John~H. Hubbard.
+\newblock {\em {\'E}tude dynamique des polyn{\^o}mes complexes}.
+\newblock Number 84-02 and 85-04 in Publications math{\'e}matiques d'Orsay.
+  Universit{\'e} de Paris-Sud, D{\'e}partement de Math{\'e}matiques, Orsay,
+  1984--1985.
+\newblock Two volumes (Partie~{I} and Partie~{II}). Foundational reference for
+  the Mandelbrot set and bulb structure.
+
 \bibitem{Extremiana2019}
 I.~Extremiana-Aldana, J.\, J.~Hern\'andez-Paricio, L.\, and
   T.~Rivas-Rodr\'iguez, M.\.
@@ -44,19 +70,23 @@ K.~Gelf\`ert and M.~Rams.
 \newblock The {L}yapunov spectrum of some parabolic systems.
 \newblock {\em Ergodic Theory and Dynamical Systems}, 29(3):919--940, 2010.
 
-\bibitem{HernandezParicio2012}
-J.~Hern\'andez-Paricio, L.\.
-\newblock Plotting basins of attraction in the complex plane via iteration of
-  rational functions.
-\newblock {\em Revista de la Real Academia de Ciencias Exactas, F\'isicas y
-  Naturales. Serie A. Matem\'aticas}, 2012.
-\newblock (to be completed with volume/pages).
+\bibitem{Halley1694}
+E.~Halley.
+\newblock A new, exact and easy method of finding the roots of any equations
+  generally, and that without any previous reduction.
+\newblock {\em Philosophical Transactions of the Royal Society of London},
+  18:136--148, 1694.
 
 \bibitem{PBURF2019}
 J.~Hern\'andez-Paricio, L.\.
 \newblock {PBURF.jl}: {P}lot {B}asins of attraction and {U}nits for {R}ational
   {F}unctions, 2019.
 \newblock Julia package.
+
+\bibitem{HinkkaneMartin1996}
+Aimo Hinkkanen and Gaven~J. Martin.
+\newblock The dynamics of semigroups of rational functions {I}.
+\newblock {\em Proc. London Math. Soc. (3)}, 73(2):358--384, 1996.
 
 \bibitem{McMullen1987}
 T.~McMullen, C.\.
@@ -68,6 +98,36 @@ J.~Milnor.
 \newblock {\em Dynamics in One Complex Variable}.
 \newblock Number 160 in Annals of Mathematics Studies. Princeton University
   Press, 3rd edition, 2006.
+
+\bibitem{PeitgenRichter1986}
+Heinz-Otto Peitgen and Peter~H. Richter.
+\newblock {\em The Beauty of Fractals: Images of Complex Dynamical Systems}.
+\newblock Springer, Berlin, 1986.
+
+\bibitem{Richardson1911}
+Lewis~F. Richardson.
+\newblock The approximate arithmetical solution by finite differences of
+  physical problems involving differential equations, with an application to
+  the stresses in a masonry dam.
+\newblock {\em Philosophical Transactions of the Royal Society of London.
+  Series~{A}}, 210:307--357, 1911.
+
+\bibitem{Schleicher2004}
+D.~Schleicher.
+\newblock On the efficiency of {N}ewton's method in computing polynomial roots.
+\newblock {\em Oberwolfach Reports}, 1:1023--1026, 2004.
+
+\bibitem{Shanks1955}
+Daniel Shanks.
+\newblock Non-linear transformations of divergent and slowly convergent
+  sequences.
+\newblock {\em Journal of Mathematics and Physics}, 34(1--4):1--42, 1955.
+
+\bibitem{Shub1993}
+M.~Shub and S.~Smale.
+\newblock Complexity of {B}ezout's theorem {I}: geometric aspects.
+\newblock {\em Journal of the American Mathematical Society}, 6(2):459--501,
+  1993.
 
 \bibitem{Siegel1942}
 L.~Siegel, C.\.
