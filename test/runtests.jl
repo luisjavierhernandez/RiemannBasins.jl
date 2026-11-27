@@ -7,24 +7,24 @@ using Colors
     # ── sphere_bijection ─────────────────────────────────────────────────────
     @testset "sphere_bijection" begin
         # [0:1] → south pole (0, 0, -1)
-        @test sphere_bijection((0.0+0im, 1.0+0im)) ≈ [0.0, 0.0, -1.0]
+        @test sphere_bijection((0.0+0im, 1.0+0im)) ≈ (0.0, 0.0, -1.0)
 
         # [1:0] → north pole (0, 0, 1)
-        @test sphere_bijection((1.0+0im, 0.0+0im)) ≈ [0.0, 0.0, 1.0]
+        @test sphere_bijection((1.0+0im, 0.0+0im)) ≈ (0.0, 0.0, 1.0)
 
         # super-zero [0:0] → origin sentinel
-        @test sphere_bijection((0.0+0im, 0.0+0im)) == [0.0, 0.0, 0.0]
+        @test sphere_bijection((0.0+0im, 0.0+0im)) == (0.0, 0.0, 0.0)
 
         # [1:1] → equatorial point (1, 0, 0)
-        @test sphere_bijection((1.0+0im, 1.0+0im)) ≈ [1.0, 0.0, 0.0] atol=1e-12
+        @test sphere_bijection((1.0+0im, 1.0+0im)) ≈ (1.0, 0.0, 0.0) atol=1e-12
 
         # [im:1] → equatorial point (0, 1, 0)
-        @test sphere_bijection((1.0im, 1.0+0im)) ≈ [0.0, 1.0, 0.0] atol=1e-12
+        @test sphere_bijection((1.0im, 1.0+0im)) ≈ (0.0, 1.0, 0.0) atol=1e-12
 
         # image always lies on S²: |φ(p)|² = 1 for any non-super-zero p
         for p in [(1.0+2.0im, 1.0+0im), (3.0+0im, 1.0+im), (1.0+0im, 2.0+3.0im)]
             v = sphere_bijection(p)
-            @test sum(v.^2) ≈ 1.0 atol=1e-12
+            @test v[1]^2 + v[2]^2 + v[3]^2 ≈ 1.0 atol=1e-12
         end
     end
 
