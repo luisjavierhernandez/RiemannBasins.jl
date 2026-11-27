@@ -100,15 +100,15 @@ function sphere_bijection(
     tol = 1.0 / 10^aproxprecision
 
     if abs(z) < tol && abs(t) < tol
-        return [0.0, 0.0, 0.0]
+        return (0.0, 0.0, 0.0)
     end
 
     denom = abs2(t) + abs2(z)
-    return [
+    return (
         real(conj(z)*t + conj(t)*z) / denom,
         real(1im*(conj(z)*t - conj(t)*z)) / denom,
         real(-abs2(t) + abs2(z)) / denom
-    ]
+    )
 end
 
 """
@@ -120,9 +120,9 @@ computed as the Euclidean distance between their images in `S²⁺`.
 Returns a `Float64` in `[0, √2]`.
 """
 function chordal_metric(twotuple, twotuple1, aproxprecision::Int64 = 8)
-    v = sphere_bijection(twotuple, aproxprecision) .-
-        sphere_bijection(twotuple1, aproxprecision)
-    return sqrt(v[1]^2 + v[2]^2 + v[3]^2)
+    s = sphere_bijection(twotuple,  aproxprecision)
+    t = sphere_bijection(twotuple1, aproxprecision)
+    return sqrt((s[1]-t[1])^2 + (s[2]-t[2])^2 + (s[3]-t[3])^2)
 end
 
 # ──────────────────────────────────────────────────────────────────────────────
