@@ -24,6 +24,7 @@ using Polynomials          # v3+  — Polynomial(...) API
 using Colors               # RGB, HSV, Lab color types
 using Plots                # plotting backend
 using Base64              # base64 encoding for HTML export
+using PrecompileTools      # reduce TTFX
 
 # ── Public API ─────────────────────────────────────────────────────────────────
 export sphere_bijection,
@@ -3186,5 +3187,21 @@ function basin_sphere_portrait_html(
     return htmlpath
 end
 
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Precompilation workload — reduces TTFX (time-to-first-execution)
+# Uses Newton z³−1 at minimal resolution to cover the main code paths.
+# ──────────────────────────────────────────────────────────────────────────────
+@setup_workload begin
+    _num = ComplexF64[1.0, 0.0, 0.0, 2.0]   # 1 + 2z³
+    _den = ComplexF64[0.0, 0.0, 3.0]        # 3z²
+    @compile_workload begin
+        fixed_points(_num, _den, 4)
+        _basin_matrices(_num, _den, (-1.5, 1.5), (-1.5, 1.5), 4, 4, 20, 4)
+        basin_portrait(_num, _den;
+            aproxprecision = 4, iterprecision = 4,
+            iter = 20, expprecision = 4, show_plot = false)
+    end
+end
 
 end  # module RiemannBasins
