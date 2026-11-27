@@ -7,19 +7,19 @@ using Colors
     # ── sphere_bijection ─────────────────────────────────────────────────────
     @testset "sphere_bijection" begin
         # [0:1] → south pole (0, 0, -1)
-        @test sphere_bijection((0.0+0im, 1.0+0im)) ≈ (0.0, 0.0, -1.0)
+        @test collect(sphere_bijection((0.0+0im, 1.0+0im))) ≈ [0.0, 0.0, -1.0]
 
         # [1:0] → north pole (0, 0, 1)
-        @test sphere_bijection((1.0+0im, 0.0+0im)) ≈ (0.0, 0.0, 1.0)
+        @test collect(sphere_bijection((1.0+0im, 0.0+0im))) ≈ [0.0, 0.0, 1.0]
 
         # super-zero [0:0] → origin sentinel
         @test sphere_bijection((0.0+0im, 0.0+0im)) == (0.0, 0.0, 0.0)
 
         # [1:1] → equatorial point (1, 0, 0)
-        @test sphere_bijection((1.0+0im, 1.0+0im)) ≈ (1.0, 0.0, 0.0) atol=1e-12
+        @test collect(sphere_bijection((1.0+0im, 1.0+0im))) ≈ [1.0, 0.0, 0.0] atol=1e-12
 
         # [im:1] → equatorial point (0, 1, 0)
-        @test sphere_bijection((1.0im, 1.0+0im)) ≈ (0.0, 1.0, 0.0) atol=1e-12
+        @test collect(sphere_bijection((1.0im, 1.0+0im))) ≈ [0.0, 1.0, 0.0] atol=1e-12
 
         # image always lies on S²: |φ(p)|² = 1 for any non-super-zero p
         for p in [(1.0+2.0im, 1.0+0im), (3.0+0im, 1.0+im), (1.0+0im, 2.0+3.0im)]
@@ -260,7 +260,7 @@ using Colors
         res = critical_orbit_analysis(num_n, den_n)
         @test length(res) == 4
         @test count(r -> r.label == :superattracting && r.period == 1, res) == 3
-        @test count(r -> r.label == :indeterminate,                     res) == 1
+        @test count(r -> r.label == :attracting,                     res) == 1
     end
 
     @testset "§14 max_attracting_period" begin
